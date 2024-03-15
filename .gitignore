@@ -1,0 +1,37 @@
+# Dependency directories
+# Ignore node modules to prevent unnecessary diffs
+node_modules/
+
+# Distribution directory
+# Ignore build output directory
+yarn-error.log
+
+# Environment configuration files
+# Ignore environment-specific secret configurations
+.env
+!.env*.example
+.env.development
+.env.staging
+.env.production
+
+# Code coverage
+coverage
+
+# IDE - Integrated Development Environment files
+# Ignore project settings specific to JetBrains IDEs like WebStorm
+.idea/
+.vscode/
+
+# Package lock files
+# Ignore package-lock.json to avoid conflicts between different npm versions
+/package-lock.json
+
+# Temporary files
+# Ignore temporary files that are created by compilers or during runtime
+/tmp/
+/logs/
+*.log
+
+# Deployment files
+# Ignore Vercel configuration files to avoid deploying development-specific settings
+.vercel/
