@@ -1,20 +1,30 @@
 language: node_js
 node_js:
-  - '12'
+    - "18" # Test on Node.js version 18
 services:
-  - mongodb
-cache: yarn
+    - mongodb # Use MongoDB service for tests that require a database
+cache:
+    yarn: true # Enable Yarn caching to speed up build times
+    directories:
+        - "node_modules" # Cache node_modules for faster builds
+        - '$HOME/.cache/yarn' # Explicit Yarn cache directory
 branches:
-  only:
-    - master
+    only:
+        - main # Primary development branch
+        - master # Include master if it's also used in your workflow
 env:
-  global:
-    - PORT=3000
-    - MONGODB_URL=mongodb://localhost:27017/node-boilerplate
-    - JWT_SECRET=thisisasamplesecret
-    - JWT_ACCESS_EXPIRATION_MINUTES=30
-    - JWT_REFRESH_EXPIRATION_DAYS=30
+    global:
+        - PORT=3000
+        - MONGODB_URL=mongodb://localhost:27017/node-boilerplate
+        - JWT_SECRET=thisisasamplesecret
+        - JWT_ACCESS_EXPIRATION_MINUTES=30
+        - JWT_REFRESH_EXPIRATION_DAYS=30
+before_script:
+    - yarn install # Use Yarn to install all dependencies
 script:
-  - yarn lint
-  - yarn test
-after_success: yarn coverage:coveralls
+    - yarn lint # Run linting with Yarn
+    - yarn test # Execute tests using Yarn
+after_success:
+    - yarn coverage:coveralls # After successful tests, send coverage info to Coveralls
+notifications:
+    email: false # Disable email notifications
