@@ -1,32 +1,35 @@
-version: '3'
+version: '3.8' # Use the latest version for better compatibility and features
 
 services:
-  node-app:
-    build: .
-    image: node-app
-    environment:
-      - MONGODB_URL=mongodb://mongodb:27017/node-boilerplate
-    ports:
-      - '3000:3000'
-    depends_on:
-      - mongodb
-    volumes:
-      - .:/usr/src/node-app
-    networks:
-      - node-network
+    node-app:
+        build: .
+        image: node-app # Custom image name for the node application
+        environment:
+            - MONGODB_URL=mongodb://mongodb:27017/node-boilerplate
+            - NODE_ENV=production # Assuming production environment for the merged setup
+            - PORT=8080
+        ports:
+            - '8080:8080' # Expose the app on port 8080
+        depends_on:
+            - mongodb
+        volumes:
+            - .:/usr/src/node-app
+        networks:
+            - node-network
+        command: yarn start # Consistent use of Yarn
 
-  mongodb:
-    image: mongo:4.2.1-bionic
-    ports:
-      - '27017:27017'
-    volumes:
-      - dbdata:/data/db
-    networks:
-      - node-network
+    mongodb:
+        image: mongo:4.2.1-bionic
+        ports:
+            - '27017:27017'
+        volumes:
+            - dbdata:/data/db
+        networks:
+            - node-network
 
 volumes:
-  dbdata:
+    dbdata: # Define persistent volume for MongoDB
 
 networks:
-  node-network:
-    driver: bridge
+    node-network: # Custom bridge network for inter-service communication
+        driver: bridge

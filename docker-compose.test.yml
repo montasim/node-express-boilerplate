@@ -1,6 +1,11 @@
-version: '3'
+version: '3.8' # Use the more specific version for additional features and better compatibility
 
 services:
-  node-app:
-    container_name: node-app-test
-    command: yarn test
+    node-app: # Standardizing the service name to 'node-app' for consistency
+        container_name: node-app-test
+        environment:
+            - NODE_ENV=test # Set the Node.js environment to 'test'
+        volumes:
+            - .:/usr/src/app # Mount the current directory to /usr/src/app in the container
+            - /usr/src/app/node_modules # Use a volume for node_modules to avoid overriding the local node_modules with the container's
+        command: yarn test # Use Yarn to run the test script, ensuring consistency with other configurations

@@ -1,6 +1,13 @@
-version: '3'
+version: '3.8' # Use the more specific version for better compatibility and features
 
 services:
-  node-app:
-    container_name: node-app-dev
-    command: yarn dev -L
+    node-app: # Assuming we're merging under the 'node-app' service name
+        container_name: node-app-dev
+        environment:
+            - NODE_ENV=development
+        ports:
+            - "5000:5000" # Expose port 5000 on the host and map it to port 5000 in the container
+        volumes:
+            - .:/usr/src/app # Mount the current directory to /usr/src/app in the container
+            - /usr/src/app/node_modules # Use a volume for node_modules to avoid overriding the local node_modules with the container's
+        command: yarn dev -L # Use Yarn to run the development server, ensuring local dependencies are included with -L

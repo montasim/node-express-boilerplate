@@ -1,6 +1,16 @@
-version: '3'
+version: '3.8' # Use the latest compatible version
 
 services:
-  node-app:
-    container_name: node-app-prod
-    command: yarn start
+    node-app: # Consolidate under a single service name, assuming 'node-app' for consistency
+        container_name: node-app-prod
+        build: # Define build context and Dockerfile for production
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "8080:8080" # Expose port 8080 on the host and map it to port 8080 in the container
+        volumes:
+            - .:/usr/src/app # Mount the current directory to /usr/src/app in the container
+            - /usr/src/app/node_modules # Use a volume for node_modules to avoid overriding with the container's
+        environment:
+            NODE_ENV: production # Set the Node.js environment to production
+        command: yarn start # Use Yarn to run the start script, assuming it's configured for production
