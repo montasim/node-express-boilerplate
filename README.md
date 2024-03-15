@@ -186,7 +186,7 @@ src\
  |--utils\          # Utility classes and functions
  |--validations\    # Request data validation schemas
  |--app.js          # Express app
- |--index.js        # App entry point
+ |--server.js        # App entry point
 ```
 
 ## API Documentation

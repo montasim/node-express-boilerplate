@@ -1,18 +1,27 @@
 {
   "name": "create-nodejs-express-app",
-  "version": "1.7.0",
+  "version": "1.0.0",
   "description": "Create a Node.js app for building production-ready RESTful APIs using Express, by running one command",
   "bin": "bin/createNodejsApp.js",
-  "main": "src/index.js",
-  "repository": "https://github.com/hagopj13/node-express-boilerplate.git",
-  "author": "Hagop Jamkojian <hagopj13@gmail.com>",
+  "main": "src/server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/montasim/node-express-boilerplate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/montasim/node-express-boilerplate/issues"
+  },
+  "homepage": "https://github.com/montasim/node-express-boilerplate#readme",
+  "author": "Mohammad Montasim -Al- Mamun Shuvo>",
   "license": "MIT",
+  "type": "module",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=18.x",
+    "npm": ">=10.2.3"
   },
   "scripts": {
     "start": "pm2 start ecosystem.config.json --no-daemon",
-    "dev": "cross-env NODE_ENV=development nodemon src/index.js",
+    "dev": "cross-env NODE_ENV=development nodemon src/server.js",
     "test": "jest -i --colors --verbose --detectOpenHandles",
     "test:watch": "jest -i --watchAll",
     "coverage": "jest -i --coverage",
@@ -25,7 +34,8 @@
     "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
     "docker:test": "docker-compose -f docker-compose.yml -f docker-compose.test.yml up",
     "prepare": "husky install",
-    "generate-docs": "jsdoc -c jsdoc.json"
+    "generate-docs": "jsdoc -c jsdoc.json",
+    "release": "standard-version"
   },
   "keywords": [
     "node",
@@ -57,6 +67,7 @@
     "dotenv": "^10.0.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
+    "expect": "^29.7.0",
     "express": "^4.17.1",
     "express-mongo-sanitize": "^2.0.0",
     "express-rate-limit": "^5.0.0",
@@ -80,11 +91,11 @@
   },
   "devDependencies": {
     "coveralls": "^3.0.7",
-    "eslint": "^7.0.0",
+    "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jest": "^24.0.1",
+    "eslint-plugin-jest": "^27.9.0",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-security": "^1.4.0",
     "faker": "^5.1.0",
