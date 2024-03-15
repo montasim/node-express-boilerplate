@@ -1,3 +1,53 @@
-# Convert text file line endings to lf
-* text eol=lf
-*.js text
+# General Configuration
+# Set default text handling to auto, enabling Git to automatically handle line endings according to the user's environment and core.autocrlf setting.
+* text=auto
+
+# Line Endings Configuration
+# Ensure consistent CRLF line endings for specific file types when checked out. Useful for projects that are expected to run in Windows environments or where CRLF line endings are the standard.
+*.js text eol=crlf
+*.json text eol=crlf
+*.md text eol=crlf
+*.css text eol=crlf
+*.html text eol=crlf
+*.yml text eol=crlf
+*.yaml text eol=crlf
+
+# Binary Files
+# Treat certain file extensions as binary to prevent Git from attempting to automatically convert line endings or otherwise modify these files.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+
+# Document Formats
+# Ensure that document formats commonly used in office applications have consistent CRLF line endings, maintaining compatibility across environments.
+*.doc text eol=crlf
+*.docx text eol=crlf
+*.xls text eol=crlf
+*.xlsx text eol=crlf
+*.ppt text eol=crlf
+*.pptx text eol=crlf
+
+# Special Cases
+# Exclude minified JavaScript files from text processing. These files are usually generated and committed as is, without a need for line ending normalization.
+*.min.js -text
+
+# Diff Configuration
+# Improve diff handling for script and batch files by treating them as text, making their changes more readable in diffs.
+*.bat diff=astextplain
+*.cmd diff=astextplain
+*.sh diff=astextplain
+
+# Editor Configuration
+# Treat Visual Studio Code workspace files as text and normalize their line endings to CRLF, ensuring consistency across development environments.
+*.code-workspace text eol=crlf
+
+# Exclusions
+# Exclude package-lock.json from diff to avoid unnecessary noise in version control, as it is auto-generated and may differ across installations.
+/package-lock.json -diff
