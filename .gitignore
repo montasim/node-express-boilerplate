@@ -1,37 +1,40 @@
 # Dependency directories
-# Ignore node modules to prevent unnecessary diffs
+# Ignore "node_modules" to reduce repository size and avoid conflicts caused by platform-specific or different versions of dependencies.
 node_modules/
 
-# Distribution directory
-# Ignore build output directory
+# Logs
+# Ignore yarn error logs to prevent committing error details that are specific to individual development environments.
 yarn-error.log
 
 # Environment configuration files
-# Ignore environment-specific secret configurations
+# Ignore environment-specific configurations and secrets to protect sensitive information and ensure that default or example configurations are used for setup guidance.
 .env
+# Allow example environment files to be tracked for setup guidance
 !.env*.example
+# Ignore specific environment configurations to ensure appropriate separation of development, staging, and production settings.
 .env.development
 .env.staging
 .env.production
 
 # Code coverage
-coverage
+# Ignore code coverage directories to keep the repository clean from test artifacts.
+coverage/
 
 # IDE - Integrated Development Environment files
-# Ignore project settings specific to JetBrains IDEs like WebStorm
+# Ignore project settings specific to JetBrains IDEs (e.g., WebStorm) and Visual Studio Code to maintain a development-environment-agnostic codebase.
 .idea/
 .vscode/
 
 # Package lock files
-# Ignore package-lock.json to avoid conflicts between different npm versions
+# Ignore package-lock.json to prevent conflicts arising from npm versions discrepancies. Note: Consider including if using npm for deterministic installs.
 /package-lock.json
 
 # Temporary files
-# Ignore temporary files that are created by compilers or during runtime
+# Ignore temporary files and logs to maintain a clean repository, avoiding clutter from compilation and runtime artifacts.
 /tmp/
 /logs/
 *.log
 
 # Deployment files
-# Ignore Vercel configuration files to avoid deploying development-specific settings
+# Ignore Vercel configuration files to prevent accidentally publishing development-specific configurations to production environments.
 .vercel/

@@ -1,2 +1,26 @@
-node_modules
-bin
+# Dependency directories
+# Exclude "node_modules" to avoid linting third-party libraries, which can save time and resources as these should adhere to their own linting standards.
+node_modules/
+
+# Build output directories
+# Ignore build artifacts in "public/" to focus linting efforts on source code rather than on generated files.
+public/
+
+# Configuration files
+# Configuration files like webpack or Babel are excluded from linting to prevent the linting rules from interfering with tool-specific syntax or setups.
+*.config.js
+babel.config.js
+
+# Environment files
+# Environment variable files (.env and related) are excluded to protect sensitive information and because they generally do not contain code that benefits from linting.
+.env
+.env.*
+
+# Logs
+# Log files and directories are ignored because they contain runtime output that is not useful to lint, aiming to keep the focus on source code quality.
+logs/
+
+# Other directories and files that don't need linting
+# Documentation, coverage reports, and executable scripts are excluded from linting to keep the linting process relevant to actual source code development.
+docs/
+bin/

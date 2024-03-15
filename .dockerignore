@@ -1,3 +1,16 @@
+# node_modules - Dependency directory
+# Excluding node_modules ensures that Docker does not copy your local dependencies.
+# This is important because the dependencies should be installed within the container
+# to ensure they are compatible with the container's environment, not your local machine.
 node_modules
+
+# .git - Version control directory
+# Excluding the .git directory keeps your image small and ensures that your version control
+# history is not included in your Docker images, which is unnecessary for running the application
+# and could pose a security risk.
 .git
+
+# .gitignore - Specifies intentionally untracked files to ignore
+# Including .gitignore in the Docker ignore list because it's only relevant to Git operations,
+# not the running application within a Docker container.
 .gitignore
