@@ -1,8 +1,8 @@
 import httpStatus from 'http-status';
 
-import tokenService from '../../services/token.service.js';
+import tokenService from '../token/token.service.js';
 import userService from '../user/user.service.js';
-import TokenModel from '../../models/token.model.js';
+import TokenModel from '../token/token.model.js';
 import { tokenTypes } from '../../config/tokens.js';
 
 import ApiError from '../../utils/ApiError.js';

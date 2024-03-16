@@ -3,7 +3,7 @@ import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync.js';
 
 import AuthServices from './auth.service.js';
-import TokenService from '../../services/token.service.js';
+import TokenService from '../token/token.service.js';
 import UserService from '../user/user.service.js';
 import EmailService from '../../services/email.service.js';
 
