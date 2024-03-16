@@ -4,23 +4,32 @@ import httpStatus from 'http-status';
 import pick from '../utils/pick.js';
 import ApiError from '../utils/ApiError.js';
 
-const validate = schema => (req, res, next) => {
+const validate = (schema) => async (req, res, next) => {
     const validSchema = pick(schema, ['params', 'query', 'body']);
     const object = pick(req, Object.keys(validSchema));
-    const { value, error } = Joi.compile(validSchema)
-        .prefs({ errors: { label: 'key' }, abortEarly: false })
-        .validate(object);
 
-    if (error) {
-        const errorMessage = error.details
-            .map(details => details.message)
-            .join(', ');
-        return next(new ApiError(httpStatus.BAD_REQUEST, errorMessage));
+    try {
+        // Use validateAsync for asynchronous validation
+        const value = await Joi.compile(validSchema)
+            .prefs({ errors: { label: 'key' }, abortEarly: false })
+            .validateAsync(object);
+
+        Object.assign(req, value);
+        next();
+    } catch (error) {
+        let errorMessage = 'Validation failed';
+
+        if (error.details && Array.isArray(error.details)) {
+            errorMessage = error.details
+                .map(details => details.message)
+                .join(', ');
+        } else if (error.message) {
+            errorMessage = error.message; // Fallback to the generic error message if details are not available
+        }
+
+        // Use your ApiError class to handle errors
+        next(new ApiError(httpStatus.BAD_REQUEST, errorMessage));
     }
-
-    Object.assign(req, value);
-
-    return next();
 };
 
 export default validate;

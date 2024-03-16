@@ -13,12 +13,12 @@
     },
     "homepage": "https://github.com/montasim/node-express-boilerplate#readme",
     "author": {
-      "name": "Mohammad Montasim -Al- Mamun Shuvo",
-      "email": "montasimmamun@gmail.com",
-      "mobile": "+8801722815469",
-      "portfolio": "https://montasim-dev.web.app/",
-      "linkedin": "https://www.linkedin.com/in/montasim",
-      "github": "https://github.com/montasim"
+        "name": "Mohammad Montasim -Al- Mamun Shuvo",
+        "email": "montasimmamun@gmail.com",
+        "mobile": "+8801722815469",
+        "portfolio": "https://montasim-dev.web.app/",
+        "linkedin": "https://www.linkedin.com/in/montasim",
+        "github": "https://github.com/montasim"
     },
     "license": "MIT",
     "type": "module",
@@ -67,6 +67,7 @@
         "prettier"
     ],
     "dependencies": {
+        "-": "^0.0.1",
         "bcryptjs": "^2.4.3",
         "compression": "^1.7.4",
         "connect-timeout": "^1.9.0",
@@ -79,10 +80,11 @@
         "express": "^4.17.1",
         "express-mongo-sanitize": "^2.0.0",
         "express-rate-limit": "^5.0.0",
+        "g": "^2.0.1",
         "helmet": "^4.1.0",
         "hpp": "^0.2.3",
         "http-status": "^1.4.0",
-        "joi": "^17.3.0",
+        "joi": "^17.12.2",
         "jsdoc": "^4.0.2",
         "jsonwebtoken": "^8.5.1",
         "moment": "^2.24.0",
