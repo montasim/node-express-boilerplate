@@ -1,6 +1,6 @@
 import express from 'express';
 import authRoute from '../../modules/auth/auth.route.js';
-import userRoute from './user.route.js';
+import userRoute from '../../modules/user/user.route.js';
 import docsRoute from './docs.route.js';
 import config from '../../config/config.js';
 

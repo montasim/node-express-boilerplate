@@ -4,7 +4,7 @@ import catchAsync from '../../utils/catchAsync.js';
 
 import AuthServices from './auth.service.js';
 import TokenService from '../../services/token.service.js';
-import UserService from '../../services/user.service.js';
+import UserService from '../user/user.service.js';
 import EmailService from '../../services/email.service.js';
 
 const register = catchAsync(async (req, res) => {

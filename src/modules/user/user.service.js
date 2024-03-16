@@ -1,6 +1,8 @@
 import httpStatus from 'http-status';
-import UserModel from '../models/user.model.js';
-import ApiError from '../utils/ApiError.js';
+
+import UserModel from './user.model.js';
+
+import ApiError from '../../utils/ApiError.js';
 
 /**
  * Create a user

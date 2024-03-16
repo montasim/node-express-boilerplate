@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import faker from 'faker';
-import UserModel from '../../src/models/user.model.js';
+import UserModel from '../../src/modules/user/user.model.js';
 
 const password = 'password1';
 const salt = bcrypt.genSaltSync(8);
