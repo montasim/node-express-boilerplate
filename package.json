@@ -12,7 +12,14 @@
         "url": "https://github.com/montasim/node-express-boilerplate/issues"
     },
     "homepage": "https://github.com/montasim/node-express-boilerplate#readme",
-    "author": "Mohammad Montasim -Al- Mamun Shuvo>",
+    "author": {
+      "name": "Mohammad Montasim -Al- Mamun Shuvo",
+      "email": "montasimmamun@gmail.com",
+      "mobile": "+8801722815469",
+      "portfolio": "https://montasim-dev.web.app/",
+      "linkedin": "https://www.linkedin.com/in/montasim",
+      "github": "https://github.com/montasim"
+    },
     "license": "MIT",
     "type": "module",
     "engines": {

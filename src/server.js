@@ -1,7 +1,10 @@
 import mongoose from 'mongoose';
+
 import app from './app.js';
 import config from './config/config.js';
 import logger from './config/logger.js';
+
+import EmailService from './modules/email/email.service.js';
 
 let server;
 mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {
@@ -22,8 +25,11 @@ const exitHandler = () => {
     }
 };
 
-const unexpectedErrorHandler = (error) => {
+const unexpectedErrorHandler = async (error) => {
     logger.error(error);
+
+    await EmailService.sendUncaughtExceptionEmail(error);
+
     exitHandler();
 };
 
@@ -32,7 +38,16 @@ process.on('unhandledRejection', unexpectedErrorHandler);
 
 process.on('SIGTERM', () => {
     logger.info('SIGTERM received');
+
     if (server) {
         server.close();
     }
 });
+
+// process.on('SIGINT', () => {
+//     logger.info('SIGINT received');
+//
+//     if (server) {
+//         server.close();
+//     }
+// });

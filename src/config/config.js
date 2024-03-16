@@ -43,7 +43,7 @@ const envVarsSchema = Joi.object({
     JSON_PAYLOAD_LIMIT: Joi.number()
         .required()
         .description('json payload limit'),
-    CORS_ORIGIN: Joi.string().required().description('cors origin'),
+    CORS_ORIGIN: Joi.string().uri({scheme: ['http', 'https']}).required().description('cors origin'),
     CORS_METHODS: Joi.string().required().description('cors methods'),
     RATE_LIMIT_WINDOW_MS: Joi.number()
         .required()
@@ -64,6 +64,10 @@ const envVarsSchema = Joi.object({
     EMAIL_FROM: Joi.string()
         .required()
         .description('the from field in the emails sent by the app'),
+    ADMIN_EMAIL: Joi.string()
+        .email()
+        .required()
+        .description('admin email'),
     GOOGLE_DRIVE_SCOPE: Joi.string()
         .required()
         .description('scope for google drive api'),
@@ -130,6 +134,9 @@ const config = {
             },
         },
         from: envVars.EMAIL_FROM,
+    },
+    admin: {
+        email: envVars.ADMIN_EMAIL,
     },
     googleDrive: {
         scope: envVars.GOOGLE_DRIVE_SCOPE,

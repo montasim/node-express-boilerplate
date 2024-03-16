@@ -1,5 +1,6 @@
 import express from 'express';
 
+import indexRoute from '../index/index.route.js';
 import apiRoute from '../api/api.route.js';
 import docsRoute from '../docs/docs.route.js';
 import config from '../../config/config.js';
@@ -7,6 +8,10 @@ import config from '../../config/config.js';
 const router = express.Router();
 
 const defaultRoutes = [
+    {
+        path: '/',
+        route: indexRoute,
+    },
     {
         path: `/api/${config.version}`,
         route: apiRoute,
