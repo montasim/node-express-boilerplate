@@ -43,42 +43,47 @@ const productionFormat = winston.format.combine(
     logFormat
 );
 
-const logger = winston.createLogger({
-    level: config.env === 'development' ? 'debug' : 'info',
-    format: config.env === 'development' ? developmentFormat : productionFormat,
-    transports: [
-        new winston.transports.Console({
-            stderrLevels: ['error'],
-        }),
-        // File transports from logger1.js
-        new winston.transports.File({
-            filename: path.join(logsDirectory, 'error.log'),
-            level: 'error',
-        }),
-        new winston.transports.File({
-            filename: path.join(logsDirectory, 'warn.log'),
-            level: 'warn',
-        }),
-        new winston.transports.File({
-            filename: path.join(logsDirectory, 'info.log'),
-            level: 'info',
-        }),
-        new winston.transports.File({
-            filename: path.join(logsDirectory, 'http.log'),
-            level: 'http',
-        }),
-        new winston.transports.File({
-            filename: path.join(logsDirectory, 'verbose.log'),
-            level: 'verbose',
-        }),
-        new winston.transports.File({
-            filename: path.join(logsDirectory, 'debug.log'),
-            level: 'debug',
-        }),
-        new winston.transports.File({
-            filename: path.join(logsDirectory, 'combined.log'),
-        }),
-    ],
-});
+let logger;
+
+if (config.env === 'development') {
+    logger = winston.createLogger({
+        level: config.env === 'development' ? 'debug' : 'info',
+        format:
+            config.env === 'development' ? developmentFormat : productionFormat,
+        transports: [
+            new winston.transports.Console({
+                stderrLevels: ['error'],
+            }),
+            // File transports from logger1.js
+            new winston.transports.File({
+                filename: path.join(logsDirectory, 'error.log'),
+                level: 'error',
+            }),
+            new winston.transports.File({
+                filename: path.join(logsDirectory, 'warn.log'),
+                level: 'warn',
+            }),
+            new winston.transports.File({
+                filename: path.join(logsDirectory, 'info.log'),
+                level: 'info',
+            }),
+            new winston.transports.File({
+                filename: path.join(logsDirectory, 'http.log'),
+                level: 'http',
+            }),
+            new winston.transports.File({
+                filename: path.join(logsDirectory, 'verbose.log'),
+                level: 'verbose',
+            }),
+            new winston.transports.File({
+                filename: path.join(logsDirectory, 'debug.log'),
+                level: 'debug',
+            }),
+            new winston.transports.File({
+                filename: path.join(logsDirectory, 'combined.log'),
+            }),
+        ],
+    });
+}
 
 export default logger;
