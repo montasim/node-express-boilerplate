@@ -14,30 +14,55 @@ const mongoDbUrl =
 
 const envVarsSchema = Joi.object({
     NODE_ENV: Joi.string()
-        .valid('production', 'development', 'test')
-        .required(),
-    PORT: Joi.number().description('The server port').required(),
+        .valid('production', 'staging', 'development', 'test')
+        .required()
+        .description('The application environment.'),
+    VERSION: Joi.string()
+        .valid('v1', 'v2', 'v3', 'v4', 'v5')
+        .required()
+        .description('The API version to use'),
+    PORT: Joi.number().required().description('The server port'),
     MONGODB_URL: Joi.string().required().description('Mongo DB url'),
     JWT_SECRET: Joi.string().required().description('JWT secret key'),
     JWT_ACCESS_EXPIRATION_MINUTES: Joi.number()
-        .default(30)
+        .required()
         .description('minutes after which access tokens expire'),
     JWT_REFRESH_EXPIRATION_DAYS: Joi.number()
-        .default(30)
+        .required()
         .description('days after which refresh tokens expire'),
     JWT_RESET_PASSWORD_EXPIRATION_MINUTES: Joi.number()
-        .default(10)
+        .required()
         .description('minutes after which reset password token expires'),
     JWT_VERIFY_EMAIL_EXPIRATION_MINUTES: Joi.number()
-        .default(10)
+        .required()
         .description('minutes after which verify email token expires'),
-    SMTP_HOST: Joi.string().description('server that will send the emails'),
-    SMTP_PORT: Joi.number().description('port to connect to the email server'),
-    SMTP_USERNAME: Joi.string().description('username for email server'),
-    SMTP_PASSWORD: Joi.string().description('password for email server'),
-    EMAIL_FROM: Joi.string().description(
-        'the from field in the emails sent by the app'
-    ),
+    SMTP_HOST: Joi.string()
+        .required()
+        .description('server that will send the emails'),
+    SMTP_PORT: Joi.number()
+        .required()
+        .description('port to connect to the email server'),
+    SMTP_USERNAME: Joi.string()
+        .required()
+        .description('username for email server'),
+    SMTP_PASSWORD: Joi.string()
+        .required()
+        .description('password for email server'),
+    EMAIL_FROM: Joi.string()
+        .required()
+        .description('the from field in the emails sent by the app'),
+    GOOGLE_DRIVE_SCOPE: Joi.string()
+        .required()
+        .description('scope for google drive api'),
+    GOOGLE_DRIVE_CLIENT_EMAIL: Joi.string()
+        .required()
+        .description('client email for google drive api'),
+    GOOGLE_DRIVE_PRIVATE_KEY: Joi.string()
+        .required()
+        .description('private key for google drive api'),
+    GOOGLE_DRIVE_FOLDER_KEY: Joi.string()
+        .required()
+        .description('folder key for google drive api'),
 }).unknown();
 
 const { value: envVars, error } = envVarsSchema.validate(process.env, {
@@ -50,6 +75,7 @@ if (error) {
 
 const config = {
     env: envVars.NODE_ENV,
+    version: envVars.VERSION,
     port: getInt(process.env.PORT),
     mongoose: {
         url: mongoDbUrl,
@@ -78,6 +104,12 @@ const config = {
             },
         },
         from: envVars.EMAIL_FROM,
+    },
+    googleDrive: {
+        scope: envVars.GOOGLE_DRIVE_SCOPE,
+        client: envVars.GOOGLE_DRIVE_CLIENT_EMAIL,
+        privateKey: envVars.GOOGLE_DRIVE_PRIVATE_KEY,
+        folderKey: envVars.GOOGLE_DRIVE_FOLDER_KEY,
     },
 };
 
