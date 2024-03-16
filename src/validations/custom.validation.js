@@ -1,3 +1,5 @@
+import path from 'path';
+
 import loadTempEmailDomains from '../utils/loadTempEmailDomains.js';
 import loadCommonPasswords from '../utils/loadCommonPasswords.js';
 
@@ -129,4 +131,30 @@ const password = async (value, helpers) => {
     return value;
 };
 
-export { objectId, email, mobile, password };
+const file = (file, allowedExtensions, maxSize) => {
+    if (!file) {
+        return 'File is required.';
+    }
+
+    if (
+        !allowedExtensions.test(path.extname(file.originalname).toLowerCase())
+    ) {
+        return 'Unsupported file type.';
+    }
+
+    if (file.size > maxSize) {
+        return `File size should not exceed ${maxSize / 1024 / 1024}MB.`;
+    }
+
+    return true; // Indicate validation success
+};
+
+const CustomValidation = {
+    objectId,
+    email,
+    mobile,
+    password,
+    file,
+};
+
+export default CustomValidation;

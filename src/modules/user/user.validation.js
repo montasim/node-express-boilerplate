@@ -1,11 +1,11 @@
 import Joi from 'joi';
 
-import { password, objectId } from '../../validations/custom.validation.js';
+import CustomValidation from '../../validations/custom.validation.js';
 
 const createUser = {
     body: Joi.object().keys({
         email: Joi.string().required().email(),
-        password: Joi.string().required().custom(password),
+        password: Joi.string().required().custom(CustomValidation.password),
         name: Joi.string().required(),
         role: Joi.string().required().valid('user', 'admin'),
     }),
@@ -23,18 +23,18 @@ const getUsers = {
 
 const getUser = {
     params: Joi.object().keys({
-        userId: Joi.string().custom(objectId),
+        userId: Joi.string().custom(CustomValidation.objectId),
     }),
 };
 
 const updateUser = {
     params: Joi.object().keys({
-        userId: Joi.required().custom(objectId),
+        userId: Joi.required().custom(CustomValidation.objectId),
     }),
     body: Joi.object()
         .keys({
             email: Joi.string().email(),
-            password: Joi.string().custom(password),
+            password: Joi.string().custom(CustomValidation.password),
             name: Joi.string(),
         })
         .min(1),
@@ -42,7 +42,7 @@ const updateUser = {
 
 const deleteUser = {
     params: Joi.object().keys({
-        userId: Joi.string().custom(objectId),
+        userId: Joi.string().custom(CustomValidation.objectId),
     }),
 };
 

@@ -39,7 +39,7 @@ const createUser = async (sessionUser, registerData, file) => {
 
         const newUserDetails = await UserModel.create({
             ...registerData,
-            picture: pictureData,
+            picture: pictureData ? pictureData : null,
             createdBy: sessionUser?._id,
         });
 

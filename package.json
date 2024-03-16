@@ -82,6 +82,7 @@
         "express-rate-limit": "^7.2.0",
         "express-session": "^1.18.0",
         "express-useragent": "^1.0.15",
+        "file-type": "^19.0.0",
         "g": "^2.0.1",
         "googleapis": "133.0.0",
         "helmet": "^7.1.0",

@@ -10,26 +10,63 @@ import AuthServices from './auth.service.js';
 import TokenService from '../token/token.service.js';
 import UserService from '../user/user.service.js';
 import EmailService from '../email/email.service.js';
+import CustomValidation from '../../validations/custom.validation.js';
 
 const register = async (req, res) => {
     const requestStartTime = Date.now(); // Get the request start time
     const { device, links, meta, ifNoneMatch, ifModifiedSince } =
         await fetchRequestMetadata(req);
+    const responseMetaData = generateRequestResponseMetadata(
+        requestStartTime,
+        device,
+        ifNoneMatch,
+        ifModifiedSince
+    );
 
     try {
         // Extracting the data from req.body
         const { sessionUser, ...registerData } = req.body;
         const file = req.file || null;
 
-        const { serviceSuccess, serviceData, serviceMessage, serviceStatus } =
-            await UserService.createUser(sessionUser, registerData, file);
+        let serviceSuccess, serviceData, serviceMessage, serviceStatus;
 
-        const responseMetaData = generateRequestResponseMetadata(
-            requestStartTime,
-            device,
-            ifNoneMatch,
-            ifModifiedSince
-        );
+        if (file) {
+            // Define dynamic file validation parameters
+            const allowedExtensions = /jpeg|jpg|png|gif/;
+            const maxSize = 5 * 1024 * 1024; // 5 MB
+
+            // Perform file validation
+            const fileValidationResult = CustomValidation.file(
+                file,
+                allowedExtensions,
+                maxSize
+            );
+
+            if (fileValidationResult !== true) {
+                serviceSuccess = false;
+                serviceStatus = httpStatus.BAD_REQUEST;
+                serviceMessage = fileValidationResult;
+                serviceData = {};
+
+                const responseData = prepareResponseData(
+                    serviceSuccess,
+                    serviceData,
+                    serviceMessage,
+                    serviceStatus,
+                    links,
+                    { ...meta, ...responseMetaData }
+                );
+
+                return res.status(responseData?.status).json(responseData);
+            }
+
+            ({ serviceSuccess, serviceData, serviceMessage, serviceStatus } =
+                await UserService.createUser(sessionUser, registerData, file));
+        } else {
+            ({ serviceSuccess, serviceData, serviceMessage, serviceStatus } =
+                await UserService.createUser(sessionUser, registerData, null));
+        }
+
         const responseData = prepareResponseData(
             serviceSuccess,
             serviceData,

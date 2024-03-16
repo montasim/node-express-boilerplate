@@ -1,11 +1,11 @@
 import Joi from 'joi';
 
-import { email, password } from '../../validations/custom.validation.js';
+import CustomValidation from '../../validations/custom.validation.js';
 
 const register = {
     body: Joi.object().keys({
-        email: Joi.string().email().required().external(email),
-        password: Joi.string().required().external(password),
+        email: Joi.string().email().required().external(CustomValidation.email),
+        password: Joi.string().required().external(CustomValidation.password),
         name: Joi.string().required(),
     }),
 };
@@ -40,7 +40,7 @@ const resetPassword = {
         token: Joi.string().required(),
     }),
     body: Joi.object().keys({
-        password: Joi.string().required().custom(password),
+        password: Joi.string().required().custom(CustomValidation.password),
     }),
 };
 
