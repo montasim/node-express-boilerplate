@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import app from './app.js';
 import config from './config/config.js';
 import logger from './config/logger.js';
-
 import EmailService from './modules/email/email.service.js';
 
 let server;
@@ -28,16 +27,25 @@ const exitHandler = () => {
     }
 };
 
-const unexpectedErrorHandler = async (error) => {
+const unexpectedErrorHandler = async (type, error) => {
     logger.error(error);
 
-    // await EmailService.sendUncaughtExceptionEmail(error);
+    console.error(type, error);
 
     exitHandler();
 };
 
-process.on('uncaughtException', unexpectedErrorHandler);
-process.on('unhandledRejection', unexpectedErrorHandler);
+process.on('uncaughtException', async (error) => {
+    await unexpectedErrorHandler('uncaughtException', error);
+
+    await EmailService.sendUncaughtExceptionEmail(error);
+});
+
+process.on('unhandledRejection', async (error) => {
+    await unexpectedErrorHandler('unhandledRejection', error);
+
+    await EmailService.sendUnhandledRejectionEmail(error);
+});
 
 process.on('SIGTERM', () => {
     logger.info('SIGTERM received');

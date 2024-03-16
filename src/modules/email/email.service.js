@@ -122,12 +122,11 @@ const sendUncaughtExceptionEmail = async error => {
 
 /**
  * Send an email for unhandled rejections
- * @param {Error} reason - The unhandled rejection reason
- * @param {Promise} promise - The unhandled promise
+ * @param {Error} error - The unhandled rejection reason
  */
-const sendUnhandledRejectionEmail = async (reason, promise) => {
+const sendUnhandledRejectionEmail = async (error) => {
     const subject = 'Node Express Boilerplate: Unhandled Rejection Error';
-    const html = errorEmailBody(reason);
+    const html = errorEmailBody(error);
 
     await sendEmail(config.admin.email, subject, html);
 };
