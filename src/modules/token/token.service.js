@@ -9,8 +9,7 @@ import { tokenTypes } from '../../config/tokens.js';
 
 import ServerError from '../../utils/serverError.js';
 import UserModel from '../user/user.model.js';
-import GoogleDriveFileOperations
-    from '../../utils/GoogleDriveFileOperations.js';
+import GoogleDriveFileOperations from '../../utils/GoogleDriveFileOperations.js';
 
 /**
  * Generate token
@@ -79,7 +78,7 @@ const verifyToken = async (token, type) => {
  * @param {User} user
  * @returns {Promise<Object>}
  */
-const generateAuthTokens = async (user) => {
+const generateAuthTokens = async user => {
     try {
         const accessTokenExpires = moment().add(
             config.jwt.accessExpirationMinutes,
@@ -121,16 +120,16 @@ const generateAuthTokens = async (user) => {
 
         return {
             controllerSuccess: true,
-            serviceData: token,
-            serviceMessage: 'Tokens generated successfully.',
             serviceStatus: httpStatus.CREATED,
+            serviceMessage: 'Tokens generated successfully.',
+            serviceData: token,
         };
     } catch (error) {
         return {
             controllerSuccess: false,
-            serviceData: {},
+            serviceStatus: httpStatus.INTERNAL_SERVER_ERROR,
             serviceMessage: 'Failed to create user.',
-            serviceStatus: httpStatus.INTERNAL_SERVER_ERROR
+            serviceData: {},
         };
     }
 };

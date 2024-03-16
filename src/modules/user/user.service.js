@@ -16,7 +16,10 @@ import ServerError from '../../utils/serverError.js';
 const createUser = async (sessionUser, registerData, file) => {
     try {
         if (await UserModel.isEmailTaken(registerData.email)) {
-            throw new ServerError(httpStatus.BAD_REQUEST, 'Email already taken');
+            throw new ServerError(
+                httpStatus.BAD_REQUEST,
+                'Email already taken'
+            );
         }
 
         let pictureData = {};
@@ -56,7 +59,7 @@ const createUser = async (sessionUser, registerData, file) => {
                 : 'Could not create user.',
             serviceData: {
                 ...newUser,
-                token: serviceData
+                token: serviceData,
             },
         };
     } catch (error) {
@@ -98,7 +101,7 @@ const getUserById = async id => {
  * @returns {Promise<User>}
  */
 const getUserByEmail = async email => {
-    return UserModel.findOne({ email });
+    return UserModel.findOne({ email: email });
 };
 
 /**

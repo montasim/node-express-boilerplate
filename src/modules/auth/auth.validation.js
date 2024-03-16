@@ -4,7 +4,7 @@ import { email, password } from '../../validations/custom.validation.js';
 
 const register = {
     body: Joi.object().keys({
-        email: Joi.string().required().email().external(email),
+        email: Joi.string().email().required().external(email),
         password: Joi.string().required().external(password),
         name: Joi.string().required(),
     }),
@@ -12,7 +12,7 @@ const register = {
 
 const login = {
     body: Joi.object().keys({
-        email: Joi.string().required(),
+        email: Joi.string().email().required(),
         password: Joi.string().required(),
     }),
 };

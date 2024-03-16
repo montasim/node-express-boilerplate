@@ -11,7 +11,7 @@ const transport = nodemailer.createTransport(config.email.smtp);
 if (config.env !== 'test') {
     transport
         .verify()
-        .then(() => logger.info('Connected to email server'))
+        .then(() => logger.info('✉️ Connected to email server'))
         .catch(() =>
             logger.warn(
                 'Unable to connect to email server. Make sure you have configured the SMTP options in .env'
@@ -31,7 +31,7 @@ const sendEmail = async (to, subject, html) => {
         from: config.email.from,
         to: to | config.admin.email,
         subject,
-        html
+        html,
     };
 
     await transport.sendMail(message);
@@ -75,7 +75,7 @@ If you did not create an account, then ignore this email.`;
  * Send an email for uncaught exceptions
  * @param {Error} error - The uncaught exception error
  */
-const sendUncaughtExceptionEmail = async (error) => {
+const sendUncaughtExceptionEmail = async error => {
     const subject = 'Node Express Boilerplate: Uncaught Exception Error';
     const html = errorEmailBody(error);
 
@@ -100,7 +100,7 @@ const EmailService = {
     sendResetPasswordEmail,
     sendVerificationEmail,
     sendUncaughtExceptionEmail,
-    sendUnhandledRejectionEmail
+    sendUnhandledRejectionEmail,
 };
 
 export default EmailService;

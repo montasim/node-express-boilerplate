@@ -1,7 +1,9 @@
 import httpStatus from 'http-status';
+import bcrypt from 'bcryptjs';
 
 import tokenService from '../token/token.service.js';
 import userService from '../user/user.service.js';
+import TokenService from '../token/token.service.js';
 import TokenModel from '../token/token.model.js';
 import { tokenTypes } from '../../config/tokens.js';
 
@@ -14,14 +16,91 @@ import ServerError from '../../utils/serverError.js';
  * @returns {Promise<User>}
  */
 const loginUserWithEmailAndPassword = async (email, password) => {
-    const user = await userService.getUserByEmail(email);
-    if (!user || !(await user.isPasswordMatch(password))) {
-        throw new ServerError(
-            httpStatus.UNAUTHORIZED,
-            'Incorrect email or password'
+    try {
+        const userDetails = await userService.getUserByEmail(email);
+
+        if (!userDetails || userDetails.email !== email) {
+            return {
+                serviceSuccess: false,
+                serviceStatus: httpStatus.UNAUTHORIZED,
+                serviceMessage: 'Wrong email or password',
+                serviceData: {},
+            };
+        }
+
+        // if (userDetails.failedLoginDetails?.length >= MAX_FAILED_LOGIN_ATTEMPTS) {
+        //     return {
+        //         serviceSuccess: false,
+        //         serviceStatus: httpStatus.LOCKED,
+        //         serviceMessage: 'Your account has been locked. Please contact support.',
+        //         serviceData: {},
+        //     };
+        // }
+        //
+        // if (userDetails?.mustChangePassword) {
+        //     return {
+        //         serviceSuccess: false,
+        //         serviceStatus: httpStatus.FORBIDDEN,
+        //         serviceMessage: 'Please change your password before proceeding.',
+        //         serviceData: {},
+        //     };
+        // }
+        //
+        // if (userDetails.activeSessionDetails?.length >= MAX_CONCURRENT_LOGINS) {
+        //     return {
+        //         serviceSuccess: false,
+        //         serviceStatus: httpStatus.FORBIDDEN,
+        //         serviceMessage: `Maximum concurrent login device limit reached. You can log in a maximum ${MAX_CONCURRENT_LOGINS} device at a time. Please log out from another device before logging in.`,
+        //         serviceData: {},
+        //     };
+        // }
+
+        const passwordMatch = await bcrypt.compare(
+            password,
+            userDetails.password
         );
+
+        if (!passwordMatch) {
+            // await updateUserWithFailedLoginDetails(userDetails, device);
+
+            return {
+                serviceSuccess: false,
+                serviceStatus: httpStatus.UNAUTHORIZED,
+                serviceMessage: 'Wrong email or password',
+                serviceData: {},
+            };
+        }
+
+        const { serviceData } =
+            await TokenService.generateAuthTokens(userDetails);
+
+        // Convert the Mongoose document to a plain JavaScript object
+        let userData = userDetails.toObject();
+
+        // Remove the password field from the object
+        delete userData.password;
+
+        return {
+            serviceSuccess: true,
+            serviceStatus: serviceData
+                ? httpStatus.OK
+                : httpStatus.UNAUTHORIZED,
+            serviceMessage: serviceData
+                ? 'Login successful.'
+                : 'Invalid email or password',
+            serviceData: {
+                ...userData,
+                token: serviceData,
+            },
+        };
+    } catch (error) {
+        return {
+            controllerSuccess: false,
+            serviceData: {},
+            serviceMessage: 'Internal server error',
+            serviceStatus: httpStatus.INTERNAL_SERVER_ERROR,
+        };
     }
-    return user;
 };
 
 /**

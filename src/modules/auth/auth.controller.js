@@ -3,8 +3,7 @@ import httpStatus from 'http-status';
 import asyncErrorHandler from '../../utils/asyncErrorHandler.js';
 import controllerErrorHandler from '../../utils/handleControllerError.js';
 import fetchRequestMetadata from '../../utils/fetchRequestMetadata.js';
-import generateRequestResponseMetadata
-    from '../../utils/generateRequestResponseMetadata.js';
+import generateRequestResponseMetadata from '../../utils/generateRequestResponseMetadata.js';
 import prepareResponseData from '../../utils/prepareResponseData.js';
 
 import AuthServices from './auth.service.js';
@@ -14,19 +13,16 @@ import EmailService from '../email/email.service.js';
 
 const register = async (req, res) => {
     const requestStartTime = Date.now(); // Get the request start time
-    const { device, links, meta, ifNoneMatch, ifModifiedSince } = await fetchRequestMetadata(req);
+    const { device, links, meta, ifNoneMatch, ifModifiedSince } =
+        await fetchRequestMetadata(req);
 
     try {
         // Extracting the data from req.body
         const { sessionUser, ...registerData } = req.body;
         const file = req.file || null;
 
-        const {
-            serviceSuccess,
-            serviceData,
-            serviceMessage,
-            serviceStatus
-        } = await UserService.createUser(sessionUser, registerData, file);
+        const { serviceSuccess, serviceData, serviceMessage, serviceStatus } =
+            await UserService.createUser(sessionUser, registerData, file);
 
         const responseMetaData = generateRequestResponseMetadata(
             requestStartTime,
@@ -45,19 +41,62 @@ const register = async (req, res) => {
 
         return res.status(responseData?.status).json(responseData);
     } catch (error) {
-        return controllerErrorHandler(res, error, requestStartTime, device, links, meta, ifNoneMatch, ifModifiedSince, 'UserController.createUser()');
+        return controllerErrorHandler(
+            res,
+            error,
+            requestStartTime,
+            device,
+            links,
+            meta,
+            ifNoneMatch,
+            ifModifiedSince,
+            'UserController.createUser()'
+        );
     }
 };
 
-const login = asyncErrorHandler(async (req, res) => {
-    const { email, password } = req.body;
-    const user = await AuthServices.loginUserWithEmailAndPassword(
-        email,
-        password
-    );
-    const tokens = await TokenService.generateAuthTokens(user);
-    res.send({ user, tokens });
-});
+const login = async (req, res) => {
+    const requestStartTime = Date.now(); // Get the request start time
+    const { device, links, meta, ifNoneMatch, ifModifiedSince } =
+        await fetchRequestMetadata(req);
+
+    try {
+        // Extracting the data from req.body
+        const { email, password } = req.body;
+
+        const { serviceSuccess, serviceData, serviceMessage, serviceStatus } =
+            await AuthServices.loginUserWithEmailAndPassword(email, password);
+
+        const responseMetaData = generateRequestResponseMetadata(
+            requestStartTime,
+            device,
+            ifNoneMatch,
+            ifModifiedSince
+        );
+        const responseData = prepareResponseData(
+            serviceSuccess,
+            serviceData,
+            serviceMessage,
+            serviceStatus,
+            links,
+            { ...meta, ...responseMetaData }
+        );
+
+        return res.status(responseData?.status).json(responseData);
+    } catch (error) {
+        return controllerErrorHandler(
+            res,
+            error,
+            requestStartTime,
+            device,
+            links,
+            meta,
+            ifNoneMatch,
+            ifModifiedSince,
+            'UserController.createUser()'
+        );
+    }
+};
 
 const logout = asyncErrorHandler(async (req, res) => {
     await AuthServices.logout(req.body.refreshToken);
