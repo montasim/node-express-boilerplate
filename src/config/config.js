@@ -43,6 +43,8 @@ const envVarsSchema = Joi.object({
     JSON_PAYLOAD_LIMIT: Joi.number()
         .required()
         .description('json payload limit'),
+    CORS_ORIGIN: Joi.string().required().description('cors origin'),
+    CORS_METHODS: Joi.string().required().description('cors methods'),
     SMTP_HOST: Joi.string()
         .required()
         .description('server that will send the emails'),
@@ -106,6 +108,10 @@ const config = {
         timeout: getInt(envVars.CACHE_TTL_IN_MILLISECOND),
     },
     jsonPayloadLimit: getInt(envVars.JSON_PAYLOAD_LIMIT),
+    cors: {
+        origin: envVars.CORS_ORIGIN.split(',').map(origin => origin.trim()),
+        methods: envVars.CORS_METHODS.split(',').map(method => method.trim()),
+    },
     email: {
         smtp: {
             host: envVars.SMTP_HOST,

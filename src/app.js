@@ -13,6 +13,7 @@ import Morgan from './config/morgan.js';
 import { jwtStrategy } from './config/passport.js';
 import { authLimiter } from './middlewares/rateLimiter.js';
 import appRoute from './modules/app/app.route.js';
+import corsConfiguration from './middlewares/cors.js';
 
 import { errorConverter, errorHandler } from './middlewares/error.js';
 import undefinedService from './modules/undefined/undefined.service.js';
@@ -56,8 +57,7 @@ app.use(express.json({ limit: config.jsonPayloadLimit }));
 app.use(express.urlencoded({ limit: config.jsonPayloadLimit, extended: true }));
 
 // enable cors
-app.use(cors());
-app.options('*', cors());
+app.use(cors(corsConfiguration));
 
 // jwt authentication
 app.use(passport.initialize());
