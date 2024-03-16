@@ -1,11 +1,11 @@
-import express from "express";
+import express from 'express';
 
-import indexController from "./index.controller.js";
+import indexController from './index.controller.js';
 
 const router = express.Router();
 
 // GET / - Show index page
-router.all("/", indexController);
+router.all('/', indexController);
 
 // GET /test-uncaught-exception - Throw error
 router.all('/test-uncaught-exception', () => {
