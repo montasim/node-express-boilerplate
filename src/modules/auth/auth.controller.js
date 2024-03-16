@@ -1,10 +1,7 @@
 import httpStatus from 'http-status';
 
 import asyncErrorHandler from '../../utils/asyncErrorHandler.js';
-import controllerErrorHandler from '../../utils/handleControllerError.js';
-import fetchRequestMetadata from '../../utils/fetchRequestMetadata.js';
-import generateRequestResponseMetadata from '../../utils/generateRequestResponseMetadata.js';
-import prepareResponseData from '../../utils/prepareResponseData.js';
+import sendControllerResponse from '../../utils/sendControllerResponse.js';
 
 import AuthServices from './auth.service.js';
 import TokenService from '../token/token.service.js';
@@ -14,311 +11,135 @@ import CustomValidation from '../../validations/custom.validation.js';
 
 const register = async (req, res) => {
     const requestStartTime = Date.now(); // Get the request start time
-    const { device, links, meta, ifNoneMatch, ifModifiedSince } =
-        await fetchRequestMetadata(req);
-    const responseMetaData = generateRequestResponseMetadata(
-        requestStartTime,
-        device,
-        ifNoneMatch,
-        ifModifiedSince
-    );
+    const { sessionUser, ...registerData } = req.body;
+    const file = req.file || null;
 
-    try {
-        // Extracting the data from req.body
-        const { sessionUser, ...registerData } = req.body;
-        const file = req.file || null;
+    if (file) {
+        // Define dynamic file validation parameters
+        const allowedExtensions = /jpeg|jpg|png|gif/;
+        const maxSize = 5 * 1024 * 1024; // 5 MB
 
-        let serviceSuccess, serviceData, serviceMessage, serviceStatus;
+        // Perform file validation
+        const fileValidationResult = CustomValidation.file(
+            file,
+            allowedExtensions,
+            maxSize
+        );
 
-        if (file) {
-            // Define dynamic file validation parameters
-            const allowedExtensions = /jpeg|jpg|png|gif/;
-            const maxSize = 5 * 1024 * 1024; // 5 MB
-
-            // Perform file validation
-            const fileValidationResult = CustomValidation.file(
-                file,
-                allowedExtensions,
-                maxSize
-            );
-
-            if (fileValidationResult !== true) {
-                serviceSuccess = false;
-                serviceStatus = httpStatus.BAD_REQUEST;
-                serviceMessage = fileValidationResult;
-                serviceData = {};
-
-                const responseData = prepareResponseData(
-                    serviceSuccess,
-                    serviceData,
-                    serviceMessage,
-                    serviceStatus,
-                    links,
-                    { ...meta, ...responseMetaData }
-                );
-
-                return res.status(responseData?.status).json(responseData);
-            }
-
-            ({ serviceSuccess, serviceData, serviceMessage, serviceStatus } =
-                await UserService.createUser(sessionUser, registerData, file));
-        } else {
-            ({ serviceSuccess, serviceData, serviceMessage, serviceStatus } =
-                await UserService.createUser(sessionUser, registerData, null));
+        if (fileValidationResult !== true) {
+            return res.status(httpStatus.BAD_REQUEST).json({
+                success: false,
+                status: httpStatus.BAD_REQUEST,
+                message: fileValidationResult,
+                data: {},
+            });
         }
-
-        const responseData = prepareResponseData(
-            serviceSuccess,
-            serviceData,
-            serviceMessage,
-            serviceStatus,
-            links,
-            { ...meta, ...responseMetaData }
-        );
-
-        return res.status(responseData?.status).json(responseData);
-    } catch (error) {
-        return controllerErrorHandler(
-            res,
-            error,
-            requestStartTime,
-            device,
-            links,
-            meta,
-            ifNoneMatch,
-            ifModifiedSince,
-            'UserController.createUser()'
-        );
     }
+
+    await sendControllerResponse(
+        req,
+        res,
+        requestStartTime,
+        UserService.createUser,
+        [sessionUser, registerData, file],
+        'AuthController.register()'
+    );
 };
 
 const login = async (req, res) => {
     const requestStartTime = Date.now(); // Get the request start time
-    const { device, links, meta, ifNoneMatch, ifModifiedSince } =
-        await fetchRequestMetadata(req);
+    const { email, password } = req.body;
 
-    try {
-        // Extracting the data from req.body
-        const { email, password } = req.body;
-
-        const { serviceSuccess, serviceData, serviceMessage, serviceStatus } =
-            await AuthServices.loginUserWithEmailAndPassword(email, password);
-
-        const responseMetaData = generateRequestResponseMetadata(
-            requestStartTime,
-            device,
-            ifNoneMatch,
-            ifModifiedSince
-        );
-        const responseData = prepareResponseData(
-            serviceSuccess,
-            serviceData,
-            serviceMessage,
-            serviceStatus,
-            links,
-            { ...meta, ...responseMetaData }
-        );
-
-        return res.status(responseData?.status).json(responseData);
-    } catch (error) {
-        return controllerErrorHandler(
-            res,
-            error,
-            requestStartTime,
-            device,
-            links,
-            meta,
-            ifNoneMatch,
-            ifModifiedSince,
-            'UserController.createUser()'
-        );
-    }
+    await sendControllerResponse(
+        req,
+        res,
+        requestStartTime,
+        AuthServices.loginUserWithEmailAndPassword,
+        [email, password],
+        'AuthController.login()'
+    );
 };
 
 const logout = async (req, res) => {
     const requestStartTime = Date.now(); // Get the request start time
-    const { device, links, meta, ifNoneMatch, ifModifiedSince } =
-        await fetchRequestMetadata(req);
+    const { refreshToken } = req.body;
 
-    try {
-        // Extracting the data from req.body
-        const { refreshToken } = req.body;
-
-        const { serviceSuccess, serviceData, serviceMessage, serviceStatus } =
-            await AuthServices.logout(refreshToken);
-
-        const responseMetaData = generateRequestResponseMetadata(
-            requestStartTime,
-            device,
-            ifNoneMatch,
-            ifModifiedSince
-        );
-        const responseData = prepareResponseData(
-            serviceSuccess,
-            serviceData,
-            serviceMessage,
-            serviceStatus,
-            links,
-            { ...meta, ...responseMetaData }
-        );
-
-        return res.status(responseData?.status).json(responseData);
-    } catch (error) {
-        return controllerErrorHandler(
-            res,
-            error,
-            requestStartTime,
-            device,
-            links,
-            meta,
-            ifNoneMatch,
-            ifModifiedSince,
-            'UserController.createUser()'
-        );
-    }
+    await sendControllerResponse(
+        req,
+        res,
+        requestStartTime,
+        AuthServices.logout,
+        [refreshToken],
+        'AuthController.logout()'
+    );
 };
 
 const refreshTokens = async (req, res) => {
     const requestStartTime = Date.now(); // Get the request start time
-    const { device, links, meta, ifNoneMatch, ifModifiedSince } =
-        await fetchRequestMetadata(req);
+    const { refreshToken } = req.body;
 
-    try {
-        // Extracting the data from req.body
-        const { refreshToken } = req.body;
-
-        const { serviceSuccess, serviceData, serviceMessage, serviceStatus } =
-            await AuthServices.refreshAuth(refreshToken);
-
-        const responseMetaData = generateRequestResponseMetadata(
-            requestStartTime,
-            device,
-            ifNoneMatch,
-            ifModifiedSince
-        );
-        const responseData = prepareResponseData(
-            serviceSuccess,
-            serviceData,
-            serviceMessage,
-            serviceStatus,
-            links,
-            { ...meta, ...responseMetaData }
-        );
-
-        return res.status(responseData?.status).json(responseData);
-    } catch (error) {
-        return controllerErrorHandler(
-            res,
-            error,
-            requestStartTime,
-            device,
-            links,
-            meta,
-            ifNoneMatch,
-            ifModifiedSince,
-            'UserController.createUser()'
-        );
-    }
+    await sendControllerResponse(
+        req,
+        res,
+        requestStartTime,
+        AuthServices.refreshAuth,
+        [refreshToken],
+        'AuthController.refreshTokens()'
+    );
 };
 
-const forgotPassword = asyncErrorHandler(async (req, res) => {
+const forgotPassword = async (req, res) => {
     const requestStartTime = Date.now(); // Get the request start time
-    const { device, links, meta, ifNoneMatch, ifModifiedSince } =
-        await fetchRequestMetadata(req);
+    const { email } = req.body;
 
-    try {
-        // Extracting the data from req.body
-        const { email } = req.body;
+    await sendControllerResponse(
+        req,
+        res,
+        requestStartTime,
+        TokenService.generateResetPasswordToken,
+        [email],
+        'AuthController.forgotPassword()'
+    );
+};
 
-        const { serviceSuccess, serviceData, serviceMessage, serviceStatus } =
-            await TokenService.generateResetPasswordToken(email);
+const resetPassword = async (req, res) => {
+    const requestStartTime = Date.now(); // Get the request start time
+    const { token } = req.query;
+    const { password } = req.body;
 
-        const responseMetaData = generateRequestResponseMetadata(
-            requestStartTime,
-            device,
-            ifNoneMatch,
-            ifModifiedSince
-        );
-        const responseData = prepareResponseData(
-            serviceSuccess,
-            serviceData,
-            serviceMessage,
-            serviceStatus,
-            links,
-            { ...meta, ...responseMetaData }
-        );
-
-        return res.status(responseData?.status).json(responseData);
-    } catch (error) {
-        return controllerErrorHandler(
-            res,
-            error,
-            requestStartTime,
-            device,
-            links,
-            meta,
-            ifNoneMatch,
-            ifModifiedSince,
-            'UserController.createUser()'
-        );
-    }
-});
-
-const resetPassword = asyncErrorHandler(async (req, res) => {
-    await AuthServices.resetPassword(req.query.token, req.body.password);
-    res.status(httpStatus.NO_CONTENT).send();
-});
+    await sendControllerResponse(
+        req,
+        res,
+        requestStartTime,
+        AuthServices.resetPassword,
+        [token, password],
+        'AuthController.resetPassword()'
+    );
+};
 
 const sendVerificationEmail = asyncErrorHandler(async (req, res) => {
     const verifyEmailToken = await TokenService.generateVerifyEmailToken(
         req.user
     );
+
     await EmailService.sendVerificationEmail(req.user.email, verifyEmailToken);
+
     res.status(httpStatus.NO_CONTENT).send();
 });
 
-const verifyEmail = asyncErrorHandler(async (req, res) => {
+const verifyEmail = async (req, res) => {
     const requestStartTime = Date.now(); // Get the request start time
-    const { device, links, meta, ifNoneMatch, ifModifiedSince } =
-        await fetchRequestMetadata(req);
+    const { token } = req.query;
 
-    try {
-        // Extracting the data from req.body
-        const { token } = req.query;
-
-        const { serviceSuccess, serviceData, serviceMessage, serviceStatus } =
-            await AuthServices.verifyEmail(token);
-
-        const responseMetaData = generateRequestResponseMetadata(
-            requestStartTime,
-            device,
-            ifNoneMatch,
-            ifModifiedSince
-        );
-        const responseData = prepareResponseData(
-            serviceSuccess,
-            serviceData,
-            serviceMessage,
-            serviceStatus,
-            links,
-            { ...meta, ...responseMetaData }
-        );
-
-        return res.status(responseData?.status).json(responseData);
-    } catch (error) {
-        return controllerErrorHandler(
-            res,
-            error,
-            requestStartTime,
-            device,
-            links,
-            meta,
-            ifNoneMatch,
-            ifModifiedSince,
-            'UserController.createUser()'
-        );
-    }
-});
+    await sendControllerResponse(
+        req,
+        res,
+        requestStartTime,
+        AuthServices.verifyEmail,
+        [token],
+        'AuthController.verifyEmail()'
+    );
+};
 
 const AuthController = {
     register,

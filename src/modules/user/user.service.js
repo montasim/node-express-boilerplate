@@ -15,12 +15,12 @@ import ServerError from '../../utils/serverError.js';
  */
 const createUser = async (sessionUser, registerData, file) => {
     try {
-        if (await UserModel.isEmailTaken(registerData.email)) {
-            throw new ServerError(
-                httpStatus.BAD_REQUEST,
-                'Email already taken'
-            );
-        }
+        // if (await UserModel.isEmailTaken(registerData.email)) {
+        //     throw new ServerError(
+        //         httpStatus.BAD_REQUEST,
+        //         'Email already taken'
+        //     );
+        // }
 
         let pictureData = {};
 
