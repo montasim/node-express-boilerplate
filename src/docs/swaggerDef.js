@@ -1,8 +1,6 @@
 import packageJson from '../../package.json' assert { type: 'json' };
 import config from '../config/config.js';
 
-console.log(config);
-
 const swaggerDef = {
     openapi: '3.0.0',
     info: {

@@ -1,5 +1,6 @@
 import Joi from 'joi';
-import { password } from './custom.validation.js';
+
+import { password } from '../../validations/custom.validation.js';
 
 const register = {
     body: Joi.object().keys({

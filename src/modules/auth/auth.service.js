@@ -1,9 +1,11 @@
 import httpStatus from 'http-status';
-import tokenService from './token.service.js';
-import userService from './user.service.js';
-import TokenModel from '../models/token.model.js';
-import ApiError from '../utils/ApiError.js';
-import { tokenTypes } from '../config/tokens.js';
+
+import tokenService from '../../services/token.service.js';
+import userService from '../../services/user.service.js';
+import TokenModel from '../../models/token.model.js';
+import { tokenTypes } from '../../config/tokens.js';
+
+import ApiError from '../../utils/ApiError.js';
 
 /**
  * Login with username and password
