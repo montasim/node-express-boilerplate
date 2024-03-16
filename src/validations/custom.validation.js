@@ -1,4 +1,5 @@
 import loadTempEmailDomains from '../utils/loadTempEmailDomains.js';
+import loadCommonPasswords from '../utils/loadCommonPasswords.js';
 
 const objectId = (value, helpers) => {
     if (!value.match(/^[0-9a-fA-F]{24}$/)) {
@@ -37,12 +38,16 @@ const email = async (value, helpers) => {
 
     // Check against temporary email domains
     if (tempEmailDomains.has(domain)) {
-        return helpers.message('Use of temporary email services is not allowed');
+        return helpers.message(
+            'Use of temporary email services is not allowed'
+        );
     }
 
     // Check for '+number' pattern in the email local-part
     if (value.split('@')[0].match(/\+\d+$/)) {
-        return helpers.message('Emails with a "+number" pattern are not allowed');
+        return helpers.message(
+            'Emails with a "+number" pattern are not allowed'
+        );
     }
 
     return value;
@@ -54,13 +59,15 @@ const mobile = (value, helpers) => {
 
     // Check if the mobile number matches the Bangladeshi mobile number format
     if (!bdMobileRegex.test(value)) {
-        return helpers.message('Please enter a valid Bangladeshi mobile number');
+        return helpers.message(
+            'Please enter a valid Bangladeshi mobile number'
+        );
     }
 
     return value;
 };
 
-const password = (value, helpers) => {
+const password = async (value, helpers) => {
     // Define regex patterns to match requirements
     const hasUpperCase = /[A-Z]/;
     const hasLowerCase = /[a-z]/;
@@ -74,12 +81,16 @@ const password = (value, helpers) => {
 
     // Check for at least one uppercase letter
     if (!hasUpperCase.test(value)) {
-        return helpers.message('Password must contain at least 1 uppercase letter');
+        return helpers.message(
+            'Password must contain at least 1 uppercase letter'
+        );
     }
 
     // Check for at least one lowercase letter
     if (!hasLowerCase.test(value)) {
-        return helpers.message('Password must contain at least 1 lowercase letter');
+        return helpers.message(
+            'Password must contain at least 1 lowercase letter'
+        );
     }
 
     // Check for at least one digit
@@ -89,29 +100,33 @@ const password = (value, helpers) => {
 
     // Check for at least one special character
     if (!hasSpecialChar.test(value)) {
-        return helpers.message('Password must contain at least 1 special character');
+        return helpers.message(
+            'Password must contain at least 1 special character'
+        );
     }
 
     // Example simple pattern check (sequential characters or too simple)
     // Adjust or enhance as needed for your definition of "simple patterns"
-    if (value.match(/^(.)\1+$/) || value === '1234' || value.toLowerCase() === 'password') {
-        return helpers.message('Password contains a simple pattern or is a common password');
+    if (
+        value.match(/^(.)\1+$/) ||
+        value === '1234' ||
+        value.toLowerCase() === 'password'
+    ) {
+        return helpers.message(
+            'Password contains a simple pattern or is a common password'
+        );
     }
 
-    // Example common passwords check (very basic example)
     // Consider integrating a more comprehensive check against a list of common passwords
-    const commonPasswords = ['password', '123456', 'qwerty', 'abc123'];
-    if (commonPasswords.includes(value.toLowerCase())) {
-        return helpers.message('Password must not contain common passwords');
+    const commonPasswords = await loadCommonPasswords();
+
+    // Check against common passwords
+    if (commonPasswords.has(value)) {
+        return helpers.message('Use of common password is not allowed');
     }
 
     // If all checks pass, return the value
     return value;
 };
 
-export {
-    objectId,
-    email,
-    mobile,
-    password,
-};
+export { objectId, email, mobile, password };
