@@ -11,7 +11,7 @@ import passport from 'passport';
 import config from './config/config.js';
 import Morgan from './config/morgan.js';
 import { jwtStrategy } from './config/passport.js';
-import { authLimiter } from './middlewares/rateLimiter.js';
+import authLimiter from './middlewares/rateLimiter.js';
 import appRoute from './modules/app/app.route.js';
 import corsConfiguration from './middlewares/cors.js';
 
