@@ -7,6 +7,7 @@ import EmailService from './modules/email/email.service.js';
 
 let server;
 
+// eslint-disable-next-line promise/catch-or-return
 mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {
     logger.info('🚀 Connected to MongoDB');
 
@@ -20,9 +21,11 @@ const exitHandler = () => {
         server.close(() => {
             logger.info('Server closed');
 
+            // eslint-disable-next-line no-process-exit
             process.exit(1);
         });
     } else {
+        // eslint-disable-next-line no-process-exit
         process.exit(1);
     }
 };
@@ -35,13 +38,13 @@ const unexpectedErrorHandler = async (type, error) => {
     exitHandler();
 };
 
-process.on('uncaughtException', async (error) => {
+process.on('uncaughtException', async error => {
     await unexpectedErrorHandler('uncaughtException', error);
 
     await EmailService.sendUncaughtExceptionEmail(error);
 });
 
-process.on('unhandledRejection', async (error) => {
+process.on('unhandledRejection', async error => {
     await unexpectedErrorHandler('unhandledRejection', error);
 
     await EmailService.sendUnhandledRejectionEmail(error);
