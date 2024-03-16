@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
-import paginate from '../../models/plugins/paginate.plugin.js';
-import toJSON from '../../models/plugins/toJSON.plugin.js';
+import paginate from '../../plugins/paginate.plugin.js';
+import toJSON from '../../plugins/toJSON.plugin.js';
 
 import validator from 'validator';
 import bcrypt from 'bcryptjs';

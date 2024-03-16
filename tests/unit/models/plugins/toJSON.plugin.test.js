@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { toJSON } from '../../../../src/models/plugins';
+import { toJSON } from '../../../../src/plugins';
 
 describe('toJSON plugin', () => {
     let connection;
@@ -41,7 +41,10 @@ describe('toJSON plugin', () => {
         });
         schema.plugin(toJSON);
         const Model = connection.model('Model', schema);
-        const doc = new Model({ public: 'some public value', private: 'some private value' });
+        const doc = new Model({
+            public: 'some public value',
+            private: 'some private value',
+        });
         expect(doc.toJSON()).not.toHaveProperty('private');
         expect(doc.toJSON()).toHaveProperty('public');
     });
@@ -82,7 +85,10 @@ describe('toJSON plugin', () => {
         );
         schema.plugin(toJSON);
         const Model = connection.model('Model', schema);
-        const doc = new Model({ public: 'some public value', private: 'some private value' });
+        const doc = new Model({
+            public: 'some public value',
+            private: 'some private value',
+        });
         expect(doc.toJSON()).not.toHaveProperty('private');
         expect(doc.toJSON()).toHaveProperty('public');
     });
