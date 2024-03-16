@@ -2,7 +2,7 @@ import Joi from 'joi';
 import httpStatus from 'http-status';
 
 import pick from '../utils/pick.js';
-import ApiError from '../utils/ApiError.js';
+import ServerError from '../utils/serverError.js';
 
 const validate = (schema) => async (req, res, next) => {
     const validSchema = pick(schema, ['params', 'query', 'body']);
@@ -28,7 +28,7 @@ const validate = (schema) => async (req, res, next) => {
         }
 
         // Use your ApiError class to handle errors
-        next(new ApiError(httpStatus.BAD_REQUEST, errorMessage));
+        next(new ServerError(httpStatus.BAD_REQUEST, errorMessage));
     }
 };
 

@@ -31,7 +31,7 @@ const exitHandler = () => {
 const unexpectedErrorHandler = async (error) => {
     logger.error(error);
 
-    await EmailService.sendUncaughtExceptionEmail(error);
+    // await EmailService.sendUncaughtExceptionEmail(error);
 
     exitHandler();
 };

@@ -4,37 +4,46 @@ import validate from '../../middlewares/validate.js';
 import auth from '../../middlewares/auth.js';
 
 import AuthValidation from './auth.validation.js';
+import fileUpload from '../../middlewares/fileUpload.js';
 import AuthController from './auth.controller.js';
 
 const router = express.Router();
 
 router.post(
     '/register',
+    fileUpload.single('picture'),
     validate(AuthValidation.register),
     AuthController.register
 );
+
 router.post('/login', validate(AuthValidation.login), AuthController.login);
+
 router.post('/logout', validate(AuthValidation.logout), AuthController.logout);
+
 router.post(
     '/refresh-tokens',
     validate(AuthValidation.refreshTokens),
     AuthController.refreshTokens
 );
+
 router.post(
     '/forgot-password',
     validate(AuthValidation.forgotPassword),
     AuthController.forgotPassword
 );
+
 router.post(
     '/reset-password',
     validate(AuthValidation.resetPassword),
     AuthController.resetPassword
 );
+
 router.post(
     '/send-verification-email',
     auth(),
     AuthController.sendVerificationEmail
 );
+
 router.post(
     '/verify-email',
     validate(AuthValidation.verifyEmail),

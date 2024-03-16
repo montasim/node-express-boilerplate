@@ -9,7 +9,7 @@ import app from '../../src/app.js';
 import config from '../../src/config/config.js';
 import auth from '../../src/middlewares/auth.js';
 import { tokenService, emailService } from '../../src/services/index.js'; // Assuming index.js is the entry point for services
-import ApiError from '../../src/utils/ApiError.js';
+import ServerError from '../../src/utils/serverError.js';
 import setupTestDB from '../utils/setupTestDB.js';
 import { User, Token } from '../../src/models/index.js'; // Assuming index.js is the entry point for models
 import { roleRights } from '../../src/config/roles.js';
@@ -473,7 +473,7 @@ describe('Auth middleware', () => {
 
         await auth()(req, httpMocks.createResponse(), next);
 
-        expect(next).toHaveBeenCalledWith(expect.any(ApiError));
+        expect(next).toHaveBeenCalledWith(expect.any(ServerError));
         expect(next).toHaveBeenCalledWith(
             expect.objectContaining({ statusCode: httpStatus.UNAUTHORIZED, message: 'Please authenticate' })
         );
@@ -486,7 +486,7 @@ describe('Auth middleware', () => {
 
         await auth()(req, httpMocks.createResponse(), next);
 
-        expect(next).toHaveBeenCalledWith(expect.any(ApiError));
+        expect(next).toHaveBeenCalledWith(expect.any(ServerError));
         expect(next).toHaveBeenCalledWith(
             expect.objectContaining({ statusCode: httpStatus.UNAUTHORIZED, message: 'Please authenticate' })
         );
@@ -501,7 +501,7 @@ describe('Auth middleware', () => {
 
         await auth()(req, httpMocks.createResponse(), next);
 
-        expect(next).toHaveBeenCalledWith(expect.any(ApiError));
+        expect(next).toHaveBeenCalledWith(expect.any(ServerError));
         expect(next).toHaveBeenCalledWith(
             expect.objectContaining({ statusCode: httpStatus.UNAUTHORIZED, message: 'Please authenticate' })
         );
@@ -516,7 +516,7 @@ describe('Auth middleware', () => {
 
         await auth()(req, httpMocks.createResponse(), next);
 
-        expect(next).toHaveBeenCalledWith(expect.any(ApiError));
+        expect(next).toHaveBeenCalledWith(expect.any(ServerError));
         expect(next).toHaveBeenCalledWith(
             expect.objectContaining({ statusCode: httpStatus.UNAUTHORIZED, message: 'Please authenticate' })
         );
@@ -531,7 +531,7 @@ describe('Auth middleware', () => {
 
         await auth()(req, httpMocks.createResponse(), next);
 
-        expect(next).toHaveBeenCalledWith(expect.any(ApiError));
+        expect(next).toHaveBeenCalledWith(expect.any(ServerError));
         expect(next).toHaveBeenCalledWith(
             expect.objectContaining({ statusCode: httpStatus.UNAUTHORIZED, message: 'Please authenticate' })
         );
@@ -543,7 +543,7 @@ describe('Auth middleware', () => {
 
         await auth()(req, httpMocks.createResponse(), next);
 
-        expect(next).toHaveBeenCalledWith(expect.any(ApiError));
+        expect(next).toHaveBeenCalledWith(expect.any(ServerError));
         expect(next).toHaveBeenCalledWith(
             expect.objectContaining({ statusCode: httpStatus.UNAUTHORIZED, message: 'Please authenticate' })
         );
@@ -556,7 +556,7 @@ describe('Auth middleware', () => {
 
         await auth('anyRight')(req, httpMocks.createResponse(), next);
 
-        expect(next).toHaveBeenCalledWith(expect.any(ApiError));
+        expect(next).toHaveBeenCalledWith(expect.any(ServerError));
         expect(next).toHaveBeenCalledWith(expect.objectContaining({ statusCode: httpStatus.FORBIDDEN, message: 'Forbidden' }));
     });
 

@@ -7,7 +7,9 @@ import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import { roles } from '../../config/roles.js';
 
-const userSchema = mongoose.Schema(
+const { Schema } = mongoose;
+
+const userSchema = Schema(
     {
         name: {
             type: String,
@@ -45,9 +47,38 @@ const userSchema = mongoose.Schema(
             enum: roles,
             default: 'user',
         },
+        picture: {
+            fileId: {
+                type: String,
+                maxlength: [
+                    100,
+                    'Picture fileId must be less than 100 characters long',
+                ],
+            },
+            shareableLink: {
+                type: String,
+                maxlength: [
+                    500,
+                    'Picture shareableLink must be less than 500 characters long',
+                ],
+            },
+            downloadLink: {
+                type: String,
+                maxlength: [
+                    500,
+                    'Picture downloadLink must be less than 500 characters long',
+                ],
+            },
+        },
         isEmailVerified: {
             type: Boolean,
             default: false,
+        },
+        createdBy: {
+            type: Schema.Types.Mixed,
+        },
+        updatedBy: {
+            type: Schema.Types.Mixed,
         },
     },
     {

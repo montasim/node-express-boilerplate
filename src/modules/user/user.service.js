@@ -1,19 +1,72 @@
 import httpStatus from 'http-status';
 
 import UserModel from './user.model.js';
+import GoogleDriveFileOperations from '../../utils/GoogleDriveFileOperations.js';
+import TokenService from '../token/token.service.js';
 
-import ApiError from '../../utils/ApiError.js';
+import ServerError from '../../utils/serverError.js';
 
 /**
  * Create a user
- * @param {Object} userBody
  * @returns {Promise<User>}
+ * @param sessionUser
+ * @param registerData
+ * @param file
  */
-const createUser = async userBody => {
-    if (await UserModel.isEmailTaken(userBody.email)) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+const createUser = async (sessionUser, registerData, file) => {
+    try {
+        if (await UserModel.isEmailTaken(registerData.email)) {
+            throw new ServerError(httpStatus.BAD_REQUEST, 'Email already taken');
+        }
+
+        let pictureData = {};
+
+        if (file) {
+            pictureData = await GoogleDriveFileOperations.uploadFile(file);
+
+            if (pictureData instanceof Error) {
+                return {
+                    serviceSuccess: false,
+                    serviceStatus: httpStatus.INTERNAL_SERVER_ERROR,
+                    serviceMessage: 'Failed to upload picture to Google Drive.',
+                    serviceData: {},
+                };
+            }
+        }
+
+        const newUserDetails = await UserModel.create({
+            ...registerData,
+            picture: pictureData,
+            createdBy: sessionUser?._id,
+        });
+
+        // Convert the Mongoose document to a plain JavaScript object
+        let newUser = newUserDetails.toObject();
+
+        // Remove the password field from the object
+        delete newUser.password;
+
+        const { serviceData } = await TokenService.generateAuthTokens(newUser);
+
+        return {
+            serviceSuccess: true,
+            serviceStatus: newUser ? httpStatus.CREATED : httpStatus.NOT_FOUND,
+            serviceMessage: newUser
+                ? 'User created successfully.'
+                : 'Could not create user.',
+            serviceData: {
+                ...newUser,
+                token: serviceData
+            },
+        };
+    } catch (error) {
+        return {
+            serviceSuccess: false,
+            serviceStatus: httpStatus.INTERNAL_SERVER_ERROR,
+            serviceMessage: 'Failed to create user.',
+            serviceData: {},
+        };
     }
-    return UserModel.create(userBody);
 };
 
 /**
@@ -57,13 +110,13 @@ const getUserByEmail = async email => {
 const updateUserById = async (userId, updateBody) => {
     const user = await getUserById(userId);
     if (!user) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+        throw new ServerError(httpStatus.NOT_FOUND, 'User not found');
     }
     if (
         updateBody.email &&
         (await UserModel.isEmailTaken(updateBody.email, userId))
     ) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+        throw new ServerError(httpStatus.BAD_REQUEST, 'Email already taken');
     }
     Object.assign(user, updateBody);
     await user.save();
@@ -78,7 +131,7 @@ const updateUserById = async (userId, updateBody) => {
 const deleteUserById = async userId => {
     const user = await getUserById(userId);
     if (!user) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+        throw new ServerError(httpStatus.NOT_FOUND, 'User not found');
     }
     await user.remove();
     return user;

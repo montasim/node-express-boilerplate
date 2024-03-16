@@ -5,7 +5,7 @@ import userService from '../user/user.service.js';
 import TokenModel from '../token/token.model.js';
 import { tokenTypes } from '../../config/tokens.js';
 
-import ApiError from '../../utils/ApiError.js';
+import ServerError from '../../utils/serverError.js';
 
 /**
  * Login with username and password
@@ -16,7 +16,7 @@ import ApiError from '../../utils/ApiError.js';
 const loginUserWithEmailAndPassword = async (email, password) => {
     const user = await userService.getUserByEmail(email);
     if (!user || !(await user.isPasswordMatch(password))) {
-        throw new ApiError(
+        throw new ServerError(
             httpStatus.UNAUTHORIZED,
             'Incorrect email or password'
         );
@@ -36,7 +36,7 @@ const logout = async refreshToken => {
         blacklisted: false,
     });
     if (!refreshTokenDoc) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'Not found');
+        throw new ServerError(httpStatus.NOT_FOUND, 'Not found');
     }
     await refreshTokenDoc.remove();
 };
@@ -59,7 +59,7 @@ const refreshAuth = async refreshToken => {
         await refreshTokenDoc.remove();
         return tokenService.generateAuthTokens(user);
     } catch (error) {
-        throw new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate');
+        throw new ServerError(httpStatus.UNAUTHORIZED, 'Please authenticate');
     }
 };
 
@@ -85,7 +85,7 @@ const resetPassword = async (resetPasswordToken, newPassword) => {
             type: tokenTypes.RESET_PASSWORD,
         });
     } catch (error) {
-        throw new ApiError(httpStatus.UNAUTHORIZED, 'Password reset failed');
+        throw new ServerError(httpStatus.UNAUTHORIZED, 'Password reset failed');
     }
 };
 
@@ -110,7 +110,7 @@ const verifyEmail = async verifyEmailToken => {
         });
         await userService.updateUserById(user.id, { isEmailVerified: true });
     } catch (error) {
-        throw new ApiError(
+        throw new ServerError(
             httpStatus.UNAUTHORIZED,
             'Email verification failed'
         );

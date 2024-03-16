@@ -1,19 +1,55 @@
 import httpStatus from 'http-status';
 
-import catchAsync from '../../utils/catchAsync.js';
+import asyncErrorHandler from '../../utils/asyncErrorHandler.js';
+import controllerErrorHandler from '../../utils/handleControllerError.js';
+import fetchRequestMetadata from '../../utils/fetchRequestMetadata.js';
+import generateRequestResponseMetadata
+    from '../../utils/generateRequestResponseMetadata.js';
+import prepareResponseData from '../../utils/prepareResponseData.js';
 
 import AuthServices from './auth.service.js';
 import TokenService from '../token/token.service.js';
 import UserService from '../user/user.service.js';
 import EmailService from '../email/email.service.js';
 
-const register = catchAsync(async (req, res) => {
-    const user = await UserService.createUser(req.body);
-    const tokens = await TokenService.generateAuthTokens(user);
-    res.status(httpStatus.CREATED).send({ user, tokens });
-});
+const register = async (req, res) => {
+    const requestStartTime = Date.now(); // Get the request start time
+    const { device, links, meta, ifNoneMatch, ifModifiedSince } = await fetchRequestMetadata(req);
 
-const login = catchAsync(async (req, res) => {
+    try {
+        // Extracting the data from req.body
+        const { sessionUser, ...registerData } = req.body;
+        const file = req.file || null;
+
+        const {
+            serviceSuccess,
+            serviceData,
+            serviceMessage,
+            serviceStatus
+        } = await UserService.createUser(sessionUser, registerData, file);
+
+        const responseMetaData = generateRequestResponseMetadata(
+            requestStartTime,
+            device,
+            ifNoneMatch,
+            ifModifiedSince
+        );
+        const responseData = prepareResponseData(
+            serviceSuccess,
+            serviceData,
+            serviceMessage,
+            serviceStatus,
+            links,
+            { ...meta, ...responseMetaData }
+        );
+
+        return res.status(responseData?.status).json(responseData);
+    } catch (error) {
+        return controllerErrorHandler(res, error, requestStartTime, device, links, meta, ifNoneMatch, ifModifiedSince, 'UserController.createUser()');
+    }
+};
+
+const login = asyncErrorHandler(async (req, res) => {
     const { email, password } = req.body;
     const user = await AuthServices.loginUserWithEmailAndPassword(
         email,
@@ -23,17 +59,17 @@ const login = catchAsync(async (req, res) => {
     res.send({ user, tokens });
 });
 
-const logout = catchAsync(async (req, res) => {
+const logout = asyncErrorHandler(async (req, res) => {
     await AuthServices.logout(req.body.refreshToken);
     res.status(httpStatus.NO_CONTENT).send();
 });
 
-const refreshTokens = catchAsync(async (req, res) => {
+const refreshTokens = asyncErrorHandler(async (req, res) => {
     const tokens = await AuthServices.refreshAuth(req.body.refreshToken);
     res.send({ ...tokens });
 });
 
-const forgotPassword = catchAsync(async (req, res) => {
+const forgotPassword = asyncErrorHandler(async (req, res) => {
     const resetPasswordToken = await TokenService.generateResetPasswordToken(
         req.body.email
     );
@@ -44,12 +80,12 @@ const forgotPassword = catchAsync(async (req, res) => {
     res.status(httpStatus.NO_CONTENT).send();
 });
 
-const resetPassword = catchAsync(async (req, res) => {
+const resetPassword = asyncErrorHandler(async (req, res) => {
     await AuthServices.resetPassword(req.query.token, req.body.password);
     res.status(httpStatus.NO_CONTENT).send();
 });
 
-const sendVerificationEmail = catchAsync(async (req, res) => {
+const sendVerificationEmail = asyncErrorHandler(async (req, res) => {
     const verifyEmailToken = await TokenService.generateVerifyEmailToken(
         req.user
     );
@@ -57,7 +93,7 @@ const sendVerificationEmail = catchAsync(async (req, res) => {
     res.status(httpStatus.NO_CONTENT).send();
 });
 
-const verifyEmail = catchAsync(async (req, res) => {
+const verifyEmail = asyncErrorHandler(async (req, res) => {
     await AuthServices.verifyEmail(req.query.token);
     res.status(httpStatus.NO_CONTENT).send();
 });

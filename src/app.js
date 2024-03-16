@@ -4,7 +4,7 @@ import xss from 'xss-clean';
 import mongoSanitize from 'express-mongo-sanitize';
 import compression from 'compression';
 import hpp from 'hpp';
-import timeout from 'connect-timeout';
+// import timeout from 'connect-timeout';
 import cors from 'cors';
 import passport from 'passport';
 
@@ -45,7 +45,7 @@ app.use(compression());
 app.use(hpp());
 
 // set timeout
-app.use(timeout(config.timeout));
+// app.use(timeout(config.timeout));
 
 // serve static files
 app?.use(express?.static('./', { maxAge: config.cache.timeout }));

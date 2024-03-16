@@ -1,11 +1,11 @@
 import passport from 'passport';
 import httpStatus from 'http-status';
-import ApiError from '../utils/ApiError.js';
+import ServerError from '../utils/serverError.js';
 import { roleRights } from '../config/roles.js';
 
 const verifyCallback = (req, resolve, reject, requiredRights) => async (err, user, info) => {
     if (err || info || !user) {
-        return reject(new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate'));
+        return reject(new ServerError(httpStatus.UNAUTHORIZED, 'Please authenticate'));
     }
     req.user = user;
 
@@ -13,7 +13,7 @@ const verifyCallback = (req, resolve, reject, requiredRights) => async (err, use
         const userRights = roleRights.get(user.role);
         const hasRequiredRights = requiredRights.every((requiredRight) => userRights.includes(requiredRight));
         if (!hasRequiredRights && req.params.userId !== user.id) {
-            return reject(new ApiError(httpStatus.FORBIDDEN, 'Forbidden'));
+            return reject(new ServerError(httpStatus.FORBIDDEN, 'Forbidden'));
         }
     }
 
