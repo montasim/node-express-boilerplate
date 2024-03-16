@@ -8,8 +8,6 @@ import TokenModel from './token.model.js'; // Assuming Token is exported from in
 import { tokenTypes } from '../../config/tokens.js';
 
 import ServerError from '../../utils/serverError.js';
-import UserModel from '../user/user.model.js';
-import GoogleDriveFileOperations from '../../utils/GoogleDriveFileOperations.js';
 
 /**
  * Generate token
@@ -58,19 +56,38 @@ const saveToken = async (token, userId, expires, type, blacklisted = false) => {
  * @returns {Promise<Token>}
  */
 const verifyToken = async (token, type) => {
-    const payload = jwt.verify(token, config.jwt.secret);
-    const tokenDoc = await TokenModel.findOne({
-        token,
-        type,
-        user: payload.sub,
-        blacklisted: false,
-    });
+    try {
+        const payload = jwt.verify(token, config.jwt.secret);
+        const tokenDetails = await TokenModel.findOne({
+            token,
+            type,
+            user: payload.sub,
+            blacklisted: false,
+        });
 
-    if (!tokenDoc) {
-        throw new Error('Token not found');
+        if (!tokenDetails) {
+            return {
+                serviceSuccess: false,
+                serviceStatus: httpStatus.NOT_FOUND,
+                serviceMessage: 'Token not found.',
+                serviceData: {},
+            };
+        }
+
+        return {
+            serviceSuccess: true,
+            serviceStatus: httpStatus.OK,
+            serviceMessage: 'Token verified successfully.',
+            serviceData: tokenDetails,
+        };
+    } catch (error) {
+        return {
+            serviceSuccess: false,
+            serviceStatus: httpStatus.INTERNAL_SERVER_ERROR,
+            serviceMessage: 'Failed to verify token.',
+            serviceData: {},
+        };
     }
-
-    return tokenDoc;
 };
 
 /**
@@ -119,14 +136,14 @@ const generateAuthTokens = async user => {
         };
 
         return {
-            controllerSuccess: true,
+            serviceSuccess: true,
             serviceStatus: httpStatus.CREATED,
             serviceMessage: 'Tokens generated successfully.',
             serviceData: token,
         };
     } catch (error) {
         return {
-            controllerSuccess: false,
+            serviceSuccess: false,
             serviceStatus: httpStatus.INTERNAL_SERVER_ERROR,
             serviceMessage: 'Failed to create user.',
             serviceData: {},

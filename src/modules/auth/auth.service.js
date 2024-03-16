@@ -95,7 +95,7 @@ const loginUserWithEmailAndPassword = async (email, password) => {
         };
     } catch (error) {
         return {
-            controllerSuccess: false,
+            serviceSuccess: false,
             serviceData: {},
             serviceMessage: 'Internal server error',
             serviceStatus: httpStatus.INTERNAL_SERVER_ERROR,
@@ -145,18 +145,52 @@ const logout = async refreshToken => {
  */
 const refreshAuth = async refreshToken => {
     try {
-        const refreshTokenDoc = await tokenService.verifyToken(
+        // Verify the token and get its associated data
+        const verificationResult = await tokenService.verifyToken(
             refreshToken,
             tokenTypes.REFRESH
         );
-        const user = await userService.getUserById(refreshTokenDoc.user);
-        if (!user) {
-            throw new Error();
+
+        // Fetch the user details associated with the token
+        const userDetails = await userService.getUserById(
+            verificationResult.serviceData.user
+        );
+
+        if (!userDetails) {
+            return {
+                serviceSuccess: false,
+                serviceStatus: httpStatus.UNAUTHORIZED,
+                serviceMessage: 'User not found with the refresh token.',
+                serviceData: {},
+            };
         }
-        await refreshTokenDoc.remove();
-        return tokenService.generateAuthTokens(user);
+
+        // Fetch the token document by its ID
+        const tokenDoc = await TokenModel.findOneAndDelete({
+            user: verificationResult.serviceData.user,
+        });
+
+        if (!tokenDoc) {
+            throw new Error('Token not found or already removed.');
+        }
+
+        // Generate new auth tokens
+        const authTokensResult =
+            await tokenService.generateAuthTokens(userDetails);
+
+        return {
+            serviceSuccess: true,
+            serviceStatus: httpStatus.OK,
+            serviceMessage: 'Refresh successful.',
+            serviceData: authTokensResult.serviceData, // Correctly extracting serviceData from the result
+        };
     } catch (error) {
-        throw new ServerError(httpStatus.UNAUTHORIZED, 'Please authenticate');
+        return {
+            serviceSuccess: false,
+            serviceData: {},
+            serviceMessage: 'Internal server error',
+            serviceStatus: httpStatus.INTERNAL_SERVER_ERROR,
+        };
     }
 };
 
