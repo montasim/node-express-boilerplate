@@ -231,20 +231,36 @@ const verifyEmail = async verifyEmailToken => {
             verifyEmailToken,
             tokenTypes.VERIFY_EMAIL
         );
-        const user = await userService.getUserById(verifyEmailTokenDoc.user);
-        if (!user) {
-            throw new Error();
+        const userDetails = await userService.getUserById(
+            verifyEmailTokenDoc.serviceData.user
+        );
+
+        if (!userDetails) {
+            return {
+                serviceSuccess: false,
+                serviceData: {},
+                serviceMessage: 'User not found with the verify email token.',
+                serviceStatus: httpStatus.FORBIDDEN,
+            };
         }
+
+        console.log(userDetails);
+
         await TokenModel.deleteMany({
-            user: user.id,
+            user: userDetails._id,
             type: tokenTypes.VERIFY_EMAIL,
         });
-        await userService.updateUserById(user.id, { isEmailVerified: true });
+
+        await userService.updateUserById(userDetails.id, {
+            isEmailVerified: true,
+        });
     } catch (error) {
-        throw new ServerError(
-            httpStatus.UNAUTHORIZED,
-            'Email verification failed'
-        );
+        return {
+            serviceSuccess: false,
+            serviceData: {},
+            serviceMessage: 'Email verification failed',
+            serviceStatus: httpStatus.UNAUTHORIZED,
+        };
     }
 };
 
