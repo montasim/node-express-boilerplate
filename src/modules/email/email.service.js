@@ -29,7 +29,7 @@ if (config.env !== 'test') {
 const sendEmail = async (to, subject, html) => {
     const message = {
         from: config.email.from,
-        to: to | config.admin.email,
+        to: to || config.admin.email,
         subject,
         html,
     };
@@ -44,12 +44,50 @@ const sendEmail = async (to, subject, html) => {
  * @returns {Promise}
  */
 const sendResetPasswordEmail = async (to, token) => {
-    const subject = 'Reset password';
-    // replace this url with the link to the reset password page of your front-end app
-    const resetPasswordUrl = `http://link-to-app/reset-password?token=${token}`;
-    const html = `Dear user,
-To reset your password, click on this link: ${resetPasswordUrl}
-If you did not request any password resets, then ignore this email.`;
+    const subject = 'Reset Your Password';
+    // Replace this URL with the link to the reset password page of your front-end app
+    const resetPasswordUrl = `${config.cors.origin}/reset-password?token=${token}`;
+    const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    color: #333;
+                    padding: 20px;
+                }
+                .container {
+                    background-color: #ffffff;
+                    padding: 20px;
+                    border-radius: 5px;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    max-width: 600px;
+                    margin: 40px auto;
+                }
+                .button {
+                    display: inline-block;
+                    padding: 10px 20px;
+                    background-color: #007BFF;
+                    color: #ffffff;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    margin-top: 20px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h2>Reset Your Password</h2>
+                <p>Dear user,</p>
+                <p>To reset your password, please click on the button below:</p>
+                <a href="${resetPasswordUrl}" class="button">Reset Password</a>
+                <p>If you did not request a password reset, please ignore this email.</p>
+            </div>
+        </body>
+        </html>
+    `;
 
     await sendEmail(to, subject, html);
 };

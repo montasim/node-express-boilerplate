@@ -8,6 +8,7 @@ import TokenModel from './token.model.js'; // Assuming Token is exported from in
 import { tokenTypes } from '../../config/tokens.js';
 
 import ServerError from '../../utils/serverError.js';
+import EmailService from '../email/email.service.js';
 
 /**
  * Generate token
@@ -157,33 +158,51 @@ const generateAuthTokens = async user => {
  * @returns {Promise<string>}
  */
 const generateResetPasswordToken = async email => {
-    const user = await userService.getUserByEmail(email);
+    try {
+        const userDetails = await userService.getUserByEmail(email);
 
-    if (!user) {
-        throw new ServerError(
-            httpStatus.NOT_FOUND,
-            'No users found with this email'
+        if (!userDetails) {
+            return {
+                serviceSuccess: false,
+                serviceStatus: httpStatus.NOT_FOUND,
+                serviceMessage: 'No users found with this email',
+                serviceData: {},
+            };
+        }
+
+        const expires = moment().add(
+            config.jwt.resetPasswordExpirationMinutes,
+            'minutes'
         );
+        const resetPasswordToken = generateToken(
+            userDetails.id,
+            expires,
+            tokenTypes.RESET_PASSWORD
+        );
+
+        await saveToken(
+            resetPasswordToken,
+            userDetails.id,
+            expires,
+            tokenTypes.RESET_PASSWORD
+        );
+
+        await EmailService.sendResetPasswordEmail(email, resetPasswordToken);
+
+        return {
+            serviceSuccess: true,
+            serviceStatus: httpStatus.CREATED,
+            serviceMessage: 'Reset password token generated successfully.',
+            serviceData: resetPasswordToken,
+        };
+    } catch (error) {
+        return {
+            serviceSuccess: false,
+            serviceStatus: httpStatus.INTERNAL_SERVER_ERROR,
+            serviceMessage: 'Failed to create reset password token.',
+            serviceData: {},
+        };
     }
-
-    const expires = moment().add(
-        config.jwt.resetPasswordExpirationMinutes,
-        'minutes'
-    );
-    const resetPasswordToken = generateToken(
-        user.id,
-        expires,
-        tokenTypes.RESET_PASSWORD
-    );
-
-    await saveToken(
-        resetPasswordToken,
-        user.id,
-        expires,
-        tokenTypes.RESET_PASSWORD
-    );
-
-    return resetPasswordToken;
 };
 
 /**

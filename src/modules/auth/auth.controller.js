@@ -185,14 +185,46 @@ const refreshTokens = async (req, res) => {
 };
 
 const forgotPassword = asyncErrorHandler(async (req, res) => {
-    const resetPasswordToken = await TokenService.generateResetPasswordToken(
-        req.body.email
-    );
-    await EmailService.sendResetPasswordEmail(
-        req.body.email,
-        resetPasswordToken
-    );
-    res.status(httpStatus.NO_CONTENT).send();
+    const requestStartTime = Date.now(); // Get the request start time
+    const { device, links, meta, ifNoneMatch, ifModifiedSince } =
+        await fetchRequestMetadata(req);
+
+    try {
+        // Extracting the data from req.body
+        const { email } = req.body;
+
+        const { serviceSuccess, serviceData, serviceMessage, serviceStatus } =
+            await TokenService.generateResetPasswordToken(email);
+
+        const responseMetaData = generateRequestResponseMetadata(
+            requestStartTime,
+            device,
+            ifNoneMatch,
+            ifModifiedSince
+        );
+        const responseData = prepareResponseData(
+            serviceSuccess,
+            serviceData,
+            serviceMessage,
+            serviceStatus,
+            links,
+            { ...meta, ...responseMetaData }
+        );
+
+        return res.status(responseData?.status).json(responseData);
+    } catch (error) {
+        return controllerErrorHandler(
+            res,
+            error,
+            requestStartTime,
+            device,
+            links,
+            meta,
+            ifNoneMatch,
+            ifModifiedSince,
+            'UserController.createUser()'
+        );
+    }
 });
 
 const resetPassword = asyncErrorHandler(async (req, res) => {
