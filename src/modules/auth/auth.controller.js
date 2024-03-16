@@ -5,7 +5,7 @@ import catchAsync from '../../utils/catchAsync.js';
 import AuthServices from './auth.service.js';
 import TokenService from '../token/token.service.js';
 import UserService from '../user/user.service.js';
-import EmailService from '../../services/email.service.js';
+import EmailService from '../email/email.service.js';
 
 const register = catchAsync(async (req, res) => {
     const user = await UserService.createUser(req.body);
