@@ -13,6 +13,7 @@ import { authLimiter } from './middlewares/rateLimiter.js';
 import appRoute from './modules/app/app.route.js';
 
 import { errorConverter, errorHandler } from './middlewares/error.js';
+import undefinedService from './modules/undefined/undefined.service.js';
 
 const app = express();
 
@@ -52,6 +53,15 @@ if (config.env === 'production') {
 
 // v1 api routes
 app.use('/', appRoute);
+
+// send back a 404 error for any unknown api request
+app.use((req, res, next) => {
+    const undefinedData = undefinedService();
+
+    res.status(undefinedData.status).send(undefinedData);
+
+    next();
+});
 
 // convert error to ApiError, if needed
 app.use(errorConverter);

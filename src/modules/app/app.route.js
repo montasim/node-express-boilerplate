@@ -3,7 +3,6 @@ import express from 'express';
 import apiRoute from '../api/api.route.js';
 import docsRoute from '../docs/docs.route.js';
 import config from '../../config/config.js';
-import undefinedRoute from '../undefined/undefined.route.js';
 
 const router = express.Router();
 
@@ -11,10 +10,6 @@ const defaultRoutes = [
     {
         path: `/api/${config.version}`,
         route: apiRoute,
-    },
-    {
-        path: '*',
-        route: undefinedRoute,
     },
 ];
 
