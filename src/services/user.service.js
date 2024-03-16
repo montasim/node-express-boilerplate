@@ -1,5 +1,5 @@
 import httpStatus from 'http-status';
-import { User } from '../models/index.js';
+import UserModel from '../models/user.model.js';
 import ApiError from '../utils/ApiError.js';
 
 /**
@@ -7,11 +7,11 @@ import ApiError from '../utils/ApiError.js';
  * @param {Object} userBody
  * @returns {Promise<User>}
  */
-const createUser = async (userBody) => {
-    if (await User.isEmailTaken(userBody.email)) {
+const createUser = async userBody => {
+    if (await UserModel.isEmailTaken(userBody.email)) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
     }
-    return User.create(userBody);
+    return UserModel.create(userBody);
 };
 
 /**
@@ -24,7 +24,7 @@ const createUser = async (userBody) => {
  * @returns {Promise<QueryResult>}
  */
 const queryUsers = async (filter, options) => {
-    const users = await User.paginate(filter, options);
+    const users = await UserModel.paginate(filter, options);
     return users;
 };
 
@@ -33,8 +33,8 @@ const queryUsers = async (filter, options) => {
  * @param {ObjectId} id
  * @returns {Promise<User>}
  */
-const getUserById = async (id) => {
-    return User.findById(id);
+const getUserById = async id => {
+    return UserModel.findById(id);
 };
 
 /**
@@ -42,8 +42,8 @@ const getUserById = async (id) => {
  * @param {string} email
  * @returns {Promise<User>}
  */
-const getUserByEmail = async (email) => {
-    return User.findOne({ email });
+const getUserByEmail = async email => {
+    return UserModel.findOne({ email });
 };
 
 /**
@@ -57,7 +57,10 @@ const updateUserById = async (userId, updateBody) => {
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
     }
-    if (updateBody.email && (await User.isEmailTaken(updateBody.email, userId))) {
+    if (
+        updateBody.email &&
+        (await UserModel.isEmailTaken(updateBody.email, userId))
+    ) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
     }
     Object.assign(user, updateBody);
@@ -70,7 +73,7 @@ const updateUserById = async (userId, updateBody) => {
  * @param {ObjectId} userId
  * @returns {Promise<User>}
  */
-const deleteUserById = async (userId) => {
+const deleteUserById = async userId => {
     const user = await getUserById(userId);
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
@@ -79,7 +82,7 @@ const deleteUserById = async (userId) => {
     return user;
 };
 
-export {
+const UserService = {
     createUser,
     queryUsers,
     getUserById,
@@ -87,3 +90,5 @@ export {
     updateUserById,
     deleteUserById,
 };
+
+export default UserService;

@@ -49,7 +49,7 @@ const verifyEmail = {
     }),
 };
 
-export {
+const AuthValidation = {
     register,
     login,
     logout,
@@ -58,3 +58,5 @@ export {
     resetPassword,
     verifyEmail,
 };
+
+export default AuthValidation;

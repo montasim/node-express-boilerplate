@@ -7,7 +7,7 @@ import cors from 'cors';
 import passport from 'passport';
 import httpStatus from 'http-status';
 import config from './config/config.js';
-import morgan from './config/morgan.js';
+import Morgan from './config/morgan.js';
 import { jwtStrategy } from './config/passport.js';
 import { authLimiter } from './middlewares/rateLimiter.js';
 import routes from './routes/v1/index.js'; // Ensure the path matches the actual file structure
@@ -17,8 +17,8 @@ import ApiError from './utils/ApiError.js';
 const app = express();
 
 if (config.env !== 'test') {
-    app.use(morgan.successHandler);
-    app.use(morgan.errorHandler);
+    app.use(Morgan.successHandler);
+    app.use(Morgan.errorHandler);
 }
 
 // set security HTTP headers

@@ -45,10 +45,12 @@ const deleteUser = {
     }),
 };
 
-export {
+const UserValidation = {
     createUser,
     getUsers,
     getUser,
     updateUser,
     deleteUser,
 };
+
+export default UserValidation;

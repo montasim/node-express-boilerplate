@@ -1,19 +1,43 @@
 import express from 'express';
-import { validate } from '../../middlewares/validate';
-import { authValidation } from '../../validations/auth.validation';
-import { authController } from '../../controllers/auth.controller';
-import { auth } from '../../middlewares/auth';
+import validate from '../../../src/middlewares/validate.js';
+import AuthValidation from '../../validations/auth.validation.js';
+import AuthController from '../../controllers/auth.controller.js';
+import auth from '../../middlewares/auth.js';
 
 const router = express.Router();
 
-router.post('/register', validate(authValidation.register), authController.register);
-router.post('/login', validate(authValidation.login), authController.login);
-router.post('/logout', validate(authValidation.logout), authController.logout);
-router.post('/refresh-tokens', validate(authValidation.refreshTokens), authController.refreshTokens);
-router.post('/forgot-password', validate(authValidation.forgotPassword), authController.forgotPassword);
-router.post('/reset-password', validate(authValidation.resetPassword), authController.resetPassword);
-router.post('/send-verification-email', auth(), authController.sendVerificationEmail);
-router.post('/verify-email', validate(authValidation.verifyEmail), authController.verifyEmail);
+router.post(
+    '/register',
+    validate(AuthValidation.register),
+    AuthController.register
+);
+router.post('/login', validate(AuthValidation.login), AuthController.login);
+router.post('/logout', validate(AuthValidation.logout), AuthController.logout);
+router.post(
+    '/refresh-tokens',
+    validate(AuthValidation.refreshTokens),
+    AuthController.refreshTokens
+);
+router.post(
+    '/forgot-password',
+    validate(AuthValidation.forgotPassword),
+    AuthController.forgotPassword
+);
+router.post(
+    '/reset-password',
+    validate(AuthValidation.resetPassword),
+    AuthController.resetPassword
+);
+router.post(
+    '/send-verification-email',
+    auth(),
+    AuthController.sendVerificationEmail
+);
+router.post(
+    '/verify-email',
+    validate(AuthValidation.verifyEmail),
+    AuthController.verifyEmail
+);
 
 export default router;
 

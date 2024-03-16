@@ -8,7 +8,11 @@ if (config.env !== 'test') {
     transport
         .verify()
         .then(() => logger.info('Connected to email server'))
-        .catch(() => logger.warn('Unable to connect to email server. Make sure you have configured the SMTP options in .env'));
+        .catch(() =>
+            logger.warn(
+                'Unable to connect to email server. Make sure you have configured the SMTP options in .env'
+            )
+        );
 }
 
 /**
@@ -55,9 +59,11 @@ If you did not create an account, then ignore this email.`;
     await sendEmail(to, subject, text);
 };
 
-export {
+const EmailService = {
     transport,
     sendEmail,
     sendResetPasswordEmail,
     sendVerificationEmail,
 };
+
+export default EmailService;

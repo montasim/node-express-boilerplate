@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { toJSON } from './plugins/toJSON.plugin.js';
+import toJSON from './plugins/toJSON.plugin.js';
 import { tokenTypes } from '../config/tokens.js';
 
 const tokenSchema = mongoose.Schema(
@@ -16,7 +16,11 @@ const tokenSchema = mongoose.Schema(
         },
         type: {
             type: String,
-            enum: [tokenTypes.REFRESH, tokenTypes.RESET_PASSWORD, tokenTypes.VERIFY_EMAIL],
+            enum: [
+                tokenTypes.REFRESH,
+                tokenTypes.RESET_PASSWORD,
+                tokenTypes.VERIFY_EMAIL,
+            ],
             required: true,
         },
         expires: {
@@ -37,8 +41,8 @@ const tokenSchema = mongoose.Schema(
 tokenSchema.plugin(toJSON);
 
 /**
- * @typedef Token
+ * @typedef TokenModel
  */
-const Token = mongoose.model('Token', tokenSchema);
+const TokenModel = mongoose.model('Token', tokenSchema);
 
-export default Token;
+export default TokenModel;

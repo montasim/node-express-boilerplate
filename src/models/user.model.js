@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
-import { toJSON, paginate } from './plugins/paginate.plugin.js';
+import paginate from './plugins/paginate.plugin.js';
+import toJSON from './plugins/toJSON.plugin.js';
 import { roles } from '../config/roles.js';
 
 const userSchema = mongoose.Schema(
@@ -30,7 +31,9 @@ const userSchema = mongoose.Schema(
             minlength: 8,
             validate(value) {
                 if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
-                    throw new Error('Password must contain at least one letter and one number');
+                    throw new Error(
+                        'Password must contain at least one letter and one number'
+                    );
                 }
             },
             private: true, // used by the toJSON plugin
@@ -50,7 +53,7 @@ const userSchema = mongoose.Schema(
     }
 );
 
-// add plugin that converts mongoose to json
+// add a plugin that converts mongoose to json
 userSchema.plugin(toJSON);
 userSchema.plugin(paginate);
 
@@ -84,8 +87,8 @@ userSchema.pre('save', async function (next) {
 });
 
 /**
- * @typedef User
+ * @typedef UserModel
  */
-const User = mongoose.model('User', userSchema);
+const UserModel = mongoose.model('User', userSchema);
 
-export default User;
+export default UserModel;
