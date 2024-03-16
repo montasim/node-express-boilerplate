@@ -1,25 +1,25 @@
 import express from 'express';
 
-import authRoute from '../auth/auth.route.js';
-import userRoute from '../user/user.route.js';
+import apiRoute from '../api/api.route.js';
 import docsRoute from '../docs/docs.route.js';
 import config from '../../config/config.js';
+import undefinedRoute from '../undefined/undefined.route.js';
 
 const router = express.Router();
 
 const defaultRoutes = [
     {
-        path: '/auth',
-        route: authRoute,
+        path: `/api/${config.version}`,
+        route: apiRoute,
     },
     {
-        path: '/users',
-        route: userRoute,
+        path: '*',
+        route: undefinedRoute,
     },
 ];
 
+// routes available only in development mode
 const devRoutes = [
-    // routes available only in development mode
     {
         path: '/docs',
         route: docsRoute,

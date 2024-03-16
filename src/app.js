@@ -5,14 +5,14 @@ import mongoSanitize from 'express-mongo-sanitize';
 import compression from 'compression';
 import cors from 'cors';
 import passport from 'passport';
-import httpStatus from 'http-status';
+
 import config from './config/config.js';
 import Morgan from './config/morgan.js';
 import { jwtStrategy } from './config/passport.js';
 import { authLimiter } from './middlewares/rateLimiter.js';
-import routes from './modules/index/index.js'; // Ensure the path matches the actual file structure
+import appRoute from './modules/app/app.route.js';
+
 import { errorConverter, errorHandler } from './middlewares/error.js';
-import ApiError from './utils/ApiError.js';
 
 const app = express();
 
@@ -51,12 +51,7 @@ if (config.env === 'production') {
 }
 
 // v1 api routes
-app.use('/v1', routes);
-
-// send back a 404 error for any unknown api request
-app.use((req, res, next) => {
-    next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
-});
+app.use('/', appRoute);
 
 // convert error to ApiError, if needed
 app.use(errorConverter);
