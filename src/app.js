@@ -3,6 +3,8 @@ import helmet from 'helmet';
 import xss from 'xss-clean';
 import mongoSanitize from 'express-mongo-sanitize';
 import compression from 'compression';
+import hpp from 'hpp';
+import timeout from 'connect-timeout';
 import cors from 'cors';
 import passport from 'passport';
 
@@ -37,6 +39,21 @@ app.use(mongoSanitize());
 
 // gzip compression
 app.use(compression());
+
+// prevent HTTP parameter pollution
+app.use(hpp());
+
+// set timeout
+app.use(timeout(config.timeout));
+
+// serve static files
+app?.use(express?.static('./', { maxAge: config.cache.timeout }));
+
+// enable if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
+app.use(express.json({ limit: config.jsonPayloadLimit }));
+
+// body parser
+app.use(express.urlencoded({ limit: config.jsonPayloadLimit, extended: true }));
 
 // enable cors
 app.use(cors());

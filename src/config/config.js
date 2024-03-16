@@ -36,6 +36,13 @@ const envVarsSchema = Joi.object({
     JWT_VERIFY_EMAIL_EXPIRATION_MINUTES: Joi.number()
         .required()
         .description('minutes after which verify email token expires'),
+    TIMEOUT_IN_SECONDS: Joi.number()
+        .required()
+        .description('timeout in seconds'),
+    CACHE_TTL_IN_MILLISECOND: Joi.number().required().description('cache ttl'),
+    JSON_PAYLOAD_LIMIT: Joi.number()
+        .required()
+        .description('json payload limit'),
     SMTP_HOST: Joi.string()
         .required()
         .description('server that will send the emails'),
@@ -94,6 +101,11 @@ const config = {
             envVars.JWT_VERIFY_EMAIL_EXPIRATION_MINUTES
         ),
     },
+    timeout: getInt(envVars.TIMEOUT_IN_SECONDS),
+    cache: {
+        timeout: getInt(envVars.CACHE_TTL_IN_MILLISECOND),
+    },
+    jsonPayloadLimit: getInt(envVars.JSON_PAYLOAD_LIMIT),
     email: {
         smtp: {
             host: envVars.SMTP_HOST,
