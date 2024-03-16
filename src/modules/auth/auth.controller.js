@@ -98,10 +98,48 @@ const login = async (req, res) => {
     }
 };
 
-const logout = asyncErrorHandler(async (req, res) => {
-    await AuthServices.logout(req.body.refreshToken);
-    res.status(httpStatus.NO_CONTENT).send();
-});
+const logout = async (req, res) => {
+    const requestStartTime = Date.now(); // Get the request start time
+    const { device, links, meta, ifNoneMatch, ifModifiedSince } =
+        await fetchRequestMetadata(req);
+
+    try {
+        // Extracting the data from req.body
+        const { refreshToken } = req.body;
+
+        const { serviceSuccess, serviceData, serviceMessage, serviceStatus } =
+            await AuthServices.logout(refreshToken);
+
+        const responseMetaData = generateRequestResponseMetadata(
+            requestStartTime,
+            device,
+            ifNoneMatch,
+            ifModifiedSince
+        );
+        const responseData = prepareResponseData(
+            serviceSuccess,
+            serviceData,
+            serviceMessage,
+            serviceStatus,
+            links,
+            { ...meta, ...responseMetaData }
+        );
+
+        return res.status(responseData?.status).json(responseData);
+    } catch (error) {
+        return controllerErrorHandler(
+            res,
+            error,
+            requestStartTime,
+            device,
+            links,
+            meta,
+            ifNoneMatch,
+            ifModifiedSince,
+            'UserController.createUser()'
+        );
+    }
+};
 
 const refreshTokens = asyncErrorHandler(async (req, res) => {
     const tokens = await AuthServices.refreshAuth(req.body.refreshToken);

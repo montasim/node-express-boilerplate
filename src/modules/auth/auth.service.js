@@ -109,15 +109,33 @@ const loginUserWithEmailAndPassword = async (email, password) => {
  * @returns {Promise}
  */
 const logout = async refreshToken => {
-    const refreshTokenDoc = await TokenModel.findOne({
-        token: refreshToken,
-        type: tokenTypes.REFRESH,
-        blacklisted: false,
-    });
-    if (!refreshTokenDoc) {
-        throw new ServerError(httpStatus.NOT_FOUND, 'Not found');
+    try {
+        const refreshTokenDoc = await TokenModel.findOneAndDelete({
+            token: refreshToken,
+            type: tokenTypes.REFRESH,
+            blacklisted: false,
+        });
+
+        // If no document is found, throw an error to indicate the token was not found
+        if (!refreshTokenDoc) {
+            throw new ServerError(httpStatus.NOT_FOUND, 'Not found');
+        }
+
+        // Return a success response after successfully removing the token
+        return {
+            serviceSuccess: true,
+            serviceStatus: httpStatus.OK,
+            serviceMessage: 'Logout successful.',
+            serviceData: {}, // refreshTokenDoc is removed, so we might not want to return it
+        };
+    } catch (error) {
+        return {
+            serviceSuccess: false,
+            serviceData: {},
+            serviceMessage: error.message || 'Internal server error', // Providing dynamic error messages based on the caught error
+            serviceStatus: error.status || httpStatus.INTERNAL_SERVER_ERROR, // Using the error's status if available, otherwise default to 500
+        };
     }
-    await refreshTokenDoc.remove();
 };
 
 /**
