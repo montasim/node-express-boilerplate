@@ -34,6 +34,8 @@ import logger from './config/logger.js';
 
 import { errorConverter, errorHandler } from './middlewares/error.js';
 import undefinedService from './modules/undefined/undefined.service.js';
+import errorEmailBody from './utils/errorEmailBody.js';
+import EmailService from './modules/email/email.service.js';
 
 const app = express();
 
@@ -153,6 +155,26 @@ app.use((error, req, res, next) => {
         // Pass other errors to the default error handler or a custom one
         next(error);
     }
+});
+
+/**
+ * General error handling middleware for operational errors.
+ * Logs the error stack, notifies administrators via email, and prepares a formatted error message response.
+ * Catches failures in email notification and still responds with the formatted error message.
+ */
+// do not remove the unused next parameter, otherwise the email mechanism will not work
+app.use((error, req, res, next) => {
+    console.error(error.stack);
+
+    const emailSubject = 'Node Express Boilerplate: Uncaught Server Exception';
+
+    EmailService.sendEmail(
+        config.admin.email,
+        emailSubject,
+        errorEmailBody(error)
+    );
+
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error.message);
 });
 
 // convert error to ApiError, if needed
