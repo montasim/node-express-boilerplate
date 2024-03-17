@@ -1,6 +1,6 @@
 import express from 'express';
 
-import validate from '../../middlewares/validate.js';
+import validateRequest from '../../middlewares/validateRequest.js';
 import auth from '../../middlewares/auth.js';
 
 import AuthValidation from './auth.validation.js';
@@ -12,29 +12,29 @@ const router = express.Router();
 router.post(
     '/register',
     fileUpload.single('picture'),
-    validate(AuthValidation.register),
+    validateRequest(AuthValidation.register),
     AuthController.register
 );
 
-router.post('/login', validate(AuthValidation.login), AuthController.login);
+router.post('/login', validateRequest(AuthValidation.login), AuthController.login);
 
-router.post('/logout', validate(AuthValidation.logout), AuthController.logout);
+router.post('/logout', validateRequest(AuthValidation.logout), AuthController.logout);
 
 router.post(
     '/refresh-tokens',
-    validate(AuthValidation.refreshTokens),
+    validateRequest(AuthValidation.refreshTokens),
     AuthController.refreshTokens
 );
 
 router.post(
     '/forgot-password',
-    validate(AuthValidation.forgotPassword),
+    validateRequest(AuthValidation.forgotPassword),
     AuthController.forgotPassword
 );
 
 router.post(
     '/reset-password',
-    validate(AuthValidation.resetPassword),
+    validateRequest(AuthValidation.resetPassword),
     AuthController.resetPassword
 );
 
@@ -46,7 +46,7 @@ router.post(
 
 router.post(
     '/verify-email',
-    validate(AuthValidation.verifyEmail),
+    validateRequest(AuthValidation.verifyEmail),
     AuthController.verifyEmail
 );
 

@@ -3,12 +3,83 @@ import path from 'path';
 import loadTempEmailDomains from '../utils/loadTempEmailDomains.js';
 import loadCommonPasswords from '../utils/loadCommonPasswords.js';
 
+const commonMessages = {
+    string: 'must be a type of \'text\'',
+    empty: 'cannot be an empty field',
+    required: 'is a required field',
+    boolean: 'should be a boolean',
+    objectId: 'must be a valid ObjectId',
+    email: 'must be a valid email',
+    mobile: 'must be a valid mobile number',
+    password: {
+        length: 'must be between 3 and 20 characters',
+        upperCase: 'must contain at least 1 uppercase letter',
+        lowerCase: 'must contain at least 1 lowercase letter',
+        digit: 'must contain at least 1 digit',
+        specialChar: 'must contain at least 1 special character',
+        common: 'use of common password is not allowed',
+        pattern: 'contains a simple pattern or is too common',
+    },
+    file: {
+        required: 'File is required',
+        type: 'Unsupported file type',
+        size: 'File size should not exceed', // Size will be appended dynamically
+    },
+};
+
+const validators = {
+    string: (fieldName) => Joi.string().messages({
+        'string.base': `${fieldName} ${commonMessages.string}`,
+        'string.empty': `${fieldName} ${commonMessages.empty}`,
+        'any.required': `${fieldName} ${commonMessages.required}`,
+    }),
+    boolean: (fieldName) => Joi.bool().messages({
+        'boolean.base': `${fieldName} ${commonMessages.boolean}`,
+        'any.required': `${fieldName} ${commonMessages.required}`,
+    }),
+    objectId: (fieldName) => Joi.string().custom(objectId).messages({
+        'string.base': `${fieldName} ${commonMessages.string}`,
+        'string.empty': `${fieldName} ${commonMessages.empty}`,
+        'any.custom': `${fieldName} ${commonMessages.objectId}`,
+    }),
+    // You can define more common validators here
+};
+
 const objectId = (value, helpers) => {
     if (!value.match(/^[0-9a-fA-F]{24}$/)) {
         return helpers.message('"{{#label}}" must be a valid mongo id');
     }
 
     return value;
+};
+
+const detailedIdValidator = (value, helpers) => {
+    // Define the pattern to extract parts
+    const pattern = /^([a-zA-Z0-9]+)-(\d{14})-(\d{8,10})$/;
+    const match = value.match(pattern);
+
+    if (!match) {
+        // If the pattern does not match at all, provide a general error message
+        return helpers.message('Invalid ID format. Expected format: prefix-YYYYMMDDHHMMSS-randomNumbers.');
+    }
+
+    // Extract parts based on the pattern
+    const [, prefix, dateTime, randomNumbers] = match;
+
+    // Validate each part - in this example, just showcasing how you might start,
+    // For instance, validating the dateTime part could involve checking it represents a valid date
+    // This is just a placeholder; actual validation logic would need to be more comprehensive
+
+    if (prefix.length < 3) {
+        return helpers.message('Invalid prefix in the ID. The prefix must be at least 3 characters long.');
+    }
+
+    if (randomNumbers.length < 8 || randomNumbers.length > 10) {
+        return helpers.message('Invalid random number sequence in the ID. It must be 8 to 10 digits long.');
+    }
+
+    // If all validations pass
+    return value; // Return the validated value
 };
 
 const email = async (value, helpers) => {
@@ -151,6 +222,7 @@ const file = (file, allowedExtensions, maxSize) => {
 
 const CustomValidation = {
     objectId,
+    detailedIdValidator,
     email,
     mobile,
     password,

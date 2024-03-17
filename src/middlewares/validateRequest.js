@@ -4,7 +4,7 @@ import httpStatus from 'http-status';
 import pick from '../utils/pick.js';
 import ServerError from '../utils/serverError.js';
 
-const validate = (schema) => async (req, res, next) => {
+const validateRequest = (schema) => async (req, res, next) => {
     const validSchema = pick(schema, ['params', 'query', 'body']);
     const object = pick(req, Object.keys(validSchema));
 
@@ -15,6 +15,7 @@ const validate = (schema) => async (req, res, next) => {
             .validateAsync(object);
 
         Object.assign(req, value);
+
         next();
     } catch (error) {
         let errorMessage = 'Validation failed';
@@ -32,4 +33,4 @@ const validate = (schema) => async (req, res, next) => {
     }
 };
 
-export default validate;
+export default validateRequest;

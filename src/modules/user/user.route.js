@@ -1,7 +1,7 @@
 import express from 'express';
 
 import auth from '../../middlewares/auth.js';
-import validate from '../../middlewares/validate.js';
+import validateRequest from '../../middlewares/validateRequest.js';
 
 import UserValidation from './user.validation.js';
 import UserController from './user.controller.js';
@@ -12,12 +12,12 @@ router
     .route('/')
     .post(
         auth('manageUsers'),
-        validate(UserValidation.createUser),
+        validateRequest(UserValidation.createUser),
         UserController.createUser
     )
     .get(
         auth('getUsers'),
-        validate(UserValidation.getUsers),
+        validateRequest(UserValidation.getUsers),
         UserController.getUsers
     );
 
@@ -25,17 +25,17 @@ router
     .route('/:userId')
     .get(
         auth('getUsers'),
-        validate(UserValidation.getUser),
+        validateRequest(UserValidation.getUser),
         UserController.getUser
     )
     .patch(
         auth('manageUsers'),
-        validate(UserValidation.updateUser),
+        validateRequest(UserValidation.updateUser),
         UserController.updateUser
     )
     .delete(
         auth('manageUsers'),
-        validate(UserValidation.deleteUser),
+        validateRequest(UserValidation.deleteUser),
         UserController.deleteUser
     );
 

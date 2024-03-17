@@ -157,25 +157,25 @@ app.use((error, req, res, next) => {
     }
 });
 
-/**
- * General error handling middleware for operational errors.
- * Logs the error stack, notifies administrators via email, and prepares a formatted error message response.
- * Catches failures in email notification and still responds with the formatted error message.
- */
-// do not remove the unused next parameter, otherwise the email mechanism will not work
-app.use((error, req, res, next) => {
-    console.error(error.stack);
-
-    const emailSubject = 'Node Express Boilerplate: Uncaught Server Exception';
-
-    EmailService.sendEmail(
-        config.admin.email,
-        emailSubject,
-        errorEmailBody(error)
-    );
-
-    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error.message);
-});
+// /**
+//  * General error handling middleware for operational errors.
+//  * Logs the error stack, notifies administrators via email, and prepares a formatted error message response.
+//  * Catches failures in email notification and still responds with the formatted error message.
+//  */
+// // do not remove the unused next parameter, otherwise the email mechanism will not work
+// app.use((error, req, res, next) => {
+//     console.error(error.stack);
+//
+//     const emailSubject = 'Node Express Boilerplate: Uncaught Server Exception';
+//
+//     EmailService.sendEmail(
+//         config.admin.email,
+//         emailSubject,
+//         errorEmailBody(error)
+//     );
+//
+//     return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error.message);
+// });
 
 // convert error to ApiError, if needed
 app.use(errorConverter);
