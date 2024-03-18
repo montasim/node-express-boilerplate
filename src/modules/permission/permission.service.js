@@ -49,7 +49,17 @@ const createPermission = async (sessionUser, permissionData) => {
                                 $expr: { $eq: ['$id', '$$createdByVar'] },
                             },
                         }, // Use the variable to match the user
-                        { $project: { _id: 0 } }, // Exclude the _id field from the lookup result
+                        {
+                            $project: {
+                                __v: 0,
+                                _id: 0,
+                                id: 0,
+                                role: 0,
+                                password: 0,
+                                isEmailVerified: 0,
+                                picture: { fileId: 0, shareableLink: 0 },
+                            },
+                        }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
                     ],
                     as: 'createdByUser',
                 },
@@ -64,7 +74,17 @@ const createPermission = async (sessionUser, permissionData) => {
                                 $expr: { $eq: ['$id', '$$updatedByVar'] },
                             },
                         },
-                        { $project: { _id: 0 } },
+                        {
+                            $project: {
+                                __v: 0,
+                                _id: 0,
+                                id: 0,
+                                role: 0,
+                                password: 0,
+                                isEmailVerified: 0,
+                                picture: { fileId: 0, shareableLink: 0 },
+                            },
+                        }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
                     ],
                     as: 'updatedByUser',
                 },
@@ -90,13 +110,13 @@ const createPermission = async (sessionUser, permissionData) => {
             {
                 $project: {
                     _id: 0,
+                    __v: 0,
                     createdByUser: 0,
                     updatedByUser: 0,
-                    'createdBy._id': 0, // This line is not needed since we already exclude _id in the lookup
-                    'updatedBy._id': 0, // This line is not needed for the same reason
                 },
             },
         ];
+
         const populatedPermission =
             await PermissionModel.aggregate(aggregationPipeline);
 
@@ -129,23 +149,89 @@ const createPermission = async (sessionUser, permissionData) => {
     }
 };
 
-const getPermission = async permissionId => {
+const getPermissions = async (sessionUser, filter, options) => {
     try {
+        let matchStage = { $match: {} };
+
+        if (filter) {
+            if (filter.name) {
+                // For partial match on the name field
+                matchStage.$match.name = { $regex: filter.name, $options: 'i' };
+            }
+            if (filter.isActive !== undefined) {
+                // For exact match on the isActive field
+                matchStage.$match.isActive = filter.isActive === 'true';
+            }
+            if (filter.createdBy) {
+                matchStage.$match.createdBy = filter.createdBy;
+            }
+            if (filter.updatedBy) {
+                matchStage.$match.updatedBy = filter.updatedBy;
+            }
+            if (filter.createdAt) {
+                const startOfDay = new Date(filter.createdAt);
+                startOfDay.setHours(0, 0, 0, 0);
+                const endOfDay = new Date(filter.createdAt);
+                endOfDay.setHours(23, 59, 59, 999);
+                matchStage.$match.createdAt = {
+                    $gte: startOfDay,
+                    $lte: endOfDay,
+                };
+            }
+            if (filter.updatedAt) {
+                const startOfDay = new Date(filter.updatedAt);
+                startOfDay.setHours(0, 0, 0, 0);
+                const endOfDay = new Date(filter.updatedAt);
+                endOfDay.setHours(23, 59, 59, 999);
+                matchStage.$match.updatedAt = {
+                    $gte: startOfDay,
+                    $lte: endOfDay,
+                };
+            }
+        }
+
+        // Sorting options
+        let sortStage = { $sort: { createdAt: -1 } }; // Default sort if no sortBy provided
+        if (options.sortBy) {
+            const sortParts = options.sortBy.split(':');
+            const sortField = sortParts[0];
+            const sortOrder = sortParts[1] === 'desc' ? -1 : 1; // Default to ascending if not specified
+
+            // Ensure only specific fields are sortable
+            if (['name', 'createdAt', 'updatedAt'].includes(sortField)) {
+                sortStage = { $sort: { [sortField]: sortOrder } };
+            }
+        }
+
+        const limit = options.limit ? parseInt(options.limit, 10) : 10;
+        const skip = options.page
+            ? (parseInt(options.page, 10) - 1) * limit
+            : 0;
+
+        // Build the dynamic aggregation pipeline
         const aggregationPipeline = [
-            {
-                $match: { id: permissionId }, // Match the permission document
-            },
+            matchStage,
             {
                 $lookup: {
                     from: 'users',
-                    let: { createdByVar: '$createdBy' }, // Define variable for use in pipeline
+                    let: { createdByVar: '$createdBy' },
                     pipeline: [
                         {
                             $match: {
                                 $expr: { $eq: ['$id', '$$createdByVar'] },
                             },
-                        }, // Use the variable to match the user
-                        { $project: { _id: 0 } }, // Exclude the _id field from the lookup result
+                        },
+                        {
+                            $project: {
+                                __v: 0,
+                                _id: 0,
+                                id: 0,
+                                role: 0,
+                                password: 0,
+                                isEmailVerified: 0,
+                                picture: { fileId: 0, shareableLink: 0 },
+                            },
+                        }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
                     ],
                     as: 'createdByUser',
                 },
@@ -160,7 +246,17 @@ const getPermission = async permissionId => {
                                 $expr: { $eq: ['$id', '$$updatedByVar'] },
                             },
                         },
-                        { $project: { _id: 0 } },
+                        {
+                            $project: {
+                                __v: 0,
+                                _id: 0,
+                                id: 0,
+                                role: 0,
+                                password: 0,
+                                isEmailVerified: 0,
+                                picture: { fileId: 0, shareableLink: 0 },
+                            },
+                        }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
                     ],
                     as: 'updatedByUser',
                 },
@@ -186,10 +282,139 @@ const getPermission = async permissionId => {
             {
                 $project: {
                     _id: 0,
+                    __v: 0,
                     createdByUser: 0,
                     updatedByUser: 0,
-                    'createdBy._id': 0, // This line is not needed since we already exclude _id in the lookup
-                    'updatedBy._id': 0, // This line is not needed for the same reason
+                },
+            },
+            sortStage,
+            { $skip: skip },
+            { $limit: limit },
+            {
+                $project: {
+                    _id: 0,
+                    __v: 0,
+                    createdByUser: 0,
+                    updatedByUser: 0,
+                },
+            },
+        ].filter(stage => Object.keys(stage).length); // Filter out empty stages
+
+        const permissions =
+            await PermissionModel.aggregate(aggregationPipeline);
+
+        if (permissions?.length === 0) {
+            return {
+                success: false,
+                statusCode: httpStatus.NOT_FOUND,
+                message: 'No permissions found.',
+                data: null,
+            };
+        }
+
+        return {
+            success: true,
+            statusCode: httpStatus.OK,
+            message: 'Permissions found successfully.',
+            data: {
+                total: permissions.length,
+                limit: limit,
+                page: options.page || 1,
+                permissions: permissions,
+            },
+        };
+    } catch (error) {
+        return {
+            success: false,
+            statusCode: error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
+            message:
+                error.message ||
+                'Internal server error on PermissionService.getPermissions()',
+            data: null,
+        };
+    }
+};
+
+const getPermission = async permissionId => {
+    try {
+        const aggregationPipeline = [
+            {
+                $match: { id: permissionId }, // Match the permission document
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    let: { createdByVar: '$createdBy' }, // Define variable for use in pipeline
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $eq: ['$id', '$$createdByVar'] },
+                            },
+                        }, // Use the variable to match the user
+                        {
+                            $project: {
+                                __v: 0,
+                                _id: 0,
+                                id: 0,
+                                role: 0,
+                                password: 0,
+                                isEmailVerified: 0,
+                                picture: { fileId: 0, shareableLink: 0 },
+                            },
+                        }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
+                    ],
+                    as: 'createdByUser',
+                },
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    let: { updatedByVar: '$updatedBy' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $eq: ['$id', '$$updatedByVar'] },
+                            },
+                        },
+                        {
+                            $project: {
+                                __v: 0,
+                                _id: 0,
+                                id: 0,
+                                role: 0,
+                                password: 0,
+                                isEmailVerified: 0,
+                                picture: { fileId: 0, shareableLink: 0 },
+                            },
+                        }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
+                    ],
+                    as: 'updatedByUser',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$createdByUser',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $unwind: {
+                    path: '$updatedByUser',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $addFields: {
+                    createdBy: '$createdByUser',
+                    updatedBy: '$updatedByUser',
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    __v: 0,
+                    createdByUser: 0,
+                    updatedByUser: 0,
                 },
             },
         ];
@@ -302,7 +527,17 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
                                 $expr: { $eq: ['$id', '$$createdByVar'] },
                             },
                         }, // Use the variable to match the user
-                        { $project: { _id: 0 } }, // Exclude the _id field from the lookup result
+                        {
+                            $project: {
+                                __v: 0,
+                                _id: 0,
+                                id: 0,
+                                role: 0,
+                                password: 0,
+                                isEmailVerified: 0,
+                                picture: { fileId: 0, shareableLink: 0 },
+                            },
+                        }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
                     ],
                     as: 'createdByUser',
                 },
@@ -317,7 +552,17 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
                                 $expr: { $eq: ['$id', '$$updatedByVar'] },
                             },
                         },
-                        { $project: { _id: 0 } },
+                        {
+                            $project: {
+                                __v: 0,
+                                _id: 0,
+                                id: 0,
+                                role: 0,
+                                password: 0,
+                                isEmailVerified: 0,
+                                picture: { fileId: 0, shareableLink: 0 },
+                            },
+                        }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
                     ],
                     as: 'updatedByUser',
                 },
@@ -343,13 +588,13 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
             {
                 $project: {
                     _id: 0,
+                    __v: 0,
                     createdByUser: 0,
                     updatedByUser: 0,
-                    'createdBy._id': 0, // This line is not needed since we already exclude _id in the lookup
-                    'updatedBy._id': 0, // This line is not needed for the same reason
                 },
             },
         ];
+
         const populatedPermission =
             await PermissionModel.aggregate(aggregationPipeline);
 
@@ -434,6 +679,7 @@ const deletePermission = async permissionId => {
 
 const PermissionService = {
     createPermission,
+    getPermissions,
     getPermission,
     updatePermission,
     deletePermission,
