@@ -1,6 +1,7 @@
-import httpStatus from 'http-status';
-
 import pick from '../../utils/pick.js';
+
+import sendControllerErrorResponse from '../../utils/sendControllerErrorResponse.js';
+import sendControllerSuccessResponse from '../../utils/sendControllerSuccessResponse.js';
 
 import PermissionService from './permission.service.js';
 
@@ -12,25 +13,14 @@ const createPermission = async (req, res) => {
             req.body
         );
 
-        const controllerResponse = {
-            success: createPermissionData.success,
-            statusCode: createPermissionData.statusCode,
-            message: createPermissionData.message,
-            data: createPermissionData.data,
-        };
-
-        res.status(controllerResponse.statusCode).json(controllerResponse);
+        // Send the new permission data
+        return sendControllerSuccessResponse(res, createPermissionData);
     } catch (error) {
-        const errorResponse = {
-            success: false,
-            statusCode: error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
-            message:
-                error.message ||
-                'Internal server error on PermissionController.createPermission()',
-            data: null,
-        };
-
-        res.status(errorResponse.statusCode).json(errorResponse);
+        return sendControllerErrorResponse(
+            res,
+            error,
+            'PermissionController.createPermission()'
+        );
     }
 };
 
@@ -53,35 +43,31 @@ const getPermissions = async (req, res) => {
             options
         );
 
-        const controllerResponse = {
-            success: createPermissionData.success,
-            statusCode: createPermissionData.statusCode,
-            message: createPermissionData.message,
-            data: createPermissionData.data,
-        };
-
-        res.status(controllerResponse.statusCode).json(controllerResponse);
+        // Send the permissions data
+        return sendControllerSuccessResponse(res, createPermissionData);
     } catch (error) {
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error);
+        return sendControllerErrorResponse(
+            res,
+            error,
+            'PermissionController.getPermissions()'
+        );
     }
 };
 
 const getPermission = async (req, res) => {
     try {
         const permissionId = req?.params?.permissionId || null;
-        const createPermissionData =
+        const permissionData =
             await PermissionService.getPermission(permissionId);
 
-        const controllerResponse = {
-            success: createPermissionData.success,
-            statusCode: createPermissionData.statusCode,
-            message: createPermissionData.message,
-            data: createPermissionData.data,
-        };
-
-        res.status(controllerResponse.statusCode).json(controllerResponse);
+        // Send the permission data
+        return sendControllerSuccessResponse(res, permissionData);
     } catch (error) {
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error);
+        return sendControllerErrorResponse(
+            res,
+            error,
+            'PermissionController.getPermission()'
+        );
     }
 };
 
@@ -95,16 +81,14 @@ const updatePermission = async (req, res) => {
             req.body
         );
 
-        const controllerResponse = {
-            success: createPermissionData.success,
-            statusCode: createPermissionData.statusCode,
-            message: createPermissionData.message,
-            data: createPermissionData.data,
-        };
-
-        res.status(controllerResponse.statusCode).json(controllerResponse);
+        // Send the permission data
+        return sendControllerSuccessResponse(res, createPermissionData);
     } catch (error) {
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error);
+        return sendControllerErrorResponse(
+            res,
+            error,
+            'PermissionController.updatePermission()'
+        );
     }
 };
 
@@ -114,16 +98,14 @@ const deletePermission = async (req, res) => {
         const createPermissionData =
             await PermissionService.deletePermission(permissionId);
 
-        const controllerResponse = {
-            success: createPermissionData.success,
-            statusCode: createPermissionData.statusCode,
-            message: createPermissionData.message,
-            data: createPermissionData.data,
-        };
-
-        res.status(controllerResponse.statusCode).json(controllerResponse);
+        // Send the permission data
+        return sendControllerSuccessResponse(res, createPermissionData);
     } catch (error) {
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error);
+        return sendControllerErrorResponse(
+            res,
+            error,
+            'PermissionController.deletePermission()'
+        );
     }
 };
 

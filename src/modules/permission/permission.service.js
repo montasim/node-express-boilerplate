@@ -14,7 +14,7 @@ const createPermission = async (sessionUser, permissionData) => {
         if (!currentSessionUser?.id) {
             throw {
                 statusCode: httpStatus.FORBIDDEN,
-                message: 'You are not authorized to perform this action',
+                message: 'You are not authorized to perform this action.',
             };
         }
 
@@ -25,12 +25,14 @@ const createPermission = async (sessionUser, permissionData) => {
             createdBy,
         });
 
-        // Fetch and populate the new permission
-        const populatedPermission = await PermissionModel.aggregate(
+        // Aggregation pipeline to fetch and populate the updated document
+        const aggregationPipeline =
             mongodbAggregationPipelineHelpers.createAggregationPipeline(
                 newPermission?.id
-            )
-        );
+            );
+
+        const populatedPermission =
+            await PermissionModel.aggregate(aggregationPipeline);
 
         // Handle a case where the population fails
         if (populatedPermission.length === 0) {
@@ -43,8 +45,8 @@ const createPermission = async (sessionUser, permissionData) => {
 
         return sendServiceResponse(
             httpStatus.CREATED,
-            'Permission created but population failed.',
-            newPermission
+            'Permission created successfully.',
+            populatedPermission
         );
     } catch (error) {
         return newServiceErrorHandler(error);
@@ -238,15 +240,17 @@ const getPermissions = async (sessionUser, filter, options) => {
 
 const getPermission = async permissionId => {
     try {
-        // Aggregation pipeline to fetch and populate the document
-        const permissions = await PermissionModel.aggregate(
+        // Aggregation pipeline to fetch and populate the updated document
+        const aggregationPipeline =
             mongodbAggregationPipelineHelpers.createAggregationPipeline(
                 permissionId
-            )
-        );
+            );
+
+        const permissions =
+            await PermissionModel.aggregate(aggregationPipeline);
 
         // Check if the populatedPermission query returned a document
-        if (permissions.length === 0) {
+        if (permissions?.length === 0) {
             throw {
                 statusCode: httpStatus.NOT_FOUND,
                 message: 'Permission not found.',
@@ -273,7 +277,7 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
         if (!currentSessionUser?.id) {
             throw {
                 statusCode: httpStatus.FORBIDDEN,
-                message: 'You are not authorized to perform this action',
+                message: 'You are not authorized to perform this action.',
             };
         }
 
@@ -332,11 +336,14 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
         }
 
         // Aggregation pipeline to fetch and populate the updated document
-        const populatedPermission = await PermissionModel.aggregate(
+        const aggregationPipeline =
             mongodbAggregationPipelineHelpers.createAggregationPipeline(
                 permissionId
-            )
-        );
+            );
+
+        // Fetch the updated permission using the aggregation pipeline
+        const populatedPermission =
+            await PermissionModel.aggregate(aggregationPipeline);
 
         // Check if the populatedPermission query returned a document
         if (!populatedPermission || populatedPermission?.length === 0) {

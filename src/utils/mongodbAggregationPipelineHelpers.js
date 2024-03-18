@@ -1,7 +1,7 @@
-const createAggregationPipeline = permissionId => {
+const createAggregationPipeline = documentId => {
     return [
         {
-            $match: { id: permissionId }, // Match the permission document
+            $match: { id: documentId }, // Match the permission document
         },
         {
             $lookup: {
@@ -23,7 +23,7 @@ const createAggregationPipeline = permissionId => {
                             isEmailVerified: 0,
                             picture: { fileId: 0, shareableLink: 0 },
                         },
-                    }, // Exclude specific fields from the lookup result
+                    }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
                 ],
                 as: 'createdByUser',
             },
@@ -48,7 +48,7 @@ const createAggregationPipeline = permissionId => {
                             isEmailVerified: 0,
                             picture: { fileId: 0, shareableLink: 0 },
                         },
-                    }, // Exclude specific fields from the lookup result
+                    }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
                 ],
                 as: 'updatedByUser',
             },

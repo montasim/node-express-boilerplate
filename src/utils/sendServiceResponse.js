@@ -1,9 +1,9 @@
-const sendServiceResponse = serviceResponse => {
+const sendServiceResponse = (statusCode, message, data) => {
     return {
         success: true,
-        statusCode: serviceResponse.statusCode,
-        message: serviceResponse.message,
-        data: serviceResponse.data,
+        statusCode: statusCode,
+        message: message,
+        data: data,
     };
 };
 
