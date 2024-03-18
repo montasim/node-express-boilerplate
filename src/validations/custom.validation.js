@@ -3,6 +3,8 @@ import path from 'path';
 import loadTempEmailDomains from '../utils/loadTempEmailDomains.js';
 import loadCommonPasswords from '../utils/loadCommonPasswords.js';
 
+import constants from '../constants/constants.js';
+
 const commonMessages = {
     string: 'must be a type of \'text\'',
     empty: 'cannot be an empty field',
@@ -46,7 +48,7 @@ const validators = {
 };
 
 const objectId = (value, helpers) => {
-    if (!value.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!value.match(constants.objectIdPattern)) {
         return helpers.message('"{{#label}}" must be a valid mongo id');
     }
 
@@ -54,9 +56,8 @@ const objectId = (value, helpers) => {
 };
 
 const detailedIdValidator = (value, helpers) => {
-    // Define the pattern to extract parts
-    const pattern = /^([a-zA-Z0-9]+)-(\d{14})-(\d{8,10})$/;
-    const match = value.match(pattern);
+    // Define the pattern to extract parts from the ID
+    const match = value.match(constants.customIdPattern);
 
     if (!match) {
         // If the pattern does not match at all, provide a general error message
@@ -84,8 +85,7 @@ const detailedIdValidator = (value, helpers) => {
 
 const email = async (value, helpers) => {
     // Regex to validate the email format
-    const emailRegex =
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const emailRegex = constants.emailRegex;
 
     // Validate the email format
     if (!emailRegex.test(value)) {
@@ -128,7 +128,7 @@ const email = async (value, helpers) => {
 
 const mobile = (value, helpers) => {
     // Regex for validating Bangladeshi mobile numbers
-    const bdMobileRegex = /^(?:\+88|88)?(01[3-9]\d{8})$/;
+    const bdMobileRegex = constants.bangladeshiMobileRegex;
 
     // Check if the mobile number matches the Bangladeshi mobile number format
     if (!bdMobileRegex.test(value)) {
@@ -141,38 +141,32 @@ const mobile = (value, helpers) => {
 };
 
 const password = async (value, helpers) => {
-    // Define regex patterns to match requirements
-    const hasUpperCase = /[A-Z]/;
-    const hasLowerCase = /[a-z]/;
-    const hasDigits = /\d/;
-    const hasSpecialChar = /[\s~`!@#$%^&*+=\-[\]\\';,/{}|\\":<>?()._]/; // Adjust special characters as needed
-
     // Check minimum and maximum length
     if (value.length < 3 || value.length > 20) {
         return helpers.message('Password must be between 3 and 20 characters');
     }
 
     // Check for at least one uppercase letter
-    if (!hasUpperCase.test(value)) {
+    if (!constants.upperCaseRegex.test(value)) {
         return helpers.message(
             'Password must contain at least 1 uppercase letter'
         );
     }
 
     // Check for at least one lowercase letter
-    if (!hasLowerCase.test(value)) {
+    if (!constants.lowerCaseRegex.test(value)) {
         return helpers.message(
             'Password must contain at least 1 lowercase letter'
         );
     }
 
     // Check for at least one digit
-    if (!hasDigits.test(value)) {
+    if (!constants.digitsRegex.test(value)) {
         return helpers.message('Password must contain at least 1 digit');
     }
 
     // Check for at least one special character
-    if (!hasSpecialChar.test(value)) {
+    if (!constants.specialCharRegex.test(value)) {
         return helpers.message(
             'Password must contain at least 1 special character'
         );

@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 
 import mongooseSchemaHelpers from '../../utils/mongooseSchemaHelpers.js';
+import permissionConstraints from './permission.constants.js';
+import constants from '../../constants/constants.js';
 
 const { Schema } = mongoose;
 
@@ -18,9 +20,7 @@ const permissionSchema = new Schema({
         validate: {
             validator: async value => {
                 // First, validate the pattern
-                const pattern = /^[a-z]+-(create|modify|get|update|delete)$/;
-
-                if (!pattern.test(value)) {
+                if (!permissionConstraints.permissionNamePattern.test(value)) {
                     return false; // Pattern does not match
                 }
 
@@ -51,7 +51,7 @@ const permissionSchema = new Schema({
         validate: {
             // Adjusted validator for custom ID format
             validator: function (v) {
-                return /^([a-zA-Z0-9]+)-(\d{14})-(\d{8,10})$/.test(v); // Matching the custom ID format
+                return constants.customIdPattern.test(v); // Matching the custom ID format
             },
             message: 'Invalid createdBy ID format.',
         },
@@ -61,7 +61,7 @@ const permissionSchema = new Schema({
         ref: 'User',
         validate: {
             validator: function (v) {
-                return /^([a-zA-Z0-9]+)-(\d{14})-(\d{8,10})$/.test(v); // Matching the custom ID format
+                return constants.customIdPattern.test(v); // Matching the custom ID format
             },
             message: 'Invalid updatedBy ID format.',
         },

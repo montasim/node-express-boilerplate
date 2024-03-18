@@ -1,6 +1,7 @@
 import Joi from 'joi';
 
 import CustomValidation from '../../validations/custom.validation.js';
+import permissionConstraints from './permission.constants.js';
 
 const createPermission = {
     body: Joi.object().keys({
@@ -10,7 +11,7 @@ const createPermission = {
             .message('Permission name must be at least 3 characters long')
             .max(50)
             .message('Permission name must be less than 50 characters long')
-            .pattern(/^[a-z]+-(create|modify|get|update|delete)$/)
+            .pattern(permissionConstraints.permissionNamePattern)
             .message(
                 'Permission name must follow the pattern: modelName-(create|modify|get|update|delete), where modelName consists of lowercase letters only.'
             )
@@ -74,7 +75,7 @@ const updatePermission = {
                 .message(
                     'Permission name must be less than 50 characters long.'
                 )
-                .pattern(/^[a-z]+-(create|modify|get|update|delete)$/)
+                .pattern(permissionConstraints.permissionNamePattern)
                 .message(
                     'Permission name must follow the pattern: modelName-(create|modify|get|update|delete), where modelName consists of lowercase letters only and the action must be one of the following: create, modify, get, update, or delete.'
                 )

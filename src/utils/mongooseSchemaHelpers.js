@@ -30,7 +30,6 @@ const addPreSaveMiddlewareForTimestampsAndId = (schema, idPrefix) => {
     });
 };
 
-
 /**
  * Validates if a document exists for a given model and ID.
  * @param {String} modelName The name of the mongoose model to validate against.
