@@ -16,7 +16,7 @@ const permissionSchema = new Schema({
         minlength: [3, 'Permission name must be at least 3 characters long'],
         maxlength: [50, 'Permission name must be less than 50 characters long'],
         validate: {
-            validator: async (value) => {
+            validator: async value => {
                 // First, validate the pattern
                 const pattern = /^[a-z]+-(create|modify|get|update|delete)$/;
 
@@ -28,15 +28,17 @@ const permissionSchema = new Schema({
                 const [modelName] = value.split('-');
 
                 // Convert the first character to uppercase assuming model names are capitalized
-                const capitalizedModelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
+                const capitalizedModelName =
+                    modelName.charAt(0).toUpperCase() + modelName.slice(1);
 
                 // Check against registered Mongoose models
                 const modelNames = mongoose.modelNames();
 
                 return modelNames.includes(capitalizedModelName);
             },
-            message: props => `${props.value} is not a valid permission name. It must follow the pattern modelName-action (where modelName is an existing Mongoose model and action is one of the following: create, modify, get, update, delete).`
-        }
+            message: props =>
+                `${props.value} is not a valid permission name. It must follow the pattern modelName-action (where modelName is an existing Mongoose model and action is one of the following: create, modify, get, update, delete).`,
+        },
     },
     isActive: {
         type: Boolean,
@@ -44,23 +46,24 @@ const permissionSchema = new Schema({
     },
     createdBy: {
         type: String,
+        required: [true, 'Please add the creator ID'],
         ref: 'User',
         validate: {
             // Adjusted validator for custom ID format
-            validator: function(v) {
-                return /^([a-zA-Z0-9]+)-(\d{14})-(\d{8,10})$/.test(v);  // Matching the custom ID format
+            validator: function (v) {
+                return /^([a-zA-Z0-9]+)-(\d{14})-(\d{8,10})$/.test(v); // Matching the custom ID format
             },
-            message: 'Invalid createdBy ID format.'
+            message: 'Invalid createdBy ID format.',
         },
     },
     updatedBy: {
         type: String,
         ref: 'User',
         validate: {
-            validator: function(v) {
+            validator: function (v) {
                 return /^([a-zA-Z0-9]+)-(\d{14})-(\d{8,10})$/.test(v); // Matching the custom ID format
             },
-            message: 'Invalid updatedBy ID format.'
+            message: 'Invalid updatedBy ID format.',
         },
     },
     createdAt: {
@@ -73,10 +76,11 @@ const permissionSchema = new Schema({
 });
 
 // Pre-save middleware to generate and assign the custom id
-permissionSchema.pre('save', function(next) {
+permissionSchema.pre('save', function (next) {
     // Only generate a new id if the document is new
     if (this.isNew) {
-        this.id = mongooseSchemaHelpers.generateUniqueIdWithPrefix('permission');
+        this.id =
+            mongooseSchemaHelpers.generateUniqueIdWithPrefix('permission');
     }
 
     next();

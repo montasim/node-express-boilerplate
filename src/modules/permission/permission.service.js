@@ -3,7 +3,6 @@ import httpStatus from 'http-status';
 import setDefaultSessionUser from '../../utils/setDefaultSessionUser.js';
 
 import PermissionModel from './permission.model.js';
-import UserModel from '../user/user.model.js';
 
 const createPermission = async (sessionUser, permissionData) => {
     try {
@@ -23,6 +22,7 @@ const createPermission = async (sessionUser, permissionData) => {
         const newPermission = await PermissionModel.create({
             ...permissionData,
             createdBy: 'user-20240317230608-000000001',
+            createdAt: new Date(),
         });
 
         // Check if the permission was created
@@ -35,63 +35,191 @@ const createPermission = async (sessionUser, permissionData) => {
             };
         }
 
-        // Convert the Mongoose document to a plain JavaScript object
-        const permission = newPermission.toObject();
+        // Aggregation pipeline to fetch and populate the updated document
+        const aggregationPipeline = [
+            {
+                $match: { id: newPermission?.id }, // Match the permission document
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    let: { createdByVar: '$createdBy' }, // Define variable for use in pipeline
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $eq: ['$id', '$$createdByVar'] },
+                            },
+                        }, // Use the variable to match the user
+                        { $project: { _id: 0 } }, // Exclude the _id field from the lookup result
+                    ],
+                    as: 'createdByUser',
+                },
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    let: { updatedByVar: '$updatedBy' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $eq: ['$id', '$$updatedByVar'] },
+                            },
+                        },
+                        { $project: { _id: 0 } },
+                    ],
+                    as: 'updatedByUser',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$createdByUser',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $unwind: {
+                    path: '$updatedByUser',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $addFields: {
+                    createdBy: '$createdByUser',
+                    updatedBy: '$updatedByUser',
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    createdByUser: 0,
+                    updatedByUser: 0,
+                    'createdBy._id': 0, // This line is not needed since we already exclude _id in the lookup
+                    'updatedBy._id': 0, // This line is not needed for the same reason
+                },
+            },
+        ];
+        const populatedPermission =
+            await PermissionModel.aggregate(aggregationPipeline);
+
+        // Check if the populatedPermission query returned a document
+        if (!populatedPermission || populatedPermission.length === 0) {
+            return {
+                success: true,
+                statusCode: httpStatus.OK,
+                message: 'Permission created but population failed.',
+                data: newPermission,
+            };
+        }
 
         // Send the permission data
         return {
             success: true,
             statusCode: httpStatus.CREATED,
             message: 'Permission created successfully.',
-            data: permission,
-        };
-    } catch (error) {
-        return {
-            success: false,
-            statusCode: error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
-            message: error.message || 'Internal server error on PermissionService.createPermission()',
-            data: null,
-        };
-    }
-};
-
-const getPermission = async (permissionId) => {
-    try {
-        // Find the permission without population
-        const permission = await PermissionModel.findOne({ id: permissionId });
-
-        // Check if the permission was found
-        if (!permission) {
-            return {
-                success: false,
-                statusCode: httpStatus.NOT_FOUND,
-                message: 'Permission not found. Please try again.',
-                data: null,
-            };
-        }
-
-        // Manually populate createdBy and updatedBy fields
-        const createdByUser = await UserModel.findOne({ id: permission.createdBy });
-        const updatedByUser = await UserModel.findOne({ id: permission.updatedBy });
-
-        // Add populated user details to permission object
-        // Ensure not to overwrite original mongoose document fields
-        const populatedPermission = permission.toObject();
-        populatedPermission.createdBy = createdByUser;
-        populatedPermission.updatedBy = updatedByUser;
-
-        // Send the permission data with manually populated createdBy and updatedBy details
-        return {
-            success: true,
-            statusCode: httpStatus.OK,
-            message: 'Permission found successfully.',
             data: populatedPermission,
         };
     } catch (error) {
         return {
             success: false,
             statusCode: error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
-            message: error.message || 'Internal server error on PermissionService.getPermission()',
+            message:
+                error.message ||
+                'Internal server error on PermissionService.createPermission()',
+            data: null,
+        };
+    }
+};
+
+const getPermission = async permissionId => {
+    try {
+        const aggregationPipeline = [
+            {
+                $match: { id: permissionId }, // Match the permission document
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    let: { createdByVar: '$createdBy' }, // Define variable for use in pipeline
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $eq: ['$id', '$$createdByVar'] },
+                            },
+                        }, // Use the variable to match the user
+                        { $project: { _id: 0 } }, // Exclude the _id field from the lookup result
+                    ],
+                    as: 'createdByUser',
+                },
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    let: { updatedByVar: '$updatedBy' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $eq: ['$id', '$$updatedByVar'] },
+                            },
+                        },
+                        { $project: { _id: 0 } },
+                    ],
+                    as: 'updatedByUser',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$createdByUser',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $unwind: {
+                    path: '$updatedByUser',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $addFields: {
+                    createdBy: '$createdByUser',
+                    updatedBy: '$updatedByUser',
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    createdByUser: 0,
+                    updatedByUser: 0,
+                    'createdBy._id': 0, // This line is not needed since we already exclude _id in the lookup
+                    'updatedBy._id': 0, // This line is not needed for the same reason
+                },
+            },
+        ];
+
+        const permissions =
+            await PermissionModel.aggregate(aggregationPipeline);
+
+        if (permissions.length === 0) {
+            return {
+                success: false,
+                statusCode: httpStatus.NOT_FOUND,
+                message: 'Permission not found.',
+                data: null,
+            };
+        }
+
+        return {
+            success: true,
+            statusCode: httpStatus.OK,
+            message: 'Permission found successfully.',
+            data: permissions[0], // Assuming you're looking for a single permission
+        };
+    } catch (error) {
+        return {
+            success: false,
+            statusCode: error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
+            message:
+                error.message ||
+                'Internal server error on PermissionService.getPermission()',
             data: null,
         };
     }
@@ -101,7 +229,6 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
     try {
         let currentSessionUser = await setDefaultSessionUser(sessionUser);
 
-        // Check if the current session user is available
         if (!currentSessionUser?.id) {
             return {
                 success: false,
@@ -111,12 +238,9 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
             };
         }
 
-        // Find the old permission
         const oldPermission = await PermissionModel.findOne({
-            id: permissionId
+            id: permissionId,
         });
-
-        // Check if the permission was found
         if (!oldPermission) {
             return {
                 success: false,
@@ -126,16 +250,14 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
             };
         }
 
-        // Dynamically check if old data and new data are the same
         let isDataSame = true;
         for (const [key, value] of Object.entries(permissionData)) {
             if (JSON.stringify(oldPermission[key]) !== JSON.stringify(value)) {
                 isDataSame = false;
-                break; // No need to continue checking if we found at least one difference
+                break;
             }
         }
 
-        // If the old data and new data is the same, return an error
         if (isDataSame) {
             return {
                 success: false,
@@ -145,24 +267,18 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
             };
         }
 
-        // Prepare the update data
         const updateData = {
             ...permissionData,
-            updatedBy: 'user-20240317230608-000000001',
-            updatedAt: new Date(), // Ensure updatedAt is set to current time
+            updatedBy: 'user-20240317230608-000000001', // Assuming you're passing the current user's ID
+            updatedAt: new Date(),
         };
 
-        // Update the permission using the custom permissionId
         const updatedPermission = await PermissionModel.findOneAndUpdate(
-            { id: permissionId }, // Use the custom id field for matching
+            { id: permissionId },
             updateData,
-            {
-                new: true,
-                runValidators: true
-            } // Return the updated document and run schema validators
+            { new: true, runValidators: true }
         );
 
-        // Check if the permission was updated
         if (!updatedPermission) {
             return {
                 success: false,
@@ -172,28 +288,105 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
             };
         }
 
-        // Send the updated permission data
+        // Aggregation pipeline to fetch and populate the updated document
+        const aggregationPipeline = [
+            {
+                $match: { id: permissionId }, // Match the permission document
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    let: { createdByVar: '$createdBy' }, // Define variable for use in pipeline
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $eq: ['$id', '$$createdByVar'] },
+                            },
+                        }, // Use the variable to match the user
+                        { $project: { _id: 0 } }, // Exclude the _id field from the lookup result
+                    ],
+                    as: 'createdByUser',
+                },
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    let: { updatedByVar: '$updatedBy' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $eq: ['$id', '$$updatedByVar'] },
+                            },
+                        },
+                        { $project: { _id: 0 } },
+                    ],
+                    as: 'updatedByUser',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$createdByUser',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $unwind: {
+                    path: '$updatedByUser',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $addFields: {
+                    createdBy: '$createdByUser',
+                    updatedBy: '$updatedByUser',
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    createdByUser: 0,
+                    updatedByUser: 0,
+                    'createdBy._id': 0, // This line is not needed since we already exclude _id in the lookup
+                    'updatedBy._id': 0, // This line is not needed for the same reason
+                },
+            },
+        ];
+        const populatedPermission =
+            await PermissionModel.aggregate(aggregationPipeline);
+
+        // Check if the populatedPermission query returned a document
+        if (!populatedPermission || populatedPermission.length === 0) {
+            return {
+                success: true,
+                statusCode: httpStatus.OK,
+                message: 'Permission updated but population failed.',
+                data: updatedPermission,
+            };
+        }
+
         return {
             success: true,
-            statusCode: httpStatus.OK, // Use 200 OK for updates
+            statusCode: httpStatus.OK,
             message: 'Permission updated successfully.',
-            data: updatedPermission, // Already a plain object if using { new: true }
+            data: populatedPermission[0], // Assuming only one document matches the criteria
         };
     } catch (error) {
         return {
             success: false,
             statusCode: error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
-            message: error.message || 'Internal server error on PermissionService.updatePermission()',
+            message:
+                error.message ||
+                'Internal server error on PermissionService.updatePermission()',
             data: null,
         };
     }
 };
 
-const deletePermission = async (permissionId) => {
+const deletePermission = async permissionId => {
     try {
         // Find the old permission
         const oldPermission = await PermissionModel.findOne({
-            id: permissionId
+            id: permissionId,
         });
 
         // Check if the permission was found
@@ -208,7 +401,7 @@ const deletePermission = async (permissionId) => {
 
         // Update the permission using the custom permissionId
         const deletePermission = await PermissionModel.findOneAndDelete(
-            { id: permissionId }, // Use the custom id field for matching
+            { id: permissionId } // Use the custom id field for matching
         );
 
         // Check if the permission was updated
@@ -232,7 +425,9 @@ const deletePermission = async (permissionId) => {
         return {
             success: false,
             statusCode: error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
-            message: error.message || 'Internal server error on PermissionService.deletePermission()',
+            message:
+                error.message ||
+                'Internal server error on PermissionService.deletePermission()',
             data: null,
         };
     }
