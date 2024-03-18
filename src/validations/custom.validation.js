@@ -1,51 +1,11 @@
+import Joi from 'joi';
 import path from 'path';
 
 import loadTempEmailDomains from '../utils/loadTempEmailDomains.js';
 import loadCommonPasswords from '../utils/loadCommonPasswords.js';
+import convertToSentenceCase from '../utils/convertToSentenceCase.js';
 
 import constants from '../constants/constants.js';
-
-const commonMessages = {
-    string: 'must be a type of \'text\'',
-    empty: 'cannot be an empty field',
-    required: 'is a required field',
-    boolean: 'should be a boolean',
-    objectId: 'must be a valid ObjectId',
-    email: 'must be a valid email',
-    mobile: 'must be a valid mobile number',
-    password: {
-        length: 'must be between 3 and 20 characters',
-        upperCase: 'must contain at least 1 uppercase letter',
-        lowerCase: 'must contain at least 1 lowercase letter',
-        digit: 'must contain at least 1 digit',
-        specialChar: 'must contain at least 1 special character',
-        common: 'use of common password is not allowed',
-        pattern: 'contains a simple pattern or is too common',
-    },
-    file: {
-        required: 'File is required',
-        type: 'Unsupported file type',
-        size: 'File size should not exceed', // Size will be appended dynamically
-    },
-};
-
-const validators = {
-    string: (fieldName) => Joi.string().messages({
-        'string.base': `${fieldName} ${commonMessages.string}`,
-        'string.empty': `${fieldName} ${commonMessages.empty}`,
-        'any.required': `${fieldName} ${commonMessages.required}`,
-    }),
-    boolean: (fieldName) => Joi.bool().messages({
-        'boolean.base': `${fieldName} ${commonMessages.boolean}`,
-        'any.required': `${fieldName} ${commonMessages.required}`,
-    }),
-    objectId: (fieldName) => Joi.string().custom(objectId).messages({
-        'string.base': `${fieldName} ${commonMessages.string}`,
-        'string.empty': `${fieldName} ${commonMessages.empty}`,
-        'any.custom': `${fieldName} ${commonMessages.objectId}`,
-    }),
-    // You can define more common validators here
-};
 
 const objectId = (value, helpers) => {
     if (!value.match(constants.objectIdPattern)) {
@@ -61,7 +21,9 @@ const detailedIdValidator = (value, helpers) => {
 
     if (!match) {
         // If the pattern does not match at all, provide a general error message
-        return helpers.message('Invalid ID format. Expected format: prefix-YYYYMMDDHHMMSS-randomNumbers.');
+        return helpers.message(
+            'Invalid ID format. Expected format: prefix-YYYYMMDDHHMMSS-randomNumbers.'
+        );
     }
 
     // Extract parts based on the pattern
@@ -72,15 +34,44 @@ const detailedIdValidator = (value, helpers) => {
     // This is just a placeholder; actual validation logic would need to be more comprehensive
 
     if (prefix.length < 3) {
-        return helpers.message('Invalid prefix in the ID. The prefix must be at least 3 characters long.');
+        return helpers.message(
+            'Invalid prefix in the ID. The prefix must be at least 3 characters long.'
+        );
     }
 
     if (randomNumbers.length < 8 || randomNumbers.length > 10) {
-        return helpers.message('Invalid random number sequence in the ID. It must be 8 to 10 digits long.');
+        return helpers.message(
+            'Invalid random number sequence in the ID. It must be 8 to 10 digits long.'
+        );
     }
 
     // If all validations pass
     return value; // Return the validated value
+};
+
+const name = (fieldname, pattern) => {
+    const sentenceCaseFieldname = convertToSentenceCase(fieldname);
+
+    return Joi.string()
+        .min(3)
+        .message(
+            `${sentenceCaseFieldname} name must be at least 3 characters long`
+        )
+        .max(50)
+        .message(
+            `${sentenceCaseFieldname} name must be less than 50 characters long`
+        )
+        .pattern(pattern)
+        .message(
+            `${sentenceCaseFieldname} name must follow the pattern: ${pattern}.`
+        )
+        .messages({
+            'string.empty': `Please add the ${fieldname} name`,
+            'string.min': `${sentenceCaseFieldname} name must be at least 3 characters long`,
+            'string.max': `${sentenceCaseFieldname} name must be less than 50 characters long`,
+            'any.required': `${sentenceCaseFieldname} name is required`,
+            'string.pattern.base': `${sentenceCaseFieldname} name must follow the pattern: ${pattern}.`,
+        });
 };
 
 const email = async (value, helpers) => {
@@ -214,13 +205,96 @@ const file = (file, allowedExtensions, maxSize) => {
     return true; // Indicate validation success
 };
 
+const isActive = () => {
+    return Joi.bool().valid(true, false).messages({
+        'boolean.base': 'isActive must be a boolean value.',
+        'any.only': 'isActive must be either true or false.',
+        'any.required': 'isActive is required.',
+    });
+};
+
+// Common Parameter Validation for permissionId
+const id = () => {
+    return Joi.string().custom(detailedIdValidator);
+};
+
+// Common Error Messages for Queries
+const queryErrorMessages = () => {
+    return {
+        'object.unknown':
+            'You have used an unknown parameter. Please check your request against the API documentation.',
+    };
+};
+
+const page = () => {
+    return Joi.number().integer().min(1).messages({
+        'number.base': 'Page must be a number.',
+        'number.integer': 'Page must be an integer.',
+        'number.min': 'Page must be at least 1.',
+    });
+};
+
+const limit = () => {
+    return Joi.number().integer().min(1).max(100).messages({
+        'number.base': 'Limit must be a number.',
+        'number.integer': 'Limit must be an integer.',
+        'number.min': 'Limit must be at least 1.',
+        'number.max': 'Limit must not exceed 100.',
+    });
+};
+
+const sortBy = () => {
+    return Joi.string().valid('name', 'createdAt', 'updatedAt').messages({
+        'string.base': 'sortBy must be a string.',
+        'any.only':
+            'sortBy must be one of the following: name, createdAt, updatedAt.',
+    });
+};
+
+const createdBy = () => {
+    return Joi.string().messages({
+        'string.base': 'createdBy must be a string.',
+    });
+};
+
+const updatedBy = () => {
+    return Joi.string().messages({
+        'string.base': 'updatedBy must be a string.',
+    });
+};
+
+const createdAt = () => {
+    return Joi.string().isoDate().messages({
+        'string.base': 'createdAt must be a string.',
+        'string.isoDate': 'createdAt must be in ISO 8601 date format.',
+    });
+};
+
+const updatedAt = () => {
+    return Joi.string().isoDate().messages({
+        'string.base': 'updatedAt must be a string.',
+        'string.isoDate': 'updatedAt must be in ISO 8601 date format.',
+    });
+};
+
 const CustomValidation = {
     objectId,
+    id,
     detailedIdValidator,
+    name,
     email,
     mobile,
     password,
     file,
+    isActive,
+    queryErrorMessages,
+    page,
+    limit,
+    sortBy,
+    createdAt,
+    createdBy,
+    updatedBy,
+    updatedAt,
 };
 
 export default CustomValidation;
