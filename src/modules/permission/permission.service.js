@@ -1,74 +1,53 @@
 import httpStatus from 'http-status';
 
 import setDefaultSessionUser from '../../utils/setDefaultSessionUser.js';
+import sendServiceResponse from '../../utils/sendServiceResponse.js';
+import newServiceErrorHandler from '../../utils/newServiceErrorHandler.js';
 
 import PermissionModel from './permission.model.js';
 import mongodbAggregationPipelineHelpers from '../../utils/mongodbAggregationPipelineHelpers.js';
 
 const createPermission = async (sessionUser, permissionData) => {
     try {
-        // Set the default session user
-        let currentSessionUser = await setDefaultSessionUser(sessionUser);
-
-        // Check if the current session user is available
+        // Validate session user
+        const currentSessionUser = await setDefaultSessionUser(sessionUser);
         if (!currentSessionUser?.id) {
-            return {
-                success: false,
+            throw {
                 statusCode: httpStatus.FORBIDDEN,
                 message: 'You are not authorized to perform this action',
-                data: null,
             };
         }
 
-        // Create the permission
+        // Create the permission with added createdBy field
+        const createdBy = 'user-20240317230608-000000001'; // Example user ID or derive from sessionUser
         const newPermission = await PermissionModel.create({
             ...permissionData,
-            createdBy: 'user-20240317230608-000000001',
+            createdBy,
         });
 
-        // Check if the permission was created
-        if (!newPermission) {
-            return {
-                success: false,
-                statusCode: httpStatus.BAD_REQUEST,
-                message: 'Failed to create permission. Please try again.',
-                data: null,
-            };
-        }
-
-        // Aggregation pipeline to fetch and populate the updated document
+        // Fetch and populate the new permission
         const populatedPermission = await PermissionModel.aggregate(
             mongodbAggregationPipelineHelpers.createAggregationPipeline(
                 newPermission?.id
             )
         );
 
-        // Check if the populatedPermission query returned a document
-        if (!populatedPermission || populatedPermission.length === 0) {
-            return {
-                success: true,
-                statusCode: httpStatus.OK,
+        // Handle a case where the population fails
+        if (populatedPermission.length === 0) {
+            throw {
+                statusCode: httpStatus.OK, // Consider if this should actually be an error state
                 message: 'Permission created but population failed.',
                 data: newPermission,
             };
         }
 
-        // Send the permission data
-        return {
-            success: true,
-            statusCode: httpStatus.CREATED,
-            message: 'Permission created successfully.',
-            data: populatedPermission,
-        };
+        return sendServiceResponse(
+            httpStatus.CREATED,
+            'Permission created but population failed.',
+            newPermission
+        );
     } catch (error) {
-        return {
-            success: false,
-            statusCode: error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
-            message:
-                error.message ||
-                'Internal server error on PermissionService.createPermission()',
-            data: null,
-        };
+        return newServiceErrorHandler(error);
     }
 };
 
@@ -233,35 +212,27 @@ const getPermissions = async (sessionUser, filter, options) => {
 
         // Check if the permissions array is empty
         if (permissions?.length === 0) {
-            return {
-                success: false,
+            throw {
                 statusCode: httpStatus.NOT_FOUND,
                 message: 'No permissions found.',
-                data: null,
             };
         }
 
+        const permissionsData = {
+            total: permissions.length,
+            limit: limit,
+            page: options.page || 1,
+            permissions: permissions,
+        };
+
         // Send the permissions data
-        return {
-            success: true,
-            statusCode: httpStatus.OK,
-            message: 'Permissions found successfully.',
-            data: {
-                total: permissions.length,
-                limit: limit,
-                page: options.page || 1,
-                permissions: permissions,
-            },
-        };
+        return sendServiceResponse(
+            httpStatus.OK,
+            'Permissions found successfully.',
+            permissionsData
+        );
     } catch (error) {
-        return {
-            success: false,
-            statusCode: error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
-            message:
-                error.message ||
-                'Internal server error on PermissionService.getPermissions()',
-            data: null,
-        };
+        return newServiceErrorHandler(error);
     }
 };
 
@@ -276,30 +247,20 @@ const getPermission = async permissionId => {
 
         // Check if the populatedPermission query returned a document
         if (permissions.length === 0) {
-            return {
-                success: false,
+            throw {
                 statusCode: httpStatus.NOT_FOUND,
                 message: 'Permission not found.',
-                data: null,
             };
         }
 
         // Send the permission data
-        return {
-            success: true,
-            statusCode: httpStatus.OK,
-            message: 'Permission found successfully.',
-            data: permissions[0], // Assuming you're looking for a single permission
-        };
+        return sendServiceResponse(
+            httpStatus.OK,
+            'Permission found successfully.',
+            permissions[0]
+        );
     } catch (error) {
-        return {
-            success: false,
-            statusCode: error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
-            message:
-                error.message ||
-                'Internal server error on PermissionService.getPermission()',
-            data: null,
-        };
+        return newServiceErrorHandler(error);
     }
 };
 
@@ -310,11 +271,9 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
 
         // Check if the current session user is available
         if (!currentSessionUser?.id) {
-            return {
-                success: false,
+            throw {
                 statusCode: httpStatus.FORBIDDEN,
                 message: 'You are not authorized to perform this action',
-                data: null,
             };
         }
 
@@ -325,11 +284,9 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
 
         // Check if the permission was found
         if (!oldPermission) {
-            return {
-                success: false,
+            throw {
                 statusCode: httpStatus.NOT_FOUND,
                 message: 'Permission not found. Please try again.',
-                data: null,
             };
         }
 
@@ -346,11 +303,9 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
 
         // Check if the data is the same
         if (isDataSame) {
-            return {
-                success: false,
+            throw {
                 statusCode: httpStatus.BAD_REQUEST,
                 message: 'No changes detected. Update not performed.',
-                data: null,
             };
         }
 
@@ -370,11 +325,9 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
 
         // Check if the permission was updated
         if (!updatedPermission) {
-            return {
-                success: false,
+            throw {
                 statusCode: httpStatus.NOT_FOUND,
                 message: 'Failed to update permission. Please try again.',
-                data: null,
             };
         }
 
@@ -387,30 +340,20 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
 
         // Check if the populatedPermission query returned a document
         if (!populatedPermission || populatedPermission?.length === 0) {
-            return {
-                success: true,
+            throw {
                 statusCode: httpStatus.OK,
                 message: 'Permission updated but population failed.',
-                data: updatedPermission,
             };
         }
 
-        // Send the updated permission data
-        return {
-            success: true,
-            statusCode: httpStatus.OK,
-            message: 'Permission updated successfully.',
-            data: populatedPermission[0], // Assuming only one document matches the criteria
-        };
+        // Send the permission data
+        return sendServiceResponse(
+            httpStatus.OK,
+            'Permission updated successfully.',
+            populatedPermission[0]
+        );
     } catch (error) {
-        return {
-            success: false,
-            statusCode: error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
-            message:
-                error.message ||
-                'Internal server error on PermissionService.updatePermission()',
-            data: null,
-        };
+        return newServiceErrorHandler(error);
     }
 };
 
@@ -423,11 +366,9 @@ const deletePermission = async permissionId => {
 
         // Check if the permission was found
         if (!oldPermission) {
-            return {
-                success: false,
+            throw {
                 statusCode: httpStatus.NOT_FOUND,
                 message: 'Permission not found. Please try again.',
-                data: null,
             };
         }
 
@@ -438,30 +379,20 @@ const deletePermission = async permissionId => {
 
         // Check if the permission was updated
         if (!deletePermission) {
-            return {
-                success: false,
+            throw {
                 statusCode: httpStatus.NOT_FOUND,
                 message: 'Failed to delete permission. Please try again.',
-                data: null,
             };
         }
 
-        // Send the updated permission data
-        return {
-            success: true,
-            statusCode: httpStatus.OK, // Use 200 OK for updates
-            message: 'Permission deleted successfully.',
-            data: null, // Already a plain object if using { new: true }
-        };
+        // Send the permission data
+        return sendServiceResponse(
+            httpStatus.OK,
+            'Permission deleted successfully.',
+            null
+        );
     } catch (error) {
-        return {
-            success: false,
-            statusCode: error.statusCode || httpStatus.INTERNAL_SERVER_ERROR,
-            message:
-                error.message ||
-                'Internal server error on PermissionService.deletePermission()',
-            data: null,
-        };
+        return newServiceErrorHandler(error);
     }
 };
 

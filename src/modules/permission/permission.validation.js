@@ -1,12 +1,17 @@
 import Joi from 'joi';
 
-import permissionConstraints from './permission.constants.js';
+import PermissionConstraints from './permission.constants.js';
 import customValidation from '../../validations/custom.validation.js';
 
 const createPermission = {
     body: Joi.object().keys({
         name: customValidation
-            .name('permission', permissionConstraints.permissionNamePattern)
+            .stringValidator(
+                'permission',
+                PermissionConstraints.PERMISSION_NAME_PATTERN,
+                3,
+                50
+            )
             .required(),
         isActive: customValidation.isActive().required(),
     }),
@@ -15,9 +20,11 @@ const createPermission = {
 const getPermissions = {
     query: Joi.object()
         .keys({
-            name: customValidation.name(
+            name: customValidation.stringValidator(
                 'permission',
-                permissionConstraints.permissionNamePattern
+                PermissionConstraints.PERMISSION_NAME_PATTERN,
+                3,
+                50
             ),
             isActive: customValidation.isActive(),
             createdBy: customValidation.createdBy(),
@@ -43,9 +50,11 @@ const updatePermission = {
     }),
     body: Joi.object()
         .keys({
-            name: customValidation.name(
+            name: customValidation.stringValidator(
                 'permission',
-                permissionConstraints.permissionNamePattern
+                PermissionConstraints.PERMISSION_NAME_PATTERN,
+                3,
+                50
             ),
             isActive: customValidation.isActive(),
         })

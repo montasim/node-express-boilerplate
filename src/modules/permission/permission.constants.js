@@ -1,7 +1,7 @@
-const permissionNamePattern = /^[a-z]+-(create|modify|get|update|delete)$/;
+const PERMISSION_NAME_PATTERN = /^[a-z]+-(create|modify|get|update|delete)$/;
 
-const permissionConstraints = {
-    permissionNamePattern,
+const PermissionConstraints = {
+    PERMISSION_NAME_PATTERN,
 };
 
-export default permissionConstraints;
+export default PermissionConstraints;

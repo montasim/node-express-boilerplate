@@ -29,37 +29,91 @@ const detailedIdValidator = (value, helpers) => {
     // Extract parts based on the pattern
     const [, prefix, dateTime, randomNumbers] = match;
 
-    // Validate each part - in this example, just showcasing how you might start,
-    // For instance, validating the dateTime part could involve checking it represents a valid date
-    // This is just a placeholder; actual validation logic would need to be more comprehensive
-
     if (prefix.length < 3) {
         return helpers.message(
             'Invalid prefix in the ID. The prefix must be at least 3 characters long.'
         );
     }
 
-    if (randomNumbers.length < 8 || randomNumbers.length > 10) {
+    // Validate dateTime
+    if (!/^\d{14}$/.test(dateTime)) {
         return helpers.message(
-            'Invalid random number sequence in the ID. It must be 8 to 10 digits long.'
+            'Invalid date and time format in the ID. Expected format: YYYYMMDDHHMMSS.'
         );
     }
 
-    // If all validations pass
-    return value; // Return the validated value
+    const year = parseInt(dateTime.substring(0, 4), 10);
+    const month = parseInt(dateTime.substring(4, 6), 10) - 1; // Month is 0-indexed in JavaScript
+    const day = parseInt(dateTime.substring(6, 8), 10);
+    const hour = parseInt(dateTime.substring(8, 10), 10);
+    const minute = parseInt(dateTime.substring(10, 12), 10);
+    const second = parseInt(dateTime.substring(12, 14), 10);
+
+    // Validate year
+    if (year < 1900 || year > new Date().getFullYear()) {
+        return helpers.message(
+            'Invalid year in the provided ID. Year must be between 1900 and the current year.'
+        );
+    }
+
+    // Validate month
+    if (month < 1 || month > 12) {
+        return helpers.message(
+            'Invalid month in the provided ID. Month must be between 01 and 12.'
+        );
+    }
+
+    // Validate day
+    const maxDay = new Date(year, month, 0).getDate(); // Gets the last day of the previous month
+    if (day < 1 || day > maxDay) {
+        return helpers.message(
+            `Invalid day in the provided ID. For the given month, day must be between 01 and ${maxDay}.`
+        );
+    }
+
+    // Validate hour
+    if (hour < 0 || hour > 23) {
+        return helpers.message(
+            'Invalid hour in the provided ID. Hour must be between 00 and 23.'
+        );
+    }
+
+    // Validate minute
+    if (minute < 0 || minute > 59) {
+        return helpers.message(
+            'Invalid minute in the provided ID. Minute must be between 00 and 59.'
+        );
+    }
+
+    // Validate second
+    if (second < 0 || second > 59) {
+        return helpers.message(
+            'Invalid second in the provided ID. Second must be between 00 and 59.'
+        );
+    }
+
+    // Validate randomNumbers
+    if (randomNumbers.length < 8 || randomNumbers.length > 10) {
+        return helpers.message(
+            'Invalid random number sequence in the provided ID. It must be 8 to 10 digits long.'
+        );
+    }
+
+    // Return the validated value if all validations pass
+    return value;
 };
 
-const name = (fieldname, pattern) => {
+const stringValidator = (fieldname, pattern, minLength, maxLength) => {
     const sentenceCaseFieldname = convertToSentenceCase(fieldname);
 
     return Joi.string()
-        .min(3)
+        .min(minLength)
         .message(
-            `${sentenceCaseFieldname} name must be at least 3 characters long`
+            `${sentenceCaseFieldname} name must be at least ${minLength} characters long`
         )
-        .max(50)
+        .max(maxLength)
         .message(
-            `${sentenceCaseFieldname} name must be less than 50 characters long`
+            `${sentenceCaseFieldname} name must be less than ${maxLength} characters long`
         )
         .pattern(pattern)
         .message(
@@ -67,8 +121,8 @@ const name = (fieldname, pattern) => {
         )
         .messages({
             'string.empty': `Please add the ${fieldname} name`,
-            'string.min': `${sentenceCaseFieldname} name must be at least 3 characters long`,
-            'string.max': `${sentenceCaseFieldname} name must be less than 50 characters long`,
+            'string.min': `${sentenceCaseFieldname} name must be at least ${minLength} characters long`,
+            'string.max': `${sentenceCaseFieldname} name must be less than ${maxLength} characters long`,
             'any.required': `${sentenceCaseFieldname} name is required`,
             'string.pattern.base': `${sentenceCaseFieldname} name must follow the pattern: ${pattern}.`,
         });
@@ -281,7 +335,7 @@ const CustomValidation = {
     objectId,
     id,
     detailedIdValidator,
-    name,
+    stringValidator,
     email,
     mobile,
     password,
