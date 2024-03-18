@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-import PermissionConstraints from './permission.constants.js';
+import PermissionConstants from './permission.constants.js';
 import customValidation from '../../validations/custom.validation.js';
 
 const createPermission = {
@@ -8,7 +8,7 @@ const createPermission = {
         name: customValidation
             .stringValidator(
                 'permission',
-                PermissionConstraints.PERMISSION_NAME_PATTERN,
+                PermissionConstants.PERMISSION_NAME_PATTERN,
                 3,
                 50
             )
@@ -22,7 +22,7 @@ const getPermissions = {
         .keys({
             name: customValidation.stringValidator(
                 'permission',
-                PermissionConstraints.PERMISSION_NAME_PATTERN,
+                PermissionConstants.PERMISSION_NAME_PATTERN,
                 3,
                 50
             ),
@@ -52,7 +52,7 @@ const updatePermission = {
         .keys({
             name: customValidation.stringValidator(
                 'permission',
-                PermissionConstraints.PERMISSION_NAME_PATTERN,
+                PermissionConstants.PERMISSION_NAME_PATTERN,
                 3,
                 50
             ),

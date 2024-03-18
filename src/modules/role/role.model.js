@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 
 import mongooseSchemaHelpers from '../../utils/mongooseSchemaHelpers.js';
+import RoleConstants from './role.constants.js';
+import constants from '../../constants/constants.js';
 
 const { Schema } = mongoose;
 
@@ -8,7 +10,6 @@ const roleSchema = new Schema({
     id: {
         type: String,
         unique: true,
-        required: [true, 'Please add the role ID'],
     },
     name: {
         type: String,
@@ -16,19 +17,73 @@ const roleSchema = new Schema({
         required: [true, 'Please add the role name'],
         minlength: [3, 'Role name must be at least 3 characters long'],
         maxlength: [50, 'Role name must be less than 50 characters long'],
-    },
-    permissions: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Permission',
         validate: {
-            validator: mongooseSchemaHelpers.createDocumentExistenceValidator('PermissionModel', 'Invalid permission ID. The referenced permission does not exist.'),
-            message: 'Invalid permission ID. The referenced permission does not exist.',
+            validator: async value => {
+                if (!RoleConstants.ROLE_NAME_PATTERN.test(value)) {
+                    return false; // Pattern does not match
+                }
+
+                return true;
+            },
+            message: props => `${props.value} is not a valid role name.`,
         },
-    }],
+    },
+    permissions: [
+        {
+            type: String,
+            required: [true, 'Please add valid permission IDs'],
+            validate: {
+                validator: function (v) {
+                    return constants.customIdPattern.test(v); // Ensure this matches your custom ID format
+                },
+                message: 'Invalid permission ID format.',
+            },
+        },
+    ],
+
+    isActive: {
+        type: Boolean,
+        required: [true, 'Please add the role active or inactive status'],
+    },
+    createdBy: {
+        type: String,
+        required: [true, 'Please add the creator ID'],
+        ref: 'User',
+        validate: {
+            // Adjusted validator for custom ID format
+            validator: function (v) {
+                return constants.customIdPattern.test(v); // Matching the custom ID format
+            },
+            message: 'Invalid createdBy ID format.',
+        },
+    },
+    updatedBy: {
+        type: String,
+        ref: 'User',
+        validate: {
+            validator: function (v) {
+                return constants.customIdPattern.test(v); // Matching the custom ID format
+            },
+            message: 'Invalid updatedBy ID format.',
+        },
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    updatedAt: {
+        type: Date,
+    },
 });
 
-// Applying utility functions
-mongooseSchemaHelpers.addPreSaveMiddlewareForTimestampsAndId(roleSchema);
-mongooseSchemaHelpers.addCommonSchemaFields(roleSchema);
+// Pre-save middleware to generate and assign the custom id
+roleSchema.pre('save', function (next) {
+    // Only generate a new id if the document is new
+    if (this.isNew) {
+        this.id = mongooseSchemaHelpers.generateUniqueIdWithPrefix('role');
+    }
+
+    next();
+});
 
 export default mongoose.model('Role', roleSchema);
