@@ -7,6 +7,7 @@ import mongodbAggregationPipelineHelpers from '../../utils/mongodbAggregationPip
 
 const createPermission = async (sessionUser, permissionData) => {
     try {
+        // Set the default session user
         let currentSessionUser = await setDefaultSessionUser(sessionUser);
 
         // Check if the current session user is available
@@ -73,8 +74,10 @@ const createPermission = async (sessionUser, permissionData) => {
 
 const getPermissions = async (sessionUser, filter, options) => {
     try {
+        // Set the default match stage
         let matchStage = { $match: {} };
 
+        // Check if the filter options are available
         if (filter) {
             if (filter.name) {
                 // For partial match on the name field
@@ -114,6 +117,8 @@ const getPermissions = async (sessionUser, filter, options) => {
 
         // Sorting options
         let sortStage = { $sort: { createdAt: -1 } }; // Default sort if no sortBy provided
+
+        // Check if the sortBy options are available
         if (options.sortBy) {
             const sortParts = options.sortBy.split(':');
             const sortField = sortParts[0];
@@ -222,9 +227,11 @@ const getPermissions = async (sessionUser, filter, options) => {
             },
         ].filter(stage => Object.keys(stage).length); // Filter out empty stages
 
+        // Fetch the permissions using the aggregation pipeline
         const permissions =
             await PermissionModel.aggregate(aggregationPipeline);
 
+        // Check if the permissions array is empty
         if (permissions?.length === 0) {
             return {
                 success: false,
@@ -234,6 +241,7 @@ const getPermissions = async (sessionUser, filter, options) => {
             };
         }
 
+        // Send the permissions data
         return {
             success: true,
             statusCode: httpStatus.OK,
@@ -297,8 +305,10 @@ const getPermission = async permissionId => {
 
 const updatePermission = async (sessionUser, permissionId, permissionData) => {
     try {
+        // Set the default session user
         let currentSessionUser = await setDefaultSessionUser(sessionUser);
 
+        // Check if the current session user is available
         if (!currentSessionUser?.id) {
             return {
                 success: false,
@@ -308,10 +318,12 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
             };
         }
 
+        // Find the old permission
         const oldPermission = await PermissionModel.findOne({
             id: permissionId,
         });
 
+        // Check if the permission was found
         if (!oldPermission) {
             return {
                 success: false,
@@ -321,7 +333,10 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
             };
         }
 
+        // Assuming that initially, the data is the same
         let isDataSame = true;
+
+        // Checking for changes in the permissionData
         for (const [key, value] of Object.entries(permissionData)) {
             if (JSON.stringify(oldPermission[key]) !== JSON.stringify(value)) {
                 isDataSame = false;
@@ -329,6 +344,7 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
             }
         }
 
+        // Check if the data is the same
         if (isDataSame) {
             return {
                 success: false,
@@ -338,18 +354,21 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
             };
         }
 
+        // Prepare the updated data
         const updateData = {
             ...permissionData,
             updatedBy: 'user-20240317230608-000000001', // Assuming you're passing the current user's ID
             updatedAt: new Date(),
         };
 
+        // Update the permission using the custom permissionId
         const updatedPermission = await PermissionModel.findOneAndUpdate(
             { id: permissionId },
             updateData,
             { new: true, runValidators: true }
         );
 
+        // Check if the permission was updated
         if (!updatedPermission) {
             return {
                 success: false,
@@ -376,6 +395,7 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
             };
         }
 
+        // Send the updated permission data
         return {
             success: true,
             statusCode: httpStatus.OK,
