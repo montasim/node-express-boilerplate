@@ -3,6 +3,7 @@ import httpStatus from 'http-status';
 import setDefaultSessionUser from '../../utils/setDefaultSessionUser.js';
 
 import PermissionModel from './permission.model.js';
+import mongodbAggregationPipelineHelpers from '../../utils/mongodbAggregationPipelineHelpers.js';
 
 const createPermission = async (sessionUser, permissionData) => {
     try {
@@ -35,90 +36,11 @@ const createPermission = async (sessionUser, permissionData) => {
         }
 
         // Aggregation pipeline to fetch and populate the updated document
-        const aggregationPipeline = [
-            {
-                $match: { id: newPermission?.id }, // Match the permission document
-            },
-            {
-                $lookup: {
-                    from: 'users',
-                    let: { createdByVar: '$createdBy' }, // Define variable for use in pipeline
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: { $eq: ['$id', '$$createdByVar'] },
-                            },
-                        }, // Use the variable to match the user
-                        {
-                            $project: {
-                                __v: 0,
-                                _id: 0,
-                                id: 0,
-                                role: 0,
-                                password: 0,
-                                isEmailVerified: 0,
-                                picture: { fileId: 0, shareableLink: 0 },
-                            },
-                        }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
-                    ],
-                    as: 'createdByUser',
-                },
-            },
-            {
-                $lookup: {
-                    from: 'users',
-                    let: { updatedByVar: '$updatedBy' },
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: { $eq: ['$id', '$$updatedByVar'] },
-                            },
-                        },
-                        {
-                            $project: {
-                                __v: 0,
-                                _id: 0,
-                                id: 0,
-                                role: 0,
-                                password: 0,
-                                isEmailVerified: 0,
-                                picture: { fileId: 0, shareableLink: 0 },
-                            },
-                        }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
-                    ],
-                    as: 'updatedByUser',
-                },
-            },
-            {
-                $unwind: {
-                    path: '$createdByUser',
-                    preserveNullAndEmptyArrays: true,
-                },
-            },
-            {
-                $unwind: {
-                    path: '$updatedByUser',
-                    preserveNullAndEmptyArrays: true,
-                },
-            },
-            {
-                $addFields: {
-                    createdBy: '$createdByUser',
-                    updatedBy: '$updatedByUser',
-                },
-            },
-            {
-                $project: {
-                    _id: 0,
-                    __v: 0,
-                    createdByUser: 0,
-                    updatedByUser: 0,
-                },
-            },
-        ];
-
-        const populatedPermission =
-            await PermissionModel.aggregate(aggregationPipeline);
+        const populatedPermission = await PermissionModel.aggregate(
+            mongodbAggregationPipelineHelpers.createAggregationPipeline(
+                newPermission?.id
+            )
+        );
 
         // Check if the populatedPermission query returned a document
         if (!populatedPermission || populatedPermission.length === 0) {
@@ -337,91 +259,14 @@ const getPermissions = async (sessionUser, filter, options) => {
 
 const getPermission = async permissionId => {
     try {
-        const aggregationPipeline = [
-            {
-                $match: { id: permissionId }, // Match the permission document
-            },
-            {
-                $lookup: {
-                    from: 'users',
-                    let: { createdByVar: '$createdBy' }, // Define variable for use in pipeline
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: { $eq: ['$id', '$$createdByVar'] },
-                            },
-                        }, // Use the variable to match the user
-                        {
-                            $project: {
-                                __v: 0,
-                                _id: 0,
-                                id: 0,
-                                role: 0,
-                                password: 0,
-                                isEmailVerified: 0,
-                                picture: { fileId: 0, shareableLink: 0 },
-                            },
-                        }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
-                    ],
-                    as: 'createdByUser',
-                },
-            },
-            {
-                $lookup: {
-                    from: 'users',
-                    let: { updatedByVar: '$updatedBy' },
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: { $eq: ['$id', '$$updatedByVar'] },
-                            },
-                        },
-                        {
-                            $project: {
-                                __v: 0,
-                                _id: 0,
-                                id: 0,
-                                role: 0,
-                                password: 0,
-                                isEmailVerified: 0,
-                                picture: { fileId: 0, shareableLink: 0 },
-                            },
-                        }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
-                    ],
-                    as: 'updatedByUser',
-                },
-            },
-            {
-                $unwind: {
-                    path: '$createdByUser',
-                    preserveNullAndEmptyArrays: true,
-                },
-            },
-            {
-                $unwind: {
-                    path: '$updatedByUser',
-                    preserveNullAndEmptyArrays: true,
-                },
-            },
-            {
-                $addFields: {
-                    createdBy: '$createdByUser',
-                    updatedBy: '$updatedByUser',
-                },
-            },
-            {
-                $project: {
-                    _id: 0,
-                    __v: 0,
-                    createdByUser: 0,
-                    updatedByUser: 0,
-                },
-            },
-        ];
+        // Aggregation pipeline to fetch and populate the document
+        const permissions = await PermissionModel.aggregate(
+            mongodbAggregationPipelineHelpers.createAggregationPipeline(
+                permissionId
+            )
+        );
 
-        const permissions =
-            await PermissionModel.aggregate(aggregationPipeline);
-
+        // Check if the populatedPermission query returned a document
         if (permissions.length === 0) {
             return {
                 success: false,
@@ -431,6 +276,7 @@ const getPermission = async permissionId => {
             };
         }
 
+        // Send the permission data
         return {
             success: true,
             statusCode: httpStatus.OK,
@@ -465,6 +311,7 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
         const oldPermission = await PermissionModel.findOne({
             id: permissionId,
         });
+
         if (!oldPermission) {
             return {
                 success: false,
@@ -513,93 +360,14 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
         }
 
         // Aggregation pipeline to fetch and populate the updated document
-        const aggregationPipeline = [
-            {
-                $match: { id: permissionId }, // Match the permission document
-            },
-            {
-                $lookup: {
-                    from: 'users',
-                    let: { createdByVar: '$createdBy' }, // Define variable for use in pipeline
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: { $eq: ['$id', '$$createdByVar'] },
-                            },
-                        }, // Use the variable to match the user
-                        {
-                            $project: {
-                                __v: 0,
-                                _id: 0,
-                                id: 0,
-                                role: 0,
-                                password: 0,
-                                isEmailVerified: 0,
-                                picture: { fileId: 0, shareableLink: 0 },
-                            },
-                        }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
-                    ],
-                    as: 'createdByUser',
-                },
-            },
-            {
-                $lookup: {
-                    from: 'users',
-                    let: { updatedByVar: '$updatedBy' },
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: { $eq: ['$id', '$$updatedByVar'] },
-                            },
-                        },
-                        {
-                            $project: {
-                                __v: 0,
-                                _id: 0,
-                                id: 0,
-                                role: 0,
-                                password: 0,
-                                isEmailVerified: 0,
-                                picture: { fileId: 0, shareableLink: 0 },
-                            },
-                        }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
-                    ],
-                    as: 'updatedByUser',
-                },
-            },
-            {
-                $unwind: {
-                    path: '$createdByUser',
-                    preserveNullAndEmptyArrays: true,
-                },
-            },
-            {
-                $unwind: {
-                    path: '$updatedByUser',
-                    preserveNullAndEmptyArrays: true,
-                },
-            },
-            {
-                $addFields: {
-                    createdBy: '$createdByUser',
-                    updatedBy: '$updatedByUser',
-                },
-            },
-            {
-                $project: {
-                    _id: 0,
-                    __v: 0,
-                    createdByUser: 0,
-                    updatedByUser: 0,
-                },
-            },
-        ];
-
-        const populatedPermission =
-            await PermissionModel.aggregate(aggregationPipeline);
+        const populatedPermission = await PermissionModel.aggregate(
+            mongodbAggregationPipelineHelpers.createAggregationPipeline(
+                permissionId
+            )
+        );
 
         // Check if the populatedPermission query returned a document
-        if (!populatedPermission || populatedPermission.length === 0) {
+        if (!populatedPermission || populatedPermission?.length === 0) {
             return {
                 success: true,
                 statusCode: httpStatus.OK,

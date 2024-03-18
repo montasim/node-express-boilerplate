@@ -1,7 +1,8 @@
 import httpStatus from 'http-status';
 
-import PermissionService from './permission.service.js';
 import pick from '../../utils/pick.js';
+
+import PermissionService from './permission.service.js';
 
 const createPermission = async (req, res) => {
     try {

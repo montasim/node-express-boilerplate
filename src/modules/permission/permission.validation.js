@@ -36,19 +36,50 @@ const createPermission = {
 const getPermissions = {
     query: Joi.object()
         .keys({
-            name: Joi.string().max(50),
-            isActive: Joi.string().valid('true', 'false'),
-            createdBy: Joi.string(),
-            updatedBy: Joi.string(),
-            createdAt: Joi.string().isoDate(),
-            updatedAt: Joi.string().isoDate(),
-            sortBy: Joi.string().valid('name', 'createdAt', 'updatedAt'),
-            limit: Joi.number().integer().min(1).max(100),
-            page: Joi.number().integer().min(1),
+            name: Joi.string().max(50).messages({
+                'string.base': 'Name must be a string.',
+                'string.max': 'Name must not exceed 50 characters.',
+            }),
+            isActive: Joi.bool().valid(true, false).messages({
+                'string.base': 'isActive must be a string.',
+                'any.only': 'isActive must be either "true" or "false".',
+            }),
+            createdBy: Joi.string().messages({
+                'string.base': 'createdBy must be a string.',
+            }),
+            updatedBy: Joi.string().messages({
+                'string.base': 'updatedBy must be a string.',
+            }),
+            createdAt: Joi.string().isoDate().messages({
+                'string.base': 'createdAt must be a string.',
+                'string.isoDate': 'createdAt must be in ISO 8601 date format.',
+            }),
+            updatedAt: Joi.string().isoDate().messages({
+                'string.base': 'updatedAt must be a string.',
+                'string.isoDate': 'updatedAt must be in ISO 8601 date format.',
+            }),
+            sortBy: Joi.string()
+                .valid('name', 'createdAt', 'updatedAt')
+                .messages({
+                    'string.base': 'sortBy must be a string.',
+                    'any.only':
+                        'sortBy must be one of the following: name, createdAt, updatedAt.',
+                }),
+            limit: Joi.number().integer().min(1).max(100).messages({
+                'number.base': 'Limit must be a number.',
+                'number.integer': 'Limit must be an integer.',
+                'number.min': 'Limit must be at least 1.',
+                'number.max': 'Limit must not exceed 100.',
+            }),
+            page: Joi.number().integer().min(1).messages({
+                'number.base': 'Page must be a number.',
+                'number.integer': 'Page must be an integer.',
+                'number.min': 'Page must be at least 1.',
+            }),
         })
         .messages({
-            // Default message for the entire object in case of any other unforeseen validation errors.
-            'object.unknown': 'You have used an unknown parameter.',
+            'object.unknown':
+                'You have used an unknown parameter. Please check your request against the API documentation.',
         }),
 };
 
