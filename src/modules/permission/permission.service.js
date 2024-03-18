@@ -22,7 +22,6 @@ const createPermission = async (sessionUser, permissionData) => {
         const newPermission = await PermissionModel.create({
             ...permissionData,
             createdBy: 'user-20240317230608-000000001',
-            createdAt: new Date(),
         });
 
         // Check if the permission was created
