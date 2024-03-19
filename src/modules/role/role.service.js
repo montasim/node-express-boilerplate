@@ -5,8 +5,9 @@ import sendServiceResponse from '../../utils/sendServiceResponse.js';
 import newServiceErrorHandler from '../../utils/newServiceErrorHandler.js';
 
 import RoleModel from './role.model.js';
-import mongodbAggregationPipelineHelpers from '../../utils/mongodbAggregationPipelineHelpers.js';
 import PermissionModel from '../permission/permission.model.js';
+import UserModel from '../user/user.model.js';
+import mongodbAggregationPipelineHelpers from '../../utils/mongodbAggregationPipelineHelpers.js';
 
 const createRole = async (sessionUser, roleData) => {
     try {
@@ -435,6 +436,12 @@ const deleteRole = async roleId => {
                 message: 'Failed to delete role. Please try again.',
             };
         }
+
+        // TODO: Automatically remove the deleted roles from all users
+        // await UserModel.updateMany(
+        //     { role: roleId }, // Finds all users with the deleted role
+        //     { $pull: { role: roleId } } // Removes the deleted role from their roles array
+        // );
 
         // Send the role data
         return sendServiceResponse(
