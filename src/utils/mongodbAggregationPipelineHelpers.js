@@ -1,4 +1,4 @@
-const createAggregationPipeline = documentId => {
+const createdByUpdatedByAggregationPipeline = documentId => {
     return [
         {
             $match: { id: documentId }, // Match the permission document
@@ -85,7 +85,7 @@ const createAggregationPipeline = documentId => {
 };
 
 const mongodbAggregationPipelineHelpers = {
-    createAggregationPipeline,
+    createdByUpdatedByAggregationPipeline,
 };
 
 export default mongodbAggregationPipelineHelpers;

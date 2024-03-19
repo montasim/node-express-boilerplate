@@ -94,7 +94,9 @@ const getUserById = async userId => {
     try {
         // Aggregation pipeline to fetch and populate the updated document
         const aggregationPipeline =
-            mongodbAggregationPipelineHelpers.createAggregationPipeline(userId);
+            mongodbAggregationPipelineHelpers.createdByUpdatedByAggregationPipeline(
+                userId
+            );
 
         const user = await UserModel.aggregate(aggregationPipeline);
 

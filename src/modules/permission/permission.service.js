@@ -58,7 +58,7 @@ const createPermission = async (sessionUser, permissionData) => {
 
         // Aggregation pipeline to fetch and populate the updated document
         const aggregationPipeline =
-            mongodbAggregationPipelineHelpers.createAggregationPipeline(
+            mongodbAggregationPipelineHelpers.createdByUpdatedByAggregationPipeline(
                 newPermission?.id
             );
 
@@ -273,7 +273,7 @@ const getPermission = async permissionId => {
     try {
         // Aggregation pipeline to fetch and populate the updated document
         const aggregationPipeline =
-            mongodbAggregationPipelineHelpers.createAggregationPipeline(
+            mongodbAggregationPipelineHelpers.createdByUpdatedByAggregationPipeline(
                 permissionId
             );
 
@@ -368,7 +368,7 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
 
         // Aggregation pipeline to fetch and populate the updated document
         const aggregationPipeline =
-            mongodbAggregationPipelineHelpers.createAggregationPipeline(
+            mongodbAggregationPipelineHelpers.createdByUpdatedByAggregationPipeline(
                 permissionId
             );
 

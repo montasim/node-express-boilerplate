@@ -40,7 +40,7 @@ const createRole = async (sessionUser, roleData) => {
 
         // Aggregation pipeline to fetch and populate the updated document
         const aggregationPipeline =
-            mongodbAggregationPipelineHelpers.createAggregationPipeline(
+            mongodbAggregationPipelineHelpers.createdByUpdatedByAggregationPipeline(
                 newRole?.id
             );
 
@@ -627,7 +627,9 @@ const updateRole = async (sessionUser, roleId, roleData) => {
 
         // Aggregation pipeline to fetch and populate the updated document
         const aggregationPipeline =
-            mongodbAggregationPipelineHelpers.createAggregationPipeline(roleId);
+            mongodbAggregationPipelineHelpers.createdByUpdatedByAggregationPipeline(
+                roleId
+            );
 
         // Fetch the updated role using the aggregation pipeline
         const populatedRole = await RoleModel.aggregate(aggregationPipeline);
