@@ -6,6 +6,7 @@ import newServiceErrorHandler from '../../utils/newServiceErrorHandler.js';
 
 import RoleModel from './role.model.js';
 import mongodbAggregationPipelineHelpers from '../../utils/mongodbAggregationPipelineHelpers.js';
+import PermissionModel from '../permission/permission.model.js';
 
 const createRole = async (sessionUser, roleData) => {
     try {
@@ -18,11 +19,22 @@ const createRole = async (sessionUser, roleData) => {
             };
         }
 
-        // Create the role with added createdBy field
-        const createdBy = 'user-20240317230608-000000001'; // Example user ID or derive from sessionUser
+        // Check if the role name already exists
+        const existingRole = await RoleModel.findOne({ name: roleData?.name });
+
+        // Throw an error if the role name already exists
+        if (existingRole) {
+            throw {
+                statusCode: httpStatus.CONFLICT,
+                message:
+                    'Role name already exists. Please use a different name.',
+            };
+        }
+
+        // Create the new role
         const newRole = await RoleModel.create({
             ...roleData,
-            createdBy,
+            createdBy: 'user-20240317230608-000000001',
         });
 
         // Aggregation pipeline to fetch and populate the updated document
@@ -289,31 +301,71 @@ const updateRole = async (sessionUser, roleId, roleData) => {
             };
         }
 
-        // Assuming that initially, the data is the same
-        let isDataSame = true;
+        // Convert permissions to a set for easier checking
+        const existingPermissionsSet = new Set(
+            oldRole.permissions.map(p => p.permission)
+        );
 
-        // Checking for changes in the roleData
-        for (const [key, value] of Object.entries(roleData)) {
-            if (JSON.stringify(oldRole[key]) !== JSON.stringify(value)) {
-                isDataSame = false;
-                break;
+        // Get the existing permissions from the PermissionModel
+        const existingPermissions = await PermissionModel.find();
+
+        // Create a set of valid permission IDs for easy lookup
+        const validPermissionIdsSet = new Set(
+            existingPermissions.map(perm => perm.id)
+        );
+
+        // Handle addPermissions
+        if (roleData.addPermissions) {
+            for (const { permission } of roleData.addPermissions) {
+                // Check if the permission already exists in the role
+                if (existingPermissionsSet.has(permission)) {
+                    throw {
+                        statusCode: httpStatus.BAD_REQUEST,
+                        message: `Permission ${permission} already exists in the role.`,
+                    };
+                }
+                // Check if the permission to be added is a valid permission by checking against the validPermissionIdsSet
+                else if (!validPermissionIdsSet.has(permission)) {
+                    throw {
+                        statusCode: httpStatus.BAD_REQUEST,
+                        message: `Permission ${permission} is not a valid permission ID.`,
+                    };
+                } else {
+                    oldRole.permissions.push({ permission });
+                }
             }
         }
 
-        // Check if the data is the same
-        if (isDataSame) {
-            throw {
-                statusCode: httpStatus.BAD_REQUEST,
-                message: 'No changes detected. Update not performed.',
-            };
+        // Handle deletePermissions
+        if (roleData.deletePermissions) {
+            for (const { permission } of roleData.deletePermissions) {
+                if (!existingPermissionsSet.has(permission)) {
+                    throw {
+                        statusCode: httpStatus.BAD_REQUEST,
+                        message: `Permission ${permission} does not exist in the role.`,
+                    };
+                }
+            }
+
+            oldRole.permissions = oldRole.permissions.filter(
+                p =>
+                    !roleData.deletePermissions.some(
+                        dp => dp.permission === p.permission
+                    )
+            );
         }
 
         // Prepare the updated data
         const updateData = {
-            ...roleData,
-            updatedBy: 'user-20240317230608-000000001', // Assuming you're passing the current user's ID
+            ...oldRole.toObject(), // Convert the mongoose document to a plain JavaScript object
+            updatedBy: 'user-20240317230608-000000001', // Use the current session user's ID
             updatedAt: new Date(),
         };
+
+        // Remove properties not needed for update
+        delete updateData._id;
+        delete updateData.addPermissions;
+        delete updateData.deletePermissions;
 
         // Update the role using the custom roleId
         const updatedRole = await RoleModel.findOneAndUpdate(

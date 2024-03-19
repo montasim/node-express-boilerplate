@@ -10,10 +10,27 @@ const createRole = {
             .stringValidator('role', RoleConstants.ROLE_NAME_PATTERN, 3, 50)
             .required(),
         permissions: Joi.array()
-            .items(Joi.string().pattern(constants.customIdPattern)) // Example pattern for MongoDB ObjectId validation
+            .items(
+                Joi.object({
+                    permission: Joi.string().pattern(constants.customIdPattern),
+                }).required()
+            )
+            // Here we apply a custom validation to ensure that each "permission" in the array is unique.
+            .custom((permissions, helper) => {
+                const permissionsSet = new Set(
+                    permissions.map(p => p.permission)
+                );
+                if (permissionsSet.size !== permissions.length) {
+                    return helper.message('Each permission must be unique.');
+                }
+                return permissions; // Return the original array if validation passes
+            }, 'Unique Permissions Validation')
             .required()
             .messages({
-                'array.base': 'Permissions must be an array of valid IDs.',
+                'array.base':
+                    'Permissions must be an array of valid permission objects.',
+                'object.base':
+                    'Each item in the permissions array must be an object.',
                 'string.pattern.base': 'Each permission must be a valid ID.',
             }),
         isActive: customValidation.isActive().required(),
@@ -59,16 +76,80 @@ const updateRole = {
                 3,
                 50
             ),
-            permissions: Joi.array()
-                .items(Joi.string().pattern(constants.customIdPattern)) // Example pattern for MongoDB ObjectId validation
+            addPermissions: Joi.array()
+                .items(
+                    Joi.object({
+                        permission: Joi.string().pattern(
+                            constants.customIdPattern
+                        ),
+                    }).required()
+                )
+                .custom((permissions, helper) => {
+                    const permissionsSet = new Set(
+                        permissions.map(p => p.permission)
+                    );
+                    if (permissionsSet.size !== permissions.length) {
+                        return helper.message(
+                            'Each permission in addPermissions must be unique.'
+                        );
+                    }
+                    return permissions;
+                }, 'Unique Add Permissions Validation')
                 .messages({
-                    'array.base': 'Permissions must be an array of valid IDs.',
+                    'array.base':
+                        'addPermissions must be an array of valid permission objects.',
+                    'object.base':
+                        'Each item in the addPermissions array must be an object.',
+                    'string.pattern.base':
+                        'Each permission must be a valid ID.',
+                }),
+            deletePermissions: Joi.array()
+                .items(
+                    Joi.object({
+                        permission: Joi.string().pattern(
+                            constants.customIdPattern
+                        ),
+                    }).required()
+                )
+                .custom((permissions, helper) => {
+                    const permissionsSet = new Set(
+                        permissions.map(p => p.permission)
+                    );
+                    if (permissionsSet.size !== permissions.length) {
+                        return helper.message(
+                            'Each permission in deletePermissions must be unique.'
+                        );
+                    }
+                    return permissions;
+                }, 'Unique Delete Permissions Validation')
+                .messages({
+                    'array.base':
+                        'deletePermissions must be an array of valid permission objects.',
+                    'object.base':
+                        'Each item in the deletePermissions array must be an object.',
                     'string.pattern.base':
                         'Each permission must be a valid ID.',
                 }),
             isActive: customValidation.isActive(),
         })
-        .or('name', 'permissions', 'isActive')
+        .custom((body, helper) => {
+            const addPermissions =
+                body.addPermissions?.map(p => p.permission) || [];
+            const deletePermissions =
+                body.deletePermissions?.map(p => p.permission) || [];
+
+            const commonPermissions = addPermissions.filter(permission =>
+                deletePermissions.includes(permission)
+            );
+            if (commonPermissions.length > 0) {
+                return helper.message(
+                    'addPermissions and deletePermissions must not contain the same permissions.'
+                );
+            }
+
+            return body; // Return the original body if validation passes
+        }, 'Permissions Intersection Validation')
+        .or('name', 'addPermissions', 'deletePermissions', 'isActive')
         .messages({
             'object.min': 'At least one field must be provided for update.',
         }),

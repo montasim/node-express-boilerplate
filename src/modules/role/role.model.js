@@ -6,6 +6,22 @@ import constants from '../../constants/constants.js';
 
 const { Schema } = mongoose;
 
+const permissionSchema = new Schema(
+    {
+        permission: {
+            type: String,
+            required: [true, 'Please add valid permission IDs'],
+            validate: {
+                validator: function (v) {
+                    return constants.customIdPattern.test(v);
+                },
+                message: 'Invalid permission ID format.',
+            },
+        },
+    },
+    { _id: false }
+); // Disable automatic _id generation for permission objects
+
 const roleSchema = new Schema({
     id: {
         type: String,
@@ -22,25 +38,12 @@ const roleSchema = new Schema({
                 if (!RoleConstants.ROLE_NAME_PATTERN.test(value)) {
                     return false; // Pattern does not match
                 }
-
                 return true;
             },
             message: props => `${props.value} is not a valid role name.`,
         },
     },
-    permissions: [
-        {
-            type: String,
-            required: [true, 'Please add valid permission IDs'],
-            validate: {
-                validator: function (v) {
-                    return constants.customIdPattern.test(v); // Ensure this matches your custom ID format
-                },
-                message: 'Invalid permission ID format.',
-            },
-        },
-    ],
-
+    permissions: [permissionSchema], // Use the defined permissionSchema for permissions
     isActive: {
         type: Boolean,
         required: [true, 'Please add the role active or inactive status'],
@@ -50,7 +53,6 @@ const roleSchema = new Schema({
         required: [true, 'Please add the creator ID'],
         ref: 'User',
         validate: {
-            // Adjusted validator for custom ID format
             validator: function (v) {
                 return constants.customIdPattern.test(v); // Matching the custom ID format
             },
