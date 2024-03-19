@@ -1,7 +1,7 @@
 import moment from 'moment';
 import config from '../../src/config/config.js';
 import { tokenTypes } from '../../src/config/tokens.js';
-import tokenService from '../../src/modules/token/token.service.js';
+import tokenService from '../../src/modules/auth/token/token.service.js';
 import { userOne, admin } from './user.fixture.js';
 
 const accessTokenExpires = moment().add(

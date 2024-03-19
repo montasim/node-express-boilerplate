@@ -1,12 +1,12 @@
 import httpStatus from 'http-status';
 
-import setDefaultSessionUser from '../../utils/setDefaultSessionUser.js';
-import sendServiceResponse from '../../utils/sendServiceResponse.js';
-import newServiceErrorHandler from '../../utils/newServiceErrorHandler.js';
+import setDefaultSessionUser from '../../../utils/setDefaultSessionUser.js';
+import sendServiceResponse from '../../../utils/sendServiceResponse.js';
+import newServiceErrorHandler from '../../../utils/newServiceErrorHandler.js';
 
 import PermissionModel from './permission.model.js';
 import RoleModel from '../role/role.model.js';
-import mongodbAggregationPipelineHelpers from '../../utils/mongodbAggregationPipelineHelpers.js';
+import mongodbAggregationPipelineHelpers from '../../../utils/mongodbAggregationPipelineHelpers.js';
 
 const createPermission = async (sessionUser, permissionData) => {
     try {

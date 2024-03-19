@@ -6,7 +6,7 @@ import sendControllerSuccessResponse from '../../utils/sendControllerSuccessResp
 import sendControllerErrorResponse from '../../utils/sendControllerErrorResponse.js';
 
 import UserService from './user.service.js';
-import RoleService from '../role/role.service.js';
+import RoleService from '../auth/role/role.service.js';
 
 const createUser = asyncErrorHandler(async (req, res) => {
     const user = await UserService.createUser(req.body);

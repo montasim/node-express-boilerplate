@@ -4,7 +4,7 @@ import asyncErrorHandler from '../../utils/asyncErrorHandler.js';
 import sendControllerResponse from '../../utils/sendControllerResponse.js';
 
 import AuthServices from './auth.service.js';
-import TokenService from '../token/token.service.js';
+import TokenService from './token/token.service.js';
 import UserService from '../user/user.service.js';
 import EmailService from '../email/email.service.js';
 import CustomValidation from '../../validations/custom.validation.js';

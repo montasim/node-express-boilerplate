@@ -2,11 +2,11 @@ import httpStatus from 'http-status';
 
 import UserModel from './user.model.js';
 import GoogleDriveFileOperations from '../../utils/GoogleDriveFileOperations.js';
-import TokenService from '../token/token.service.js';
+import TokenService from '../auth/token/token.service.js';
 
 import ServerError from '../../utils/serverError.js';
 import mongodbAggregationPipelineHelpers from '../../utils/mongodbAggregationPipelineHelpers.js';
-import RoleModel from '../role/role.model.js';
+import RoleModel from '../auth/role/role.model.js';
 import sendServiceResponse from '../../utils/sendServiceResponse.js';
 import newServiceErrorHandler from '../../utils/newServiceErrorHandler.js';
 

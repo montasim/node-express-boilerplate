@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
-import mongooseSchemaHelpers from '../../utils/mongooseSchemaHelpers.js';
+import mongooseSchemaHelpers from '../../../utils/mongooseSchemaHelpers.js';
 import PermissionConstants from './permission.constants.js';
-import constants from '../../constants/constants.js';
+import constants from '../../../constants/constants.js';
 
 const { Schema } = mongoose;
 

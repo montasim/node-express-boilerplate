@@ -1,7 +1,7 @@
-import pick from '../../utils/pick.js';
+import pick from '../../../utils/pick.js';
 
-import sendControllerErrorResponse from '../../utils/sendControllerErrorResponse.js';
-import sendControllerSuccessResponse from '../../utils/sendControllerSuccessResponse.js';
+import sendControllerErrorResponse from '../../../utils/sendControllerErrorResponse.js';
+import sendControllerSuccessResponse from '../../../utils/sendControllerSuccessResponse.js';
 
 import RoleService from './role.service.js';
 

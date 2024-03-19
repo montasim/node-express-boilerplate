@@ -1,8 +1,8 @@
 import Joi from 'joi';
 
 import RoleConstants from './role.constants.js';
-import customValidation from '../../validations/custom.validation.js';
-import constants from '../../constants/constants.js';
+import customValidation from '../../../validations/custom.validation.js';
+import constants from '../../../constants/constants.js';
 
 const createRole = {
     body: Joi.object().keys({

@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 import PermissionConstants from './permission.constants.js';
-import customValidation from '../../validations/custom.validation.js';
+import customValidation from '../../../validations/custom.validation.js';
 
 const createPermission = {
     body: Joi.object().keys({

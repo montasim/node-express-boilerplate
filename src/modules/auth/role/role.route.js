@@ -1,7 +1,7 @@
 import express from 'express';
 
-import authMiddleware from '../../middleware/auth.middleware.js';
-import validateRequestMiddleware from '../../middleware/validateRequest.middleware.js';
+import authMiddleware from '../../../middleware/auth.middleware.js';
+import validateRequestMiddleware from '../../../middleware/validateRequest.middleware.js';
 
 import RoleValidation from './role.validation.js';
 import RoleController from './role.controller.js';

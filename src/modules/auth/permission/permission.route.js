@@ -1,6 +1,6 @@
 import express from 'express';
 
-import validateRequestMiddleware from '../../middleware/validateRequest.middleware.js';
+import validateRequestMiddleware from '../../../middleware/validateRequest.middleware.js';
 
 import PermissionValidation from './permission.validation.js';
 import PermissionController from './permission.controller.js';

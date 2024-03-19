@@ -1,8 +1,8 @@
 import express from 'express';
 
 import authRoute from '../auth/auth.route.js';
-import permissionRoute from '../permission/permission.route.js';
-import roleRoute from '../role/role.route.js';
+import permissionRoute from '../auth/permission/permission.route.js';
+import roleRoute from '../auth/role/role.route.js';
 import userRoute from '../user/user.route.js';
 
 const router = express.Router();
