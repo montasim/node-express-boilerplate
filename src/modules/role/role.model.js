@@ -11,6 +11,7 @@ const permissionSchema = new Schema(
         permission: {
             type: String,
             required: [true, 'Please add valid permission IDs'],
+            ref: 'Permission',
             validate: {
                 validator: function (v) {
                     return constants.customIdPattern.test(v);

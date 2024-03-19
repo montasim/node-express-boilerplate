@@ -1,5 +1,6 @@
 import express from 'express';
 
+import auth from '../../middlewares/auth.js';
 import validateRequest from '../../middlewares/validateRequest.js';
 
 import RoleValidation from './role.validation.js';
@@ -19,8 +20,13 @@ router
 router
     .route('/:roleId')
     .get(validateRequest(RoleValidation.getRole), RoleController.getRole)
-    .put(validateRequest(RoleValidation.updateRole), RoleController.updateRole)
+    .put(
+        auth('role-modify'),
+        validateRequest(RoleValidation.updateRole),
+        RoleController.updateRole
+    )
     .delete(
+        auth('role-modify'),
         validateRequest(RoleValidation.deleteRole),
         RoleController.deleteRole
     );

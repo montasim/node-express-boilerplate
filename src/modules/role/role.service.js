@@ -182,6 +182,27 @@ const getRoles = async (sessionUser, filter, options) => {
                 },
             },
             {
+                $lookup: {
+                    from: 'permissions',
+                    let: { permissionsVar: '$permissions.permission' }, // Assuming permissions are stored as an array of objects with { permission: "permId" }
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $in: ['$id', '$$permissionsVar'] },
+                            },
+                        },
+                        {
+                            $project: {
+                                __v: 0,
+                                _id: 0,
+                                // Exclude any fields you don't want to include
+                            },
+                        },
+                    ],
+                    as: 'permissions',
+                },
+            },
+            {
                 $unwind: {
                     path: '$createdByUser',
                     preserveNullAndEmptyArrays: true,
