@@ -423,6 +423,13 @@ const deletePermission = async permissionId => {
             };
         }
 
+        // Remove the permission from all roles
+        // The $pull operator removes from an existing array all instances of a value or values that match a specified condition
+        await RoleModel.updateMany(
+            {}, // An empty filter object {} means "match all documents in the collection"
+            { $pull: { permissions: { permission: permissionId } } }
+        );
+
         // Send the permission data
         return sendServiceResponse(
             httpStatus.OK,
