@@ -75,8 +75,10 @@ const createAggregationPipeline = documentId => {
             $project: {
                 _id: 0,
                 __v: 0,
+                password: 0,
                 createdByUser: 0,
                 updatedByUser: 0,
+                picture: { fileId: 0, shareableLink: 0 },
             },
         },
     ];

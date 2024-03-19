@@ -8,33 +8,24 @@ import UserController from './user.controller.js';
 
 const router = express.Router();
 
+// TODO: Authenticated users can only create new users with the role of 'Admin' or 'Super Admin'
+// TODO: Authenticated users can only retrieve their own user information, also 'Admin' or 'Super Admin' can retrieve any user
+// TODO: Authenticated users can only update their own user information
+// TODO: Authenticated users can only delete their own user information, also 'Admin' or 'Super Admin' can delete any user
+
 router
     .route('/')
-    .post(
-        auth('manageUsers'),
-        validateRequest(UserValidation.createUser),
-        UserController.createUser
-    )
-    .get(
-        auth('getUsers'),
-        validateRequest(UserValidation.getUsers),
-        UserController.getUsers
-    );
+    .post(validateRequest(UserValidation.createUser), UserController.createUser)
+    .get(validateRequest(UserValidation.getUsers), UserController.getUsers);
 
 router
     .route('/:userId')
-    .get(
-        auth('getUsers'),
-        validateRequest(UserValidation.getUser),
-        UserController.getUser
-    )
+    .get(validateRequest(UserValidation.getUser), UserController.getUser)
     .patch(
-        auth('manageUsers'),
         validateRequest(UserValidation.updateUser),
         UserController.updateUser
     )
     .delete(
-        auth('manageUsers'),
         validateRequest(UserValidation.deleteUser),
         UserController.deleteUser
     );

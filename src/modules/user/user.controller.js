@@ -2,30 +2,62 @@ import httpStatus from 'http-status';
 
 import pick from '../../utils/pick.js';
 import asyncErrorHandler from '../../utils/asyncErrorHandler.js';
+import sendControllerSuccessResponse from '../../utils/sendControllerSuccessResponse.js';
+import sendControllerErrorResponse from '../../utils/sendControllerErrorResponse.js';
 
 import UserService from './user.service.js';
-
-import ServerError from '../../utils/serverError.js';
+import RoleService from '../role/role.service.js';
 
 const createUser = asyncErrorHandler(async (req, res) => {
     const user = await UserService.createUser(req.body);
     res.status(httpStatus.CREATED).send(user);
 });
 
-const getUsers = asyncErrorHandler(async (req, res) => {
-    const filter = pick(req.query, ['name', 'role']);
-    const options = pick(req.query, ['sortBy', 'limit', 'page']);
-    const result = await UserService.queryUsers(filter, options);
-    res.send(result);
-});
+const getUsers = async (req, res) => {
+    try {
+        const sessionUser = req?.sessionUser || null;
+        const filter = pick(req.query, [
+            'name',
+            'isActive',
+            'createdBy',
+            'updatedBy',
+            'createdAt',
+            'updatedAt',
+        ]);
+        const options = pick(req.query, ['sortBy', 'limit', 'page']);
 
-const getUser = asyncErrorHandler(async (req, res) => {
-    const user = await UserService.getUserById(req.params.userId);
-    if (!user) {
-        throw new ServerError(httpStatus.NOT_FOUND, 'User not found');
+        const getRoleData = await UserService.queryUsers(
+            sessionUser,
+            filter,
+            options
+        );
+
+        // Send the roles data
+        return sendControllerSuccessResponse(res, getRoleData);
+    } catch (error) {
+        return sendControllerErrorResponse(
+            res,
+            error,
+            'UserController.getUsers()'
+        );
     }
-    res.send(user);
-});
+};
+
+const getUser = async (req, res) => {
+    try {
+        const userId = req?.params?.userId || null;
+        const userData = await UserService.getUserById(userId);
+
+        // Send the role data
+        return sendControllerSuccessResponse(res, userData);
+    } catch (error) {
+        return sendControllerErrorResponse(
+            res,
+            error,
+            'UserController.getUser()'
+        );
+    }
+};
 
 const updateUser = asyncErrorHandler(async (req, res) => {
     const user = await UserService.updateUserById(req.params.userId, req.body);

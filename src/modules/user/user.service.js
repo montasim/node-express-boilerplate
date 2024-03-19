@@ -5,6 +5,10 @@ import GoogleDriveFileOperations from '../../utils/GoogleDriveFileOperations.js'
 import TokenService from '../token/token.service.js';
 
 import ServerError from '../../utils/serverError.js';
+import mongodbAggregationPipelineHelpers from '../../utils/mongodbAggregationPipelineHelpers.js';
+import RoleModel from '../role/role.model.js';
+import sendServiceResponse from '../../utils/sendServiceResponse.js';
+import newServiceErrorHandler from '../../utils/newServiceErrorHandler.js';
 
 /**
  * Create a user
@@ -86,13 +90,31 @@ const queryUsers = async (filter, options) => {
     return users;
 };
 
-/**
- * Get user by id
- * @param {ObjectId} id
- * @returns {Promise<User>}
- */
-const getUserById = async id => {
-    return UserModel.findById(id);
+const getUserById = async userId => {
+    try {
+        // Aggregation pipeline to fetch and populate the updated document
+        const aggregationPipeline =
+            mongodbAggregationPipelineHelpers.createAggregationPipeline(userId);
+
+        const user = await UserModel.aggregate(aggregationPipeline);
+
+        // Check if the populatedRole query returned a document
+        if (user?.length === 0) {
+            throw {
+                statusCode: httpStatus.NOT_FOUND,
+                message: 'User not found.',
+            };
+        }
+
+        // Send the role data
+        return sendServiceResponse(
+            httpStatus.OK,
+            'User found successfully.',
+            user[0]
+        );
+    } catch (error) {
+        return newServiceErrorHandler(error);
+    }
 };
 
 /**
