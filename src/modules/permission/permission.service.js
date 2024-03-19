@@ -5,6 +5,7 @@ import sendServiceResponse from '../../utils/sendServiceResponse.js';
 import newServiceErrorHandler from '../../utils/newServiceErrorHandler.js';
 
 import PermissionModel from './permission.model.js';
+import RoleModel from '../role/role.model.js';
 import mongodbAggregationPipelineHelpers from '../../utils/mongodbAggregationPipelineHelpers.js';
 
 const createPermission = async (sessionUser, permissionData) => {
@@ -24,6 +25,36 @@ const createPermission = async (sessionUser, permissionData) => {
             ...permissionData,
             createdBy,
         });
+
+        // Define role names
+        const roleNames = ['Admin', 'Super Admin'];
+
+        // Process each role
+        await Promise.all(
+            roleNames.map(async roleName => {
+                let role = await RoleModel.findOne({ name: roleName }).lean();
+
+                if (!role) {
+                    // If the role does not exist, create it with the new permission and isActive status
+                    role = await RoleModel.create({
+                        name: roleName,
+                        permissions: [{ permission: newPermission?.id }],
+                        createdBy,
+                        isActive: true,
+                    });
+                } else {
+                    // If the role exists, add the new permission ID to its permissions using $addToSet to avoid duplicates
+                    await RoleModel.updateOne(
+                        { id: role?.id },
+                        {
+                            $addToSet: {
+                                permissions: { permission: newPermission?.id },
+                            },
+                        } // Ensure permissions are added as objects
+                    );
+                }
+            })
+        );
 
         // Aggregation pipeline to fetch and populate the updated document
         const aggregationPipeline =
