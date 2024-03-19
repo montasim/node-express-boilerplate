@@ -8,42 +8,46 @@ import TokenService from './token/token.service.js';
 import UserService from '../user/user.service.js';
 import EmailService from '../email/email.service.js';
 import CustomValidation from '../../validations/custom.validation.js';
+import sendControllerErrorResponse from '../../utils/sendControllerErrorResponse.js';
+import sendControllerSuccessResponse from '../../utils/sendControllerSuccessResponse.js';
 
 const register = async (req, res) => {
-    const requestStartTime = Date.now(); // Get the request start time
-    const { sessionUser, ...registerData } = req.body;
-    const file = req.file || null;
+    try {
+        const file = req.file;
 
-    if (file) {
-        // Define dynamic file validation parameters
-        const allowedExtensions = /jpeg|jpg|png|gif/;
-        const maxSize = 5 * 1024 * 1024; // 5 MB
+        // Perform file validation if a file is present
+        if (file) {
+            // Define dynamic file validation parameters
+            const allowedExtensions = /jpeg|jpg|png|gif/;
+            const maxSize = 5 * 1024 * 1024; // 5 MB
 
-        // Perform file validation
-        const fileValidationResult = CustomValidation.file(
-            file,
-            allowedExtensions,
-            maxSize
-        );
+            // Perform file validation
+            const fileValidationResult = CustomValidation.file(
+                file,
+                allowedExtensions,
+                maxSize
+            );
 
-        if (fileValidationResult !== true) {
-            return res.status(httpStatus.BAD_REQUEST).json({
-                success: false,
-                status: httpStatus.BAD_REQUEST,
-                message: fileValidationResult,
-                data: {},
-            });
+            if (fileValidationResult !== true) {
+                throw {
+                    statusCode: httpStatus.BAD_REQUEST,
+                    message: fileValidationResult,
+                };
+            }
         }
-    }
 
-    await sendControllerResponse(
-        req,
-        res,
-        requestStartTime,
-        UserService.createUser,
-        [sessionUser, registerData, file],
-        'AuthController.register()'
-    );
+        // Create a new user
+        const newUserData = await UserService.createUser(req.body, file);
+
+        // Send the new permission data
+        return sendControllerSuccessResponse(res, newUserData);
+    } catch (error) {
+        return sendControllerErrorResponse(
+            res,
+            error,
+            'AuthController.register()'
+        );
+    }
 };
 
 const login = async (req, res) => {

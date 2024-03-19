@@ -187,8 +187,8 @@ const mobile = (value, helpers) => {
 
 const password = async (value, helpers) => {
     // Check minimum and maximum length
-    if (value.length < 3 || value.length > 20) {
-        return helpers.message('Password must be between 3 and 20 characters');
+    if (value.length < 8 || value.length > 20) {
+        return helpers.message('Password must be between 8 and 20 characters');
     }
 
     // Check for at least one uppercase letter
