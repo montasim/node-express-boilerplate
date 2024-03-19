@@ -23,14 +23,14 @@ import passport from 'passport';
 import httpStatus from 'http-status';
 
 import config from './config/config.js';
-import Morgan from './config/morgan.js';
-import helmetConfig from './config/helmetConfig.js';
-import { jwtStrategy } from './config/passport.js';
+import MorganConfig from './config/morgan.config.js';
+import helmetConfig from './config/helmet.config.js';
+import { jwtStrategy } from './config/passport.config.js';
 import authLimiter from './middlewares/rateLimiter.js';
 import appRoute from './modules/app/app.route.js';
-import corsConfig from './config/corsConfig.js';
-import sessionConfig from './config/sessionConfig.js';
-import logger from './config/logger.js';
+import corsConfig from './config/cors.config.js';
+import sessionConfig from './config/session.config.js';
+import loggerConfig from './config/logger.config.js';
 
 import { errorConverter, errorHandler } from './middlewares/error.js';
 import undefinedService from './modules/undefined/undefined.service.js';
@@ -43,8 +43,8 @@ const app = express();
  * Configures Morgan logger for HTTP request logging.
  */
 if (config.env !== 'test') {
-    app.use(Morgan.successHandler);
-    app.use(Morgan.errorHandler);
+    app.use(MorganConfig.successHandler);
+    app.use(MorganConfig.errorHandler);
 }
 
 /**
@@ -146,7 +146,7 @@ app.use((req, res, next) => {
 app.use((error, req, res, next) => {
     if (error.code === 'ECONNREFUSED') {
         // Handle ECONNREFUSED error specifically
-        logger.error('Connection refused error:', error);
+        loggerConfig.error('Connection refused error:', error);
 
         res.status(httpStatus.SERVICE_UNAVAILABLE).send(
             'Service temporarily unavailable. Please try again later.'

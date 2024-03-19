@@ -4,7 +4,7 @@ import httpMocks from 'node-mocks-http';
 import { errorConverter, errorHandler } from '../../../src/middlewares/error.js';
 import ServerError from '../../../src/utils/serverError.js';
 import config from '../../../src/config/config.js';
-import logger from '../../../src/config/logger.js';
+import loggerConfig from '../../../src/config/logger.config.js';
 
 describe('Error middlewares', () => {
     describe('Error converter', () => {
@@ -102,7 +102,7 @@ describe('Error middlewares', () => {
 
     describe('Error handler', () => {
         beforeEach(() => {
-            jest.spyOn(logger, 'error').mockImplementation(() => {});
+            jest.spyOn(loggerConfig, 'error').mockImplementation(() => {});
         });
 
         test('should send proper error response and put the error message in res.locals', () => {

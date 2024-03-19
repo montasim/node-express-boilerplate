@@ -5,7 +5,7 @@ import moment from 'moment';
 import config from '../../config/config.js';
 import userService from '../user/user.service.js';
 import TokenModel from './token.model.js'; // Assuming Token is exported from index.js in the models folder
-import { tokenTypes } from '../../config/tokens.js';
+import { tokenTypes } from '../../config/tokens.config.js';
 
 import ServerError from '../../utils/serverError.js';
 import EmailService from '../email/email.service.js';

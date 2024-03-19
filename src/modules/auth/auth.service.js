@@ -5,7 +5,7 @@ import tokenService from '../token/token.service.js';
 import userService from '../user/user.service.js';
 import TokenService from '../token/token.service.js';
 import TokenModel from '../token/token.model.js';
-import { tokenTypes } from '../../config/tokens.js';
+import { tokenTypes } from '../../config/tokens.config.js';
 
 import ServerError from '../../utils/serverError.js';
 

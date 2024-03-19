@@ -1,6 +1,6 @@
 import passport from 'passport';
 import httpStatus from 'http-status';
-import { roleRights } from '../config/roles.js';
+import Roles from '../config/roles.config.js';
 
 import ServerError from '../utils/serverError.js';
 
@@ -15,7 +15,7 @@ const verifyCallback =
         req.user = user;
 
         if (requiredRights.length) {
-            const userRights = roleRights.get(user.role);
+            const userRights = Roles.roleRights.get(user.role);
             const hasRequiredRights = requiredRights.every(requiredRight =>
                 userRights.includes(requiredRight)
             );

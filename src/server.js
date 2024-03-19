@@ -9,14 +9,14 @@
  * @requires app The main Express application module.
  * @requires Database A module to manage the database connection.
  * @requires config Configuration settings for the application.
- * @requires logger A logging utility to standardize log format and levels.
+ * @requires loggerConfig A logging utility to standardize log format and levels.
  * @requires EmailService A service module for sending email notifications on errors.
  */
 
 import app from './app.js';
 import Database from './middlewares/database.js';
 import config from './config/config.js';
-import logger from './config/logger.js';
+import loggerConfig from './config/logger.config.js';
 import EmailService from './modules/email/email.service.js';
 
 let server;
@@ -29,8 +29,8 @@ let server;
  */
 const startServer = () => {
     server = app.listen(config.port, () => {
-        logger.info(`✅  Listening to port ${config.port}`);
-        logger.info(`💻  Loading environment for ${config.env}`);
+        loggerConfig.info(`✅  Listening to port ${config.port}`);
+        loggerConfig.info(`💻  Loading environment for ${config.env}`);
     });
 };
 
@@ -45,7 +45,7 @@ const initialize = async () => {
 
         startServer();
     } catch (error) {
-        logger.error('Failed to connect to the database:', error);
+        loggerConfig.error('Failed to connect to the database:', error);
     }
 };
 
@@ -91,7 +91,7 @@ const exitHandler = async () => {
                     return;
                 }
 
-                logger.info('Server closed');
+                loggerConfig.info('Server closed');
 
                 resolve();
             });
@@ -114,7 +114,7 @@ const exitHandler = async () => {
  * @param {Error} error - The error object that was thrown.
  */
 const unexpectedErrorHandler = async (type, error) => {
-    logger.error(error);
+    loggerConfig.error(error);
 
     console.error(type, error);
 
@@ -181,7 +181,7 @@ process.on('unhandledRejection', async (reason, promise) => {
  *                          to exit.
  */
 process.on('SIGTERM', async () => {
-    logger.info('SIGTERM received');
+    loggerConfig.info('SIGTERM received');
 
     if (server) {
         server.close();

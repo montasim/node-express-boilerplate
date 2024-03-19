@@ -9,13 +9,13 @@
  * @module utilities/Database
  * @requires mongoose Mongoose library for MongoDB object modeling.
  * @requires config Application configuration module to access database URLs.
- * @requires logger Custom logger for logging messages.
+ * @requires loggerConfig Custom logger for logging messages.
  */
 
 import mongoose from 'mongoose';
 
 import config from '../config/config.js';
-import logger from '../config/logger.js';
+import loggerConfig from '../config/logger.config.js';
 
 /**
  * Establishes a connection to the MongoDB database using Mongoose.
@@ -32,30 +32,30 @@ import logger from '../config/logger.js';
 const connect = async () => {
     // Setting up connection event listeners before initiating the connecting
     mongoose.connection.on('error', error =>
-        logger.error(`Database connection error: ${error}`)
+        loggerConfig.error(`Database connection error: ${error}`)
     );
 
     mongoose.connection.on('reconnected', () =>
-        logger.info('Database reconnected')
+        loggerConfig.info('Database reconnected')
     );
 
     mongoose.connection.on('disconnected', async () => {
-        logger.info('Database disconnected! Attempting to reconnect...');
+        loggerConfig.info('Database disconnected! Attempting to reconnect...');
 
         try {
             await mongoose.connect(config.mongoose.url);
 
-            logger.info('🚀 Database reconnected successfully');
+            loggerConfig.info('🚀 Database reconnected successfully');
         } catch (error) {
-            logger.error('Database reconnection error:', error);
+            loggerConfig.error('Database reconnection error:', error);
         }
     });
 
     try {
         await mongoose.connect(config.mongoose.url);
-        logger.info('🚀 Database connected successfully');
+        loggerConfig.info('🚀 Database connected successfully');
     } catch (error) {
-        logger.error('Database connection error:', error);
+        loggerConfig.error('Database connection error:', error);
 
         throw error; // Re-throwing is necessary for the caller to handle it
     }
@@ -73,14 +73,14 @@ const connect = async () => {
 const disconnect = async () => {
     try {
         // Log when the disconnection process starts
-        logger.info('MongoDB is disconnecting...');
+        loggerConfig.info('MongoDB is disconnecting...');
 
         await mongoose.disconnect();
 
         // Since listeners are set up per disconnect call, it logs directly after await
-        logger.info('❌ Database disconnected successfully');
+        loggerConfig.info('❌ Database disconnected successfully');
     } catch (error) {
-        logger.error('Database disconnection error:', error);
+        loggerConfig.error('Database disconnection error:', error);
 
         throw error; // Re-throwing is necessary for the caller to handle it
     }

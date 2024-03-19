@@ -5,7 +5,7 @@ import toJSON from '../../plugins/toJSON.plugin.js';
 
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
-import { roles } from '../../config/roles.js';
+import Roles from '../../config/roles.config.js';
 
 const { Schema } = mongoose;
 
@@ -44,7 +44,7 @@ const userSchema = Schema(
         },
         role: {
             type: String,
-            enum: roles,
+            enum: Roles.rolesConfig,
             default: 'user',
         },
         picture: {

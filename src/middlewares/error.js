@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import httpStatus from 'http-status';
 import config from '../config/config.js';
-import logger from '../config/logger.js';
+import loggerConfig from '../config/logger.config.js';
 import ServerError from '../utils/serverError.js';
 
 const errorConverter = (err, req, res, next) => {
@@ -32,7 +32,7 @@ const errorHandler = (err, req, res, next) => {
     };
 
     if (config.env === 'development') {
-        logger.error(err);
+        loggerConfig.error(err);
     }
 
     res.status(statusCode).send(response);

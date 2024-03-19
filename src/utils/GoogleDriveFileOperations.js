@@ -3,11 +3,11 @@ import { Readable } from 'stream';
 
 import config from '../config/config.js';
 
-import googleDrive from '../config/googleDrive.js';
+import googleDriveConfig from '../config/googleDrive.config.js';
 
 const uploadFile = async (file) => {
     try {
-        const authorizationClient = await googleDrive();
+        const authorizationClient = await googleDriveConfig();
         const drive = google.drive({
             version: 'v3',
             auth: authorizationClient,
@@ -58,7 +58,7 @@ const uploadFile = async (file) => {
 
 const deleteFile = async fileId => {
     try {
-        const authorizationClient = await googleDrive();
+        const authorizationClient = await googleDriveConfig();
         const drive = google.drive({
             version: 'v3',
             auth: authorizationClient,

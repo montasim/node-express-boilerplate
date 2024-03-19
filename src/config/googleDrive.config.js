@@ -2,7 +2,7 @@ import { google } from 'googleapis';
 
 import config from './config.js';
 
-const googleDrive = async () => {
+const googleDriveConfig = async () => {
     try {
         // Define the scope of access required by the application.
         const SCOPE = [config.googleDrive.scope];
@@ -29,4 +29,4 @@ const googleDrive = async () => {
     }
 };
 
-export default googleDrive;
+export default googleDriveConfig;

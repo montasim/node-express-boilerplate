@@ -43,10 +43,10 @@ const productionFormat = winston.format.combine(
     logFormat
 );
 
-let logger;
+let loggerConfig;
 
 if (config.env === 'development') {
-    logger = winston.createLogger({
+    loggerConfig = winston.createLogger({
         level: config.env === 'development' ? 'debug' : 'info',
         format:
             config.env === 'development' ? developmentFormat : productionFormat,
@@ -86,4 +86,4 @@ if (config.env === 'development') {
     });
 }
 
-export default logger;
+export default loggerConfig;

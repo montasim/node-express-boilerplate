@@ -12,7 +12,7 @@ import { tokenService, emailService } from '../../src/services/index.js'; // Ass
 import ServerError from '../../src/utils/serverError.js';
 import setupTestDB from '../utils/setupTestDB.js';
 import { User, Token } from '../../src/models/index.js'; // Assuming index.js is the entry point for models
-import { roleRights } from '../../src/config/roles.js';
+import { roleRights } from '../../src/config/roles.config.js';
 import { tokenTypes } from '../../src/config/tokens.js';
 import { userOne, admin, insertUsers } from '../fixtures/user.fixture.js';
 import { userOneAccessToken, adminAccessToken } from '../fixtures/token.fixture.js';

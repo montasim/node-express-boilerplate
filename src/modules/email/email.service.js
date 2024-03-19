@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer';
 import errorEmailBody from '../../utils/errorEmailBody.js';
 
 import config from '../../config/config.js';
-import logger from '../../config/logger.js';
+import loggerConfig from '../../config/logger.config.js';
 
 const transport = nodemailer.createTransport(config.email.smtp);
 
@@ -11,9 +11,9 @@ const transport = nodemailer.createTransport(config.email.smtp);
 if (config.env !== 'test') {
     transport
         .verify()
-        .then(() => logger.info('✉️ Connected to email server'))
+        .then(() => loggerConfig.info('✉️ Connected to email server'))
         .catch(() =>
-            logger.warn(
+            loggerConfig.warn(
                 'Unable to connect to email server. Make sure you have configured the SMTP options in .env'
             )
         );
