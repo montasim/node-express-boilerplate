@@ -29,9 +29,8 @@ const verifyCallback =
         resolve();
     };
 
-const auth =
-    (...requiredRights) =>
-    async (req, res, next) => {
+const authMiddleware =
+    (...requiredRights) => async (req, res, next) => {
         return new Promise((resolve, reject) => {
             passport.authenticate(
                 'jwt',
@@ -43,4 +42,4 @@ const auth =
             .catch(err => next(err));
     };
 
-export default auth;
+export default authMiddleware;

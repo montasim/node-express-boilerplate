@@ -25,17 +25,14 @@ import httpStatus from 'http-status';
 import config from './config/config.js';
 import MorganConfig from './config/morgan.config.js';
 import helmetConfig from './config/helmet.config.js';
-import { jwtStrategy } from './config/passport.config.js';
-import authLimiter from './middlewares/rateLimiter.js';
+import jwtStrategy from './config/passport.config.js';
 import appRoute from './modules/app/app.route.js';
 import corsConfig from './config/cors.config.js';
 import sessionConfig from './config/session.config.js';
 import loggerConfig from './config/logger.config.js';
+import Middleware from './middleware/middleware.js';
 
-import { errorConverter, errorHandler } from './middlewares/error.js';
 import undefinedService from './modules/undefined/undefined.service.js';
-import errorEmailBody from './utils/errorEmailBody.js';
-import EmailService from './modules/email/email.service.js';
 
 const app = express();
 
@@ -94,7 +91,7 @@ passport.use('jwt', jwtStrategy);
 
 if (config.env === 'production') {
     // limit repeated failed requests to auth endpoints
-    app.use('/v1/auth', authLimiter);
+    app.use('/v1/auth', Middleware.rateLimit);
 
     // secure apps by setting various HTTP headers
     app.use((req, res, next) => {
@@ -157,30 +154,10 @@ app.use((error, req, res, next) => {
     }
 });
 
-// /**
-//  * General error handling middleware for operational errors.
-//  * Logs the error stack, notifies administrators via email, and prepares a formatted error message response.
-//  * Catches failures in email notification and still responds with the formatted error message.
-//  */
-// // do not remove the unused next parameter, otherwise the email mechanism will not work
-// app.use((error, req, res, next) => {
-//     console.error(error.stack);
-//
-//     const emailSubject = 'Node Express Boilerplate: Uncaught Server Exception';
-//
-//     EmailService.sendEmail(
-//         config.admin.email,
-//         emailSubject,
-//         errorEmailBody(error)
-//     );
-//
-//     return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error.message);
-// });
-
 // convert error to ApiError, if needed
-app.use(errorConverter);
+app.use(Middleware.error.errorConverter);
 
 // handle error
-app.use(errorHandler);
+app.use(Middleware.error.errorHandler);
 
 export default app;

@@ -86,9 +86,9 @@ const disconnect = async () => {
     }
 };
 
-const Database = {
+const DatabaseMiddleware = {
     connect,
     disconnect,
 };
 
-export default Database;
+export default DatabaseMiddleware;

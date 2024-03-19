@@ -1,7 +1,7 @@
 import express from 'express';
 
-import auth from '../../middlewares/auth.js';
-import validateRequest from '../../middlewares/validateRequest.js';
+import authMiddleware from '../../middleware/auth.middleware.js';
+import validateRequestMiddleware from '../../middleware/validateRequest.middleware.js';
 
 import UserValidation from './user.validation.js';
 import UserController from './user.controller.js';
@@ -15,18 +15,18 @@ const router = express.Router();
 
 router
     .route('/')
-    .post(validateRequest(UserValidation.createUser), UserController.createUser)
-    .get(validateRequest(UserValidation.getUsers), UserController.getUsers);
+    .post(validateRequestMiddleware(UserValidation.createUser), UserController.createUser)
+    .get(validateRequestMiddleware(UserValidation.getUsers), UserController.getUsers);
 
 router
     .route('/:userId')
-    .get(validateRequest(UserValidation.getUser), UserController.getUser)
+    .get(validateRequestMiddleware(UserValidation.getUser), UserController.getUser)
     .patch(
-        validateRequest(UserValidation.updateUser),
+        validateRequestMiddleware(UserValidation.updateUser),
         UserController.updateUser
     )
     .delete(
-        validateRequest(UserValidation.deleteUser),
+        validateRequestMiddleware(UserValidation.deleteUser),
         UserController.deleteUser
     );
 

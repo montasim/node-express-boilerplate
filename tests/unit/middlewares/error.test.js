@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import httpStatus from 'http-status';
 import httpMocks from 'node-mocks-http';
-import { errorConverter, errorHandler } from '../../../src/middlewares/error.js';
+import { errorConverter, errorHandler } from '../../../src/middleware/error.js';
 import ServerError from '../../../src/utils/serverError.js';
 import config from '../../../src/config/config.js';
 import loggerConfig from '../../../src/config/logger.config.js';

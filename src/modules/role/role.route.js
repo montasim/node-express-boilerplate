@@ -1,7 +1,7 @@
 import express from 'express';
 
-import auth from '../../middlewares/auth.js';
-import validateRequest from '../../middlewares/validateRequest.js';
+import authMiddleware from '../../middleware/auth.middleware.js';
+import validateRequestMiddleware from '../../middleware/validateRequest.middleware.js';
 
 import RoleValidation from './role.validation.js';
 import RoleController from './role.controller.js';
@@ -14,20 +14,20 @@ const router = express.Router();
 
 router
     .route('/')
-    .post(validateRequest(RoleValidation.createRole), RoleController.createRole)
-    .get(validateRequest(RoleValidation.getRoles), RoleController.getRoles);
+    .post(validateRequestMiddleware(RoleValidation.createRole), RoleController.createRole)
+    .get(validateRequestMiddleware(RoleValidation.getRoles), RoleController.getRoles);
 
 router
     .route('/:roleId')
-    .get(validateRequest(RoleValidation.getRole), RoleController.getRole)
+    .get(validateRequestMiddleware(RoleValidation.getRole), RoleController.getRole)
     .put(
-        auth('role-modify'),
-        validateRequest(RoleValidation.updateRole),
+        authMiddleware('role-modify'),
+        validateRequestMiddleware(RoleValidation.updateRole),
         RoleController.updateRole
     )
     .delete(
-        auth('role-modify'),
-        validateRequest(RoleValidation.deleteRole),
+        authMiddleware('role-modify'),
+        validateRequestMiddleware(RoleValidation.deleteRole),
         RoleController.deleteRole
     );
 

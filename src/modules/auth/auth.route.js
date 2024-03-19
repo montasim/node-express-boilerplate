@@ -1,52 +1,52 @@
 import express from 'express';
 
-import validateRequest from '../../middlewares/validateRequest.js';
-import auth from '../../middlewares/auth.js';
+import validateRequestMiddleware from '../../middleware/validateRequest.middleware.js';
+import authMiddleware from '../../middleware/auth.middleware.js';
 
 import AuthValidation from './auth.validation.js';
-import fileUpload from '../../middlewares/fileUpload.js';
+import fileUploadMiddleware from '../../middleware/fileUpload.middleware.js';
 import AuthController from './auth.controller.js';
 
 const router = express.Router();
 
 router.post(
     '/register',
-    fileUpload.single('picture'),
-    validateRequest(AuthValidation.register),
+    fileUploadMiddleware.single('picture'),
+    validateRequestMiddleware(AuthValidation.register),
     AuthController.register
 );
 
-router.post('/login', validateRequest(AuthValidation.login), AuthController.login);
+router.post('/login', validateRequestMiddleware(AuthValidation.login), AuthController.login);
 
-router.post('/logout', validateRequest(AuthValidation.logout), AuthController.logout);
+router.post('/logout', validateRequestMiddleware(AuthValidation.logout), AuthController.logout);
 
 router.post(
     '/refresh-tokens',
-    validateRequest(AuthValidation.refreshTokens),
+    validateRequestMiddleware(AuthValidation.refreshTokens),
     AuthController.refreshTokens
 );
 
 router.post(
     '/forgot-password',
-    validateRequest(AuthValidation.forgotPassword),
+    validateRequestMiddleware(AuthValidation.forgotPassword),
     AuthController.forgotPassword
 );
 
 router.post(
     '/reset-password',
-    validateRequest(AuthValidation.resetPassword),
+    validateRequestMiddleware(AuthValidation.resetPassword),
     AuthController.resetPassword
 );
 
 router.post(
     '/send-verification-email',
-    auth(),
+    authMiddleware(),
     AuthController.sendVerificationEmail
 );
 
 router.post(
     '/verify-email',
-    validateRequest(AuthValidation.verifyEmail),
+    validateRequestMiddleware(AuthValidation.verifyEmail),
     AuthController.verifyEmail
 );
 

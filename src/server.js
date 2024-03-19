@@ -7,17 +7,17 @@
  *
  * @fileoverview Initializes the server, connects to the database, and sets up global error handling.
  * @requires app The main Express application module.
- * @requires Database A module to manage the database connection.
+ * @requires DatabaseMiddleware A module to manage the database connection.
  * @requires config Configuration settings for the application.
  * @requires loggerConfig A logging utility to standardize log format and levels.
  * @requires EmailService A service module for sending email notifications on errors.
  */
 
 import app from './app.js';
-import Database from './middlewares/database.js';
 import config from './config/config.js';
 import loggerConfig from './config/logger.config.js';
 import EmailService from './modules/email/email.service.js';
+import Middleware from './middleware/middleware.js';
 
 let server;
 
@@ -41,7 +41,7 @@ const startServer = () => {
  */
 const initialize = async () => {
     try {
-        await Database.connect();
+        await Middleware.database.connect();
 
         startServer();
     } catch (error) {

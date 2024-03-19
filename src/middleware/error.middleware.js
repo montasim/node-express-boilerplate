@@ -38,7 +38,9 @@ const errorHandler = (err, req, res, next) => {
     res.status(statusCode).send(response);
 };
 
-export {
+const ErrorMiddleware = {
     errorConverter,
     errorHandler,
 };
+
+export default ErrorMiddleware;

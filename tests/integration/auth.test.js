@@ -7,7 +7,7 @@ import moment from 'moment';
 import bcrypt from 'bcryptjs';
 import app from '../../src/app.js';
 import config from '../../src/config/config.js';
-import auth from '../../src/middlewares/auth.js';
+import authMiddleware from '../../src/middleware/auth.middleware.js';
 import { tokenService, emailService } from '../../src/services/index.js'; // Assuming index.js is the entry point for services
 import ServerError from '../../src/utils/serverError.js';
 import setupTestDB from '../utils/setupTestDB.js';
@@ -460,7 +460,7 @@ describe('Auth middleware', () => {
         const req = httpMocks.createRequest({ headers: { Authorization: `Bearer ${userOneAccessToken}` } });
         const next = jest.fn();
 
-        await auth()(req, httpMocks.createResponse(), next);
+        await authMiddleware()(req, httpMocks.createResponse(), next);
 
         expect(next).toHaveBeenCalledWith();
         expect(req.user._id).toEqual(userOne._id);
@@ -471,7 +471,7 @@ describe('Auth middleware', () => {
         const req = httpMocks.createRequest();
         const next = jest.fn();
 
-        await auth()(req, httpMocks.createResponse(), next);
+        await authMiddleware()(req, httpMocks.createResponse(), next);
 
         expect(next).toHaveBeenCalledWith(expect.any(ServerError));
         expect(next).toHaveBeenCalledWith(
@@ -484,7 +484,7 @@ describe('Auth middleware', () => {
         const req = httpMocks.createRequest({ headers: { Authorization: 'Bearer randomToken' } });
         const next = jest.fn();
 
-        await auth()(req, httpMocks.createResponse(), next);
+        await authMiddleware()(req, httpMocks.createResponse(), next);
 
         expect(next).toHaveBeenCalledWith(expect.any(ServerError));
         expect(next).toHaveBeenCalledWith(
@@ -499,7 +499,7 @@ describe('Auth middleware', () => {
         const req = httpMocks.createRequest({ headers: { Authorization: `Bearer ${refreshToken}` } });
         const next = jest.fn();
 
-        await auth()(req, httpMocks.createResponse(), next);
+        await authMiddleware()(req, httpMocks.createResponse(), next);
 
         expect(next).toHaveBeenCalledWith(expect.any(ServerError));
         expect(next).toHaveBeenCalledWith(
@@ -514,7 +514,7 @@ describe('Auth middleware', () => {
         const req = httpMocks.createRequest({ headers: { Authorization: `Bearer ${accessToken}` } });
         const next = jest.fn();
 
-        await auth()(req, httpMocks.createResponse(), next);
+        await authMiddleware()(req, httpMocks.createResponse(), next);
 
         expect(next).toHaveBeenCalledWith(expect.any(ServerError));
         expect(next).toHaveBeenCalledWith(
@@ -529,7 +529,7 @@ describe('Auth middleware', () => {
         const req = httpMocks.createRequest({ headers: { Authorization: `Bearer ${accessToken}` } });
         const next = jest.fn();
 
-        await auth()(req, httpMocks.createResponse(), next);
+        await authMiddleware()(req, httpMocks.createResponse(), next);
 
         expect(next).toHaveBeenCalledWith(expect.any(ServerError));
         expect(next).toHaveBeenCalledWith(
@@ -541,7 +541,7 @@ describe('Auth middleware', () => {
         const req = httpMocks.createRequest({ headers: { Authorization: `Bearer ${userOneAccessToken}` } });
         const next = jest.fn();
 
-        await auth()(req, httpMocks.createResponse(), next);
+        await authMiddleware()(req, httpMocks.createResponse(), next);
 
         expect(next).toHaveBeenCalledWith(expect.any(ServerError));
         expect(next).toHaveBeenCalledWith(
@@ -554,7 +554,7 @@ describe('Auth middleware', () => {
         const req = httpMocks.createRequest({ headers: { Authorization: `Bearer ${userOneAccessToken}` } });
         const next = jest.fn();
 
-        await auth('anyRight')(req, httpMocks.createResponse(), next);
+        await authMiddleware('anyRight')(req, httpMocks.createResponse(), next);
 
         expect(next).toHaveBeenCalledWith(expect.any(ServerError));
         expect(next).toHaveBeenCalledWith(expect.objectContaining({ statusCode: httpStatus.FORBIDDEN, message: 'Forbidden' }));
@@ -568,7 +568,7 @@ describe('Auth middleware', () => {
         });
         const next = jest.fn();
 
-        await auth('anyRight')(req, httpMocks.createResponse(), next);
+        await authMiddleware('anyRight')(req, httpMocks.createResponse(), next);
 
         expect(next).toHaveBeenCalledWith();
     });
@@ -581,7 +581,7 @@ describe('Auth middleware', () => {
         });
         const next = jest.fn();
 
-        await auth(...roleRights.get('admin'))(req, httpMocks.createResponse(), next);
+        await authMiddleware(...roleRights.get('admin'))(req, httpMocks.createResponse(), next);
 
         expect(next).toHaveBeenCalledWith();
     });

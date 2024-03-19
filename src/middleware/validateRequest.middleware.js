@@ -4,7 +4,7 @@ import httpStatus from 'http-status';
 import pick from '../utils/pick.js';
 import ServerError from '../utils/serverError.js';
 
-const validateRequest = (schema) => async (req, res, next) => {
+const validateRequestMiddleware = (schema) => async (req, res, next) => {
     const validSchema = pick(schema, ['params', 'query', 'body']);
     const object = pick(req, Object.keys(validSchema));
 
@@ -33,4 +33,4 @@ const validateRequest = (schema) => async (req, res, next) => {
     }
 };
 
-export default validateRequest;
+export default validateRequestMiddleware;
