@@ -2,14 +2,14 @@ import httpStatus from 'http-status';
 
 import asyncErrorHandler from '../../utils/asyncErrorHandler.js';
 import sendControllerResponse from '../../utils/sendControllerResponse.js';
+import sendControllerErrorResponse from '../../utils/sendControllerErrorResponse.js';
+import sendControllerSuccessResponse from '../../utils/sendControllerSuccessResponse.js';
 
 import AuthServices from './auth.service.js';
 import TokenService from './token/token.service.js';
 import UserService from '../user/user.service.js';
 import EmailService from '../email/email.service.js';
 import CustomValidation from '../../validations/custom.validation.js';
-import sendControllerErrorResponse from '../../utils/sendControllerErrorResponse.js';
-import sendControllerSuccessResponse from '../../utils/sendControllerSuccessResponse.js';
 
 const register = async (req, res) => {
     try {
@@ -51,45 +51,50 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-    const requestStartTime = Date.now(); // Get the request start time
-    const { email, password } = req.body;
+    try {
+        const loginData = await AuthServices.loginUserWithEmailAndPassword(
+            req?.body?.email,
+            req?.body?.password
+        );
 
-    await sendControllerResponse(
-        req,
-        res,
-        requestStartTime,
-        AuthServices.loginUserWithEmailAndPassword,
-        [email, password],
-        'AuthController.login()'
-    );
+        return sendControllerSuccessResponse(res, loginData);
+    } catch (error) {
+        return sendControllerErrorResponse(
+            res,
+            error,
+            'AuthController.login()'
+        );
+    }
 };
 
 const logout = async (req, res) => {
-    const requestStartTime = Date.now(); // Get the request start time
-    const { refreshToken } = req.body;
+    try {
+        const logoutData = await AuthServices.logout(req?.body?.refreshToken);
 
-    await sendControllerResponse(
-        req,
-        res,
-        requestStartTime,
-        AuthServices.logout,
-        [refreshToken],
-        'AuthController.logout()'
-    );
+        return sendControllerSuccessResponse(res, logoutData);
+    } catch (error) {
+        return sendControllerErrorResponse(
+            res,
+            error,
+            'AuthController.login()'
+        );
+    }
 };
 
 const refreshTokens = async (req, res) => {
-    const requestStartTime = Date.now(); // Get the request start time
-    const { refreshToken } = req.body;
+    try {
+        const refreshTokenData = await AuthServices.refreshAuth(
+            req?.body?.refreshToken
+        );
 
-    await sendControllerResponse(
-        req,
-        res,
-        requestStartTime,
-        AuthServices.refreshAuth,
-        [refreshToken],
-        'AuthController.refreshTokens()'
-    );
+        return sendControllerSuccessResponse(res, refreshTokenData);
+    } catch (error) {
+        return sendControllerErrorResponse(
+            res,
+            error,
+            'AuthController.refreshTokens()'
+        );
+    }
 };
 
 const forgotPassword = async (req, res) => {

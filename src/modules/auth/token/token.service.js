@@ -4,11 +4,11 @@ import moment from 'moment';
 
 import config from '../../../config/config.js';
 import userService from '../../user/user.service.js';
-import TokenModel from './token.model.js'; // Assuming Token is exported from index.js in the models folder
-import { tokenTypes } from '../../../config/tokens.config.js';
+import TokenModel from './token.model.js';
+import tokenTypes from '../../../config/tokens.config.js';
+import EmailService from '../../email/email.service.js';
 
 import ServerError from '../../../utils/serverError.js';
-import EmailService from '../../email/email.service.js';
 
 /**
  * Generate token
@@ -57,38 +57,19 @@ const saveToken = async (token, userId, expires, type, blacklisted = false) => {
  * @returns {Promise<Token>}
  */
 const verifyToken = async (token, type) => {
-    try {
-        const payload = jwt.verify(token, config.jwt.secret);
-        const tokenDetails = await TokenModel.findOne({
-            token,
-            type,
-            user: payload.sub,
-            blacklisted: false,
-        });
+    const payload = jwt.verify(token, config.jwt.secret);
+    const tokenDetails = await TokenModel.findOne({
+        token,
+        type,
+        user: payload.sub,
+        blacklisted: false,
+    });
 
-        if (!tokenDetails) {
-            return {
-                serviceSuccess: false,
-                serviceStatus: httpStatus.NOT_FOUND,
-                serviceMessage: 'Token not found.',
-                serviceData: {},
-            };
-        }
-
-        return {
-            serviceSuccess: true,
-            serviceStatus: httpStatus.OK,
-            serviceMessage: 'Token verified successfully.',
-            serviceData: tokenDetails,
-        };
-    } catch (error) {
-        return {
-            serviceSuccess: false,
-            serviceStatus: httpStatus.INTERNAL_SERVER_ERROR,
-            serviceMessage: 'Failed to verify token.',
-            serviceData: {},
-        };
+    if (!tokenDetails) {
+        throw new Error('Token not found');
     }
+
+    return tokenDetails;
 };
 
 /**
@@ -97,59 +78,43 @@ const verifyToken = async (token, type) => {
  * @returns {Promise<Object>}
  */
 const generateAuthTokens = async user => {
-    try {
-        const accessTokenExpires = moment().add(
-            config.jwt.accessExpirationMinutes,
-            'minutes'
-        );
-        const accessToken = generateToken(
-            user._id,
-            accessTokenExpires,
-            tokenTypes.ACCESS
-        );
+    const accessTokenExpires = moment().add(
+        config.jwt.accessExpirationMinutes,
+        'minutes'
+    );
+    const accessToken = generateToken(
+        user.id,
+        accessTokenExpires,
+        tokenTypes.ACCESS
+    );
 
-        const refreshTokenExpires = moment().add(
-            config.jwt.refreshExpirationDays,
-            'days'
-        );
-        const refreshToken = generateToken(
-            user._id,
-            refreshTokenExpires,
-            tokenTypes.REFRESH
-        );
+    const refreshTokenExpires = moment().add(
+        config.jwt.refreshExpirationDays,
+        'days'
+    );
+    const refreshToken = generateToken(
+        user.id,
+        refreshTokenExpires,
+        tokenTypes.REFRESH
+    );
 
-        await saveToken(
-            refreshToken,
-            user._id,
-            refreshTokenExpires,
-            tokenTypes.REFRESH
-        );
+    await saveToken(
+        refreshToken,
+        user.id,
+        refreshTokenExpires,
+        tokenTypes.REFRESH
+    );
 
-        const token = {
-            access: {
-                token: accessToken,
-                expires: accessTokenExpires.toDate(),
-            },
-            refresh: {
-                token: refreshToken,
-                expires: refreshTokenExpires.toDate(),
-            },
-        };
-
-        return {
-            serviceSuccess: true,
-            serviceStatus: httpStatus.CREATED,
-            serviceMessage: 'Tokens generated successfully.',
-            serviceData: token,
-        };
-    } catch (error) {
-        return {
-            serviceSuccess: false,
-            serviceStatus: httpStatus.INTERNAL_SERVER_ERROR,
-            serviceMessage: 'Failed to create user.',
-            serviceData: {},
-        };
-    }
+    return {
+        access: {
+            token: accessToken,
+            expires: accessTokenExpires.toDate(),
+        },
+        refresh: {
+            token: refreshToken,
+            expires: refreshTokenExpires.toDate(),
+        },
+    };
 };
 
 /**
@@ -158,51 +123,35 @@ const generateAuthTokens = async user => {
  * @returns {Promise<string>}
  */
 const generateResetPasswordToken = async email => {
-    try {
-        const userDetails = await userService.getUserByEmail(email);
+    const userDetails = await userService.getUserByEmail(email);
 
-        if (!userDetails) {
-            return {
-                serviceSuccess: false,
-                serviceStatus: httpStatus.NOT_FOUND,
-                serviceMessage: 'No users found with this email',
-                serviceData: {},
-            };
-        }
-
-        const expires = moment().add(
-            config.jwt.resetPasswordExpirationMinutes,
-            'minutes'
+    if (!userDetails) {
+        throw new ServerError(
+            httpStatus.NOT_FOUND,
+            'No users found with this email'
         );
-        const resetPasswordToken = generateToken(
-            userDetails.id,
-            expires,
-            tokenTypes.RESET_PASSWORD
-        );
-
-        await saveToken(
-            resetPasswordToken,
-            userDetails.id,
-            expires,
-            tokenTypes.RESET_PASSWORD
-        );
-
-        await EmailService.sendResetPasswordEmail(email, resetPasswordToken);
-
-        return {
-            serviceSuccess: true,
-            serviceStatus: httpStatus.CREATED,
-            serviceMessage: 'Reset password token generated successfully.',
-            serviceData: resetPasswordToken,
-        };
-    } catch (error) {
-        return {
-            serviceSuccess: false,
-            serviceStatus: httpStatus.INTERNAL_SERVER_ERROR,
-            serviceMessage: 'Failed to create reset password token.',
-            serviceData: {},
-        };
     }
+
+    const expires = moment().add(
+        config.jwt.resetPasswordExpirationMinutes,
+        'minutes'
+    );
+    const resetPasswordToken = generateToken(
+        userDetails.id,
+        expires,
+        tokenTypes.RESET_PASSWORD
+    );
+
+    await saveToken(
+        resetPasswordToken,
+        userDetails.id,
+        expires,
+        tokenTypes.RESET_PASSWORD
+    );
+
+    await EmailService.sendResetPasswordEmail(email, resetPasswordToken);
+
+    return resetPasswordToken;
 };
 
 /**

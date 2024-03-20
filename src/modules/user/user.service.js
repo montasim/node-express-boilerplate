@@ -266,75 +266,12 @@ const queryUsers = async (filter, options) => {
 };
 
 const getUserById = async userId => {
-    try {
-        // Aggregation pipeline to fetch and populate the updated document
-        const aggregationPipeline = UserPipeline.getUser(userId);
-
-        const user = await UserModel.aggregate(aggregationPipeline);
-
-        // Check if the populatedPermission query returned a document
-        if (user?.length === 0) {
-            throw {
-                statusCode: httpStatus.NOT_FOUND,
-                message: 'User not found.',
-            };
-        }
-
-        // Send the permission data
-        return sendServiceResponse(
-            httpStatus.OK,
-            'User found successfully.',
-            user[0]
-        );
-    } catch (error) {
-        return newServiceErrorHandler(error);
-    }
+    return UserModel.findById(userId);
 };
 
 const getUserByEmail = async email => {
     try {
-        // Find the user by ID
-        const user = await UserModel.findOne({ email: email });
-
-        // Check if the user was found
-        if (!user) {
-            throw {
-                statusCode: httpStatus.NOT_FOUND,
-                message: 'User not found.',
-            };
-        }
-
-        // Assuming you have the role ID in the user document,
-        // use the aggregation pipeline to fetch and populate role details.
-        const roleAggregationPipeline = RoleAggregationPipeline.getRole(
-            user.role
-        ); // This assumes getRole accepts an ID and returns a pipeline
-        const roleDetails = await RoleModel.aggregate(roleAggregationPipeline);
-
-        // Convert the Mongoose document to a plain JavaScript object, if it's not already
-        let userObj = user.toObject ? user.toObject() : user;
-
-        // Attach the populated role details to the user object
-        // Since the pipeline may return an array, attach the first result if it exists
-        userObj.role = roleDetails.length > 0 ? roleDetails[0] : null;
-
-        // Remove the unwanted fields from the user object
-        delete userObj._id;
-        delete userObj.__v;
-        delete userObj.password;
-
-        // If a picture was uploaded, remove the fileId and shareableLink from the object
-        if (userObj.picture) {
-            delete userObj.picture.fileId;
-            delete userObj.picture.shareableLink;
-        }
-
-        // Send the user data
-        return sendServiceResponse(
-            httpStatus.OK,
-            'User found successfully.',
-            userObj
-        );
+        return await UserModel.findOne({ email: email });
     } catch (error) {
         return newServiceErrorHandler(error);
     }
@@ -457,8 +394,6 @@ const updateUserById = async (userId, userData, file) => {
             delete updatedUserDetails?.picture.fileId;
             delete updatedUserDetails?.picture.shareableLink;
         }
-
-        console.log(populatedPermission[0]);
 
         // Return the updated user information
         return sendServiceResponse(
