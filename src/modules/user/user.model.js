@@ -62,6 +62,7 @@ const userSchema = Schema({
                 if (!UserConstants.USER_NAME_PATTERN.test(value)) {
                     return false; // Pattern does not match
                 }
+
                 return true;
             },
             message: props =>

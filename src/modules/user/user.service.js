@@ -10,7 +10,6 @@ import newServiceErrorHandler from '../../utils/newServiceErrorHandler.js';
 import RoleModel from '../auth/role/role.model.js';
 import RoleAggregationPipeline from '../auth/role/role.pipeline.js';
 import UserAggregationPipeline from './user.pipeline.js';
-import UserPipeline from './user.pipeline.js';
 
 import ServerError from '../../utils/serverError.js';
 
