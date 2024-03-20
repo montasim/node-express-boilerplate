@@ -132,6 +132,13 @@ const userSchema = Schema({
         type: Boolean,
         default: false,
     },
+    isEmailMobile: {
+        type: Boolean,
+        default: false,
+    },
+    isActive: {
+        type: Boolean,
+    },
     createdBy: {
         type: String,
         ref: 'User',

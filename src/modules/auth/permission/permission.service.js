@@ -20,7 +20,7 @@ const createPermission = async (sessionUser, permissionData) => {
         }
 
         // Create the permission with added createdBy field
-        const createdBy = 'user-20240317230608-000000001'; // Example user ID or derive from sessionUser
+        const createdBy = 'system-20240317230608-000000001'; // Example user ID or derive from sessionUser
         const newPermission = await PermissionModel.create({
             ...permissionData,
             createdBy,
@@ -347,7 +347,7 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
         // Prepare the updated data
         const updateData = {
             ...permissionData,
-            updatedBy: 'user-20240317230608-000000001', // Assuming you're passing the current user's ID
+            updatedBy: 'system-20240317230608-000000001', // Assuming you're passing the current user's ID
             updatedAt: new Date(),
         };
 

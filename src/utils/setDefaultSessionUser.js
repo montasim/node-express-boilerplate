@@ -1,11 +1,11 @@
 import UserModel from '../modules/user/user.model.js';
 import httpStatus from 'http-status';
 
-const setDefaultSessionUser = async (sessionUser) => {
+const setDefaultSessionUser = async sessionUser => {
     if (!sessionUser) {
         // Get the default user
         const defaultSessionUser = await UserModel.findOne({
-            id: 'user-20240317230608-000000001'
+            id: 'system-20240317230608-000000001',
         });
 
         // If the current session user is not available, return an error

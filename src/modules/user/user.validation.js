@@ -2,23 +2,30 @@ import Joi from 'joi';
 
 import CustomValidation from '../../validations/custom.validation.js';
 import customValidation from '../../validations/custom.validation.js';
+import UserConstants from './user.constant.js';
 
 const createUser = {
     body: Joi.object().keys({
-        email: Joi.string().required().email(),
-        password: Joi.string().required().custom(CustomValidation.password),
-        name: Joi.string().required(),
-        role: Joi.string().required().valid('user', 'admin'),
+        email: Joi.string()
+            .trim()
+            .email()
+            .required()
+            .external(CustomValidation.email),
+        password: Joi.string().required().external(CustomValidation.password),
+        name: customValidation
+            .stringValidator('user', UserConstants.USER_NAME_PATTERN, 3, 50)
+            .required(),
+        role: customValidation.id().trim(),
     }),
 };
 
 const getUsers = {
     query: Joi.object().keys({
-        name: Joi.string(),
-        role: Joi.string(),
-        sortBy: Joi.string(),
-        limit: Joi.number().integer(),
-        page: Joi.number().integer(),
+        name: Joi.string().trim(),
+        role: Joi.string().trim(),
+        sortBy: Joi.string().trim(),
+        limit: Joi.number().integer().min(1).min(100),
+        page: Joi.number().integer().min(1).max(10),
     }),
 };
 
@@ -34,11 +41,19 @@ const updateUser = {
     }),
     body: Joi.object()
         .keys({
-            email: Joi.string().email(),
-            password: Joi.string().custom(CustomValidation.password),
-            name: Joi.string(),
+            name: customValidation.stringValidator(
+                'user',
+                UserConstants.USER_NAME_PATTERN,
+                3,
+                50
+            ),
+            role: customValidation.id(),
+            isActive: customValidation.isActive(),
         })
-        .min(1),
+        .or('email', 'password', 'name', 'role', 'isActive')
+        .messages({
+            'object.min': 'At least one field must be provided for update.',
+        }),
 };
 
 const deleteUser = {

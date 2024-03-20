@@ -1,10 +1,10 @@
 import express from 'express';
 
-import authMiddleware from '../../middleware/auth.middleware.js';
 import validateRequestMiddleware from '../../middleware/validateRequest.middleware.js';
 
 import UserValidation from './user.validation.js';
 import UserController from './user.controller.js';
+import fileUploadMiddleware from '../../middleware/fileUpload.middleware.js';
 
 const router = express.Router();
 
@@ -15,13 +15,23 @@ const router = express.Router();
 
 router
     .route('/')
-    .post(validateRequestMiddleware(UserValidation.createUser), UserController.createUser)
-    .get(validateRequestMiddleware(UserValidation.getUsers), UserController.getUsers);
+    .post(
+        validateRequestMiddleware(UserValidation.createUser),
+        UserController.createUser
+    )
+    .get(
+        validateRequestMiddleware(UserValidation.getUsers),
+        UserController.getUsers
+    );
 
 router
     .route('/:userId')
-    .get(validateRequestMiddleware(UserValidation.getUser), UserController.getUser)
-    .patch(
+    .get(
+        validateRequestMiddleware(UserValidation.getUser),
+        UserController.getUser
+    )
+    .put(
+        fileUploadMiddleware.single('picture'),
         validateRequestMiddleware(UserValidation.updateUser),
         UserController.updateUser
     )

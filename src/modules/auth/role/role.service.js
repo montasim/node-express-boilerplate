@@ -34,7 +34,7 @@ const createRole = async (sessionUser, roleData) => {
         // Create the new role
         const newRole = await RoleModel.create({
             ...roleData,
-            createdBy: 'user-20240317230608-000000001',
+            createdBy: 'system-20240317230608-000000001',
         });
 
         // Aggregation pipeline to fetch and populate the updated document
@@ -272,7 +272,7 @@ const updateRole = async (sessionUser, roleId, roleData) => {
         // Prepare the updated data
         const updateData = {
             ...oldRole.toObject(), // Convert the mongoose document to a plain JavaScript object
-            updatedBy: 'user-20240317230608-000000001', // Use the current session user's ID
+            updatedBy: 'system-20240317230608-000000001', // Use the current session user's ID
             updatedAt: new Date(),
         };
 

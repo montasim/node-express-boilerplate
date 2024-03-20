@@ -6,11 +6,20 @@ import sendControllerSuccessResponse from '../../utils/sendControllerSuccessResp
 import sendControllerErrorResponse from '../../utils/sendControllerErrorResponse.js';
 
 import UserService from './user.service.js';
-import RoleService from '../auth/role/role.service.js';
 
 const createUser = asyncErrorHandler(async (req, res) => {
-    const user = await UserService.createUser(req.body);
-    res.status(httpStatus.CREATED).send(user);
+    try {
+        const newUser = await UserService.createUser(req.body);
+
+        // Send the roles data
+        return sendControllerSuccessResponse(res, newUser);
+    } catch (error) {
+        return sendControllerErrorResponse(
+            res,
+            error,
+            'UserController.createUser()'
+        );
+    }
 });
 
 const getUsers = async (req, res) => {
@@ -45,8 +54,8 @@ const getUsers = async (req, res) => {
 
 const getUser = async (req, res) => {
     try {
-        const userId = req?.params?.userId || null;
-        const userData = await UserService.getUserById(userId);
+        const userId = req?.params?.userId || null; // Get the user ID from the request params
+        const userData = await UserService.getUserById(userId); // Get the user data
 
         // Send the role data
         return sendControllerSuccessResponse(res, userData);
