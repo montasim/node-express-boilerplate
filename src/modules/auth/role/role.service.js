@@ -6,8 +6,7 @@ import newServiceErrorHandler from '../../../utils/newServiceErrorHandler.js';
 
 import RoleModel from './role.model.js';
 import PermissionModel from '../permission/permission.model.js';
-import UserModel from '../../user/user.model.js';
-import mongodbAggregationPipelineHelpers from '../../../utils/mongodbAggregationPipelineHelpers.js';
+import RoleAggregationPipeline from './role.pipeline.js';
 
 const createRole = async (sessionUser, roleData) => {
     try {
@@ -39,10 +38,9 @@ const createRole = async (sessionUser, roleData) => {
         });
 
         // Aggregation pipeline to fetch and populate the updated document
-        const aggregationPipeline =
-            mongodbAggregationPipelineHelpers.createdByUpdatedByAggregationPipeline(
-                newRole?.id
-            );
+        const aggregationPipeline = RoleAggregationPipeline.getRole(
+            newRole?.id
+        );
 
         const populatedRole = await RoleModel.aggregate(aggregationPipeline);
 
@@ -129,176 +127,12 @@ const getRoles = async (sessionUser, filter, options) => {
             : 0;
 
         // Build the dynamic aggregation pipeline
-        const aggregationPipeline = [
+        const aggregationPipeline = RoleAggregationPipeline.getRoles(
             matchStage,
-            {
-                $lookup: {
-                    from: 'users',
-                    let: { createdByVar: '$createdBy' },
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: { $eq: ['$id', '$$createdByVar'] },
-                            },
-                        },
-                        {
-                            $project: {
-                                __v: 0,
-                                _id: 0,
-                                id: 0,
-                                role: 0,
-                                password: 0,
-                                isEmailVerified: 0,
-                                picture: { fileId: 0, shareableLink: 0 },
-                            },
-                        }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
-                    ],
-                    as: 'createdByUser',
-                },
-            },
-            {
-                $lookup: {
-                    from: 'users',
-                    let: { updatedByVar: '$updatedBy' },
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: { $eq: ['$id', '$$updatedByVar'] },
-                            },
-                        },
-                        {
-                            $project: {
-                                __v: 0,
-                                _id: 0,
-                                id: 0,
-                                role: 0,
-                                password: 0,
-                                isEmailVerified: 0,
-                                picture: { fileId: 0, shareableLink: 0 },
-                            },
-                        }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
-                    ],
-                    as: 'updatedByUser',
-                },
-            },
-            {
-                $lookup: {
-                    from: 'permissions',
-                    let: { permissionsVar: '$permissions.permission' }, // Assuming permissions are stored as an array of objects with { permission: "permId" }
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: { $in: ['$id', '$$permissionsVar'] },
-                            },
-                        },
-                        {
-                            $lookup: {
-                                from: 'users',
-                                let: { createdByVar: '$createdBy' }, // Define variable for use in pipeline
-                                pipeline: [
-                                    {
-                                        $match: {
-                                            $expr: {
-                                                $eq: ['$id', '$$createdByVar'],
-                                            },
-                                        },
-                                    }, // Use the variable to match the user
-                                    {
-                                        $project: {
-                                            __v: 0,
-                                            _id: 0,
-                                            id: 0,
-                                            role: 0,
-                                            password: 0,
-                                            isEmailVerified: 0,
-                                            picture: {
-                                                fileId: 0,
-                                                shareableLink: 0,
-                                            },
-                                        },
-                                    }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
-                                ],
-                                as: 'createdBy',
-                            },
-                        },
-                        {
-                            $lookup: {
-                                from: 'users',
-                                let: { updatedByVar: '$updatedBy' },
-                                pipeline: [
-                                    {
-                                        $match: {
-                                            $expr: {
-                                                $eq: ['$id', '$$updatedByVar'],
-                                            },
-                                        },
-                                    },
-                                    {
-                                        $project: {
-                                            __v: 0,
-                                            _id: 0,
-                                            id: 0,
-                                            role: 0,
-                                            password: 0,
-                                            isEmailVerified: 0,
-                                            picture: {
-                                                fileId: 0,
-                                                shareableLink: 0,
-                                            },
-                                        },
-                                    }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
-                                ],
-                                as: 'updatedBy',
-                            },
-                        },
-                        {
-                            $project: {
-                                __v: 0,
-                                _id: 0,
-                            },
-                        },
-                    ],
-                    as: 'permissions',
-                },
-            },
-            {
-                $unwind: {
-                    path: '$createdByUser',
-                    preserveNullAndEmptyArrays: true,
-                },
-            },
-            {
-                $unwind: {
-                    path: '$updatedByUser',
-                    preserveNullAndEmptyArrays: true,
-                },
-            },
-            {
-                $addFields: {
-                    createdBy: '$createdByUser',
-                    updatedBy: '$updatedByUser',
-                },
-            },
-            {
-                $project: {
-                    _id: 0,
-                    __v: 0,
-                    createdByUser: 0,
-                    updatedByUser: 0,
-                },
-            },
             sortStage,
-            { $skip: skip },
-            { $limit: limit },
-            {
-                $project: {
-                    _id: 0,
-                    __v: 0,
-                    createdByUser: 0,
-                    updatedByUser: 0,
-                },
-            },
-        ].filter(stage => Object.keys(stage).length); // Filter out empty stages
+            skip,
+            limit
+        ); // Filter out empty stages
 
         // Fetch the roles using the aggregation pipeline
         const roles = await RoleModel.aggregate(aggregationPipeline);
@@ -332,170 +166,7 @@ const getRoles = async (sessionUser, filter, options) => {
 const getRole = async roleId => {
     try {
         // Aggregation pipeline to fetch and populate the updated document
-        const aggregationPipeline = [
-            {
-                $match: { id: roleId }, // Match the permission document
-            },
-            {
-                $lookup: {
-                    from: 'users',
-                    let: { createdByVar: '$createdBy' }, // Define variable for use in pipeline
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: { $eq: ['$id', '$$createdByVar'] },
-                            },
-                        }, // Use the variable to match the user
-                        {
-                            $project: {
-                                __v: 0,
-                                _id: 0,
-                                id: 0,
-                                role: 0,
-                                password: 0,
-                                isEmailVerified: 0,
-                                picture: { fileId: 0, shareableLink: 0 },
-                            },
-                        }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
-                    ],
-                    as: 'createdByUser',
-                },
-            },
-            {
-                $lookup: {
-                    from: 'users',
-                    let: { updatedByVar: '$updatedBy' },
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: { $eq: ['$id', '$$updatedByVar'] },
-                            },
-                        },
-                        {
-                            $project: {
-                                __v: 0,
-                                _id: 0,
-                                id: 0,
-                                role: 0,
-                                password: 0,
-                                isEmailVerified: 0,
-                                picture: { fileId: 0, shareableLink: 0 },
-                            },
-                        }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
-                    ],
-                    as: 'updatedByUser',
-                },
-            },
-            {
-                $lookup: {
-                    from: 'permissions',
-                    let: { permissionsVar: '$permissions.permission' }, // Assuming permissions are stored as an array of objects with { permission: "permId" }
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: { $in: ['$id', '$$permissionsVar'] },
-                            },
-                        },
-                        {
-                            $lookup: {
-                                from: 'users',
-                                let: { createdByVar: '$createdBy' }, // Define variable for use in pipeline
-                                pipeline: [
-                                    {
-                                        $match: {
-                                            $expr: {
-                                                $eq: ['$id', '$$createdByVar'],
-                                            },
-                                        },
-                                    }, // Use the variable to match the user
-                                    {
-                                        $project: {
-                                            __v: 0,
-                                            _id: 0,
-                                            id: 0,
-                                            role: 0,
-                                            password: 0,
-                                            isEmailVerified: 0,
-                                            picture: {
-                                                fileId: 0,
-                                                shareableLink: 0,
-                                            },
-                                        },
-                                    }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
-                                ],
-                                as: 'createdBy',
-                            },
-                        },
-                        {
-                            $lookup: {
-                                from: 'users',
-                                let: { updatedByVar: '$updatedBy' },
-                                pipeline: [
-                                    {
-                                        $match: {
-                                            $expr: {
-                                                $eq: ['$id', '$$updatedByVar'],
-                                            },
-                                        },
-                                    },
-                                    {
-                                        $project: {
-                                            __v: 0,
-                                            _id: 0,
-                                            id: 0,
-                                            role: 0,
-                                            password: 0,
-                                            isEmailVerified: 0,
-                                            picture: {
-                                                fileId: 0,
-                                                shareableLink: 0,
-                                            },
-                                        },
-                                    }, // Exclude the __v, _id, id, role, password, isEmailVerified, picture field from the lookup result
-                                ],
-                                as: 'updatedBy',
-                            },
-                        },
-                        {
-                            $project: {
-                                __v: 0,
-                                _id: 0,
-                                // Exclude any fields you don't want to include
-                            },
-                        },
-                    ],
-                    as: 'permissions',
-                },
-            },
-            {
-                $unwind: {
-                    path: '$createdByUser',
-                    preserveNullAndEmptyArrays: true,
-                },
-            },
-            {
-                $unwind: {
-                    path: '$updatedByUser',
-                    preserveNullAndEmptyArrays: true,
-                },
-            },
-            {
-                $addFields: {
-                    createdBy: '$createdByUser',
-                    updatedBy: '$updatedByUser',
-                },
-            },
-            {
-                $project: {
-                    _id: 0,
-                    __v: 0,
-                    password: 0,
-                    createdByUser: 0,
-                    updatedByUser: 0,
-                    picture: { fileId: 0, shareableLink: 0 },
-                },
-            },
-        ];
+        const aggregationPipeline = RoleAggregationPipeline.getRole(roleId);
 
         const roles = await RoleModel.aggregate(aggregationPipeline);
 
@@ -626,10 +297,9 @@ const updateRole = async (sessionUser, roleId, roleData) => {
         }
 
         // Aggregation pipeline to fetch and populate the updated document
-        const aggregationPipeline =
-            mongodbAggregationPipelineHelpers.createdByUpdatedByAggregationPipeline(
-                roleId
-            );
+        const aggregationPipeline = RoleAggregationPipeline.getRole(
+            updatedRole?.id
+        );
 
         // Fetch the updated role using the aggregation pipeline
         const populatedRole = await RoleModel.aggregate(aggregationPipeline);
