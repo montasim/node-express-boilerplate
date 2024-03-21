@@ -16,9 +16,17 @@ router.post(
     AuthController.register
 );
 
-router.post('/login', validateRequestMiddleware(AuthValidation.login), AuthController.login);
+router.post(
+    '/login',
+    validateRequestMiddleware(AuthValidation.login),
+    AuthController.login
+);
 
-router.post('/logout', validateRequestMiddleware(AuthValidation.logout), AuthController.logout);
+router.post(
+    '/logout',
+    validateRequestMiddleware(AuthValidation.logout),
+    AuthController.logout
+);
 
 router.post(
     '/refresh-tokens',
@@ -40,7 +48,7 @@ router.post(
 
 router.post(
     '/send-verification-email',
-    authMiddleware(),
+    // authMiddleware(),
     AuthController.sendVerificationEmail
 );
 

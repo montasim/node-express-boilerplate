@@ -10,6 +10,10 @@ import TokenService from './token/token.service.js';
 import UserService from '../user/user.service.js';
 import EmailService from '../email/email.service.js';
 import CustomValidation from '../../validations/custom.validation.js';
+import tokenTypes from '../../config/tokens.config.js';
+import userService from '../user/user.service.js';
+import ServerError from '../../utils/serverError.js';
+import TokenModel from './token/token.model.js';
 
 const register = async (req, res) => {
     try {
@@ -128,26 +132,43 @@ const resetPassword = async (req, res) => {
 
 const sendVerificationEmail = asyncErrorHandler(async (req, res) => {
     const verifyEmailToken = await TokenService.generateVerifyEmailToken(
-        req.user
+        req.body.id
     );
 
-    await EmailService.sendVerificationEmail(req.user.email, verifyEmailToken);
+    await EmailService.sendVerificationEmail(req.body.email, verifyEmailToken);
 
     res.status(httpStatus.NO_CONTENT).send();
 });
 
 const verifyEmail = async (req, res) => {
-    const requestStartTime = Date.now(); // Get the request start time
-    const { token } = req.query;
+    try {
+        const verifyEmailTokenDoc = await TokenModel.findOne({
+            token: req.params.token,
+            type: tokenTypes.VERIFY_EMAIL,
+        });
 
-    await sendControllerResponse(
-        req,
-        res,
-        requestStartTime,
-        AuthServices.verifyEmail,
-        [token],
-        'AuthController.verifyEmail()'
-    );
+        console.log(verifyEmailTokenDoc);
+
+        const user = await userService.getUserById(verifyEmailTokenDoc.user);
+
+        console.log(user);
+
+        if (!user) {
+            throw new Error();
+        }
+
+        await TokenModel.deleteMany({
+            user: user.id,
+            type: tokenTypes.VERIFY_EMAIL,
+        });
+
+        await userService.updateUserById(user.id, { isEmailVerified: true });
+    } catch (error) {
+        throw new ServerError(
+            httpStatus.UNAUTHORIZED,
+            'Email verification failed'
+        );
+    }
 };
 
 const AuthController = {
