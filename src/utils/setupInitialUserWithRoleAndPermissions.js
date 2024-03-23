@@ -52,17 +52,15 @@ const setupInitialUserWithRoleAndPermissions = async () => {
             { name: 'Super Admin', permissions: [...permissionMap.values()] },
         ];
 
-        // Ensure roles exist
+        // Ensure roles exist (now with all permissions)
         for (const role of roles) {
             let roleDoc = await RoleModel.findOne({ name: role.name });
-            const permissionsIds = allPermissions.map(
-                permission => permission.id
-            );
 
-            // Modify the role creation object to match the required format
             const formattedRoleData = {
                 name: role.name,
-                permissions: [{ permission: permissionsIds[0] }], // Use the first permission ID as required
+                permissions: role.permissions.map(permissionId => ({
+                    permission: permissionId,
+                })),
                 createdBy,
                 isActive: true,
             };
