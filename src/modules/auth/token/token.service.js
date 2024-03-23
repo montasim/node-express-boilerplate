@@ -178,6 +178,10 @@ const findTokenWithQuery = async query => {
     return await tokenModel.find(query);
 };
 
+const deleteTokensByIds = async expiredTokens => {
+    return await tokenModel.deleteMany({ token: { $in: expiredTokens } });
+};
+
 const TokenService = {
     generateToken,
     saveToken,
@@ -186,6 +190,7 @@ const TokenService = {
     generateResetPasswordToken,
     generateVerifyEmailToken,
     findTokenWithQuery,
+    deleteTokensByIds,
 };
 
 export default TokenService;

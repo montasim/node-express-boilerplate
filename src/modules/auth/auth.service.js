@@ -1,11 +1,12 @@
+import moment from 'moment';
 import bcrypt from 'bcryptjs';
 import httpStatus from 'http-status';
-import moment from 'moment';
 
 import sendServiceResponse from '../../utils/sendServiceResponse.js';
 import processFailedLoginAttempt from '../../utils/processFailedLoginAttempt.js';
 import processSuccessfulLogin from '../../utils/processSuccessfulLogin.js';
 import excludeSensitiveFields from '../../utils/excludeSensitiveFields.js';
+import checkAccountLockStatus from '../../utils/checkAccountLockStatus.js';
 
 import tokenService from './token/token.service.js';
 import userService from '../user/user.service.js';
@@ -28,23 +29,10 @@ const loginUserWithEmailAndPassword = async (email, password) => {
         };
     }
 
-    // Handle account lock status and check for lock duration
-    if (userDetails?.isLocked && userDetails?.lockDuration) {
-        const lockDuration = moment.utc(userDetails.lockDuration); // Moment object of lockDuration
-        const currentTime = moment.utc(); // Current time in UTC
+    // Check if the account is locked
+    await checkAccountLockStatus(userDetails);
 
-        // Check if the lockDuration is still in the future compared to the current time
-        if (lockDuration.isAfter(currentTime)) {
-            // Calculate the remaining lock time in a human-friendly format
-            const remainingLockTime = lockDuration.fromNow();
-
-            throw {
-                statusCode: httpStatus.FORBIDDEN,
-                message: `Account is locked. Please try again after ${remainingLockTime}.`,
-            };
-        }
-    }
-
+    // Check if the user password matches the hashed password
     const passwordMatch = await bcrypt.compare(password, userDetails?.password);
 
     // Check if the password is correct
@@ -56,10 +44,11 @@ const loginUserWithEmailAndPassword = async (email, password) => {
         await processSuccessfulLogin(userDetails);
     }
 
+    // Generate auth tokens
     const token = await TokenService.generateAuthTokens(userDetails);
 
     // Convert the Mongoose document to a plain JavaScript object
-    let userData = userDetails.toObject();
+    let userData = userDetails?.toObject();
 
     // Send the verification email
     await EmailService.sendSuccessfullLoginEmail(
@@ -126,6 +115,7 @@ const logout = async refreshToken => {
         };
     }
 
+    // Find the refresh token document and delete it
     const refreshTokenDoc = await TokenModel.findOneAndDelete({
         token: refreshToken,
         type: tokenTypes.REFRESH,
@@ -140,25 +130,38 @@ const logout = async refreshToken => {
         };
     }
 
+    // Return a successful response
     return sendServiceResponse(httpStatus.OK, 'Logout successful.', {});
 };
 
 const refreshAuth = async refreshToken => {
+    // Verify if refreshToken is provided
     const refreshTokenDoc = await TokenModel.findOne({
         token: refreshToken,
         type: tokenTypes.REFRESH,
     });
 
-    const user = await UserModel.findOne({ id: refreshTokenDoc?.user });
+    // Find the user with the refresh token
+    const userDetails = await UserModel.findOne({ id: refreshTokenDoc?.user });
 
-    if (!user) {
-        throw new Error();
+    // Check if the user exists with the refresh token
+    if (!userDetails) {
+        throw {
+            statusCode: httpStatus.NOT_FOUND,
+            message: 'User not found with the refresh token.',
+        };
     }
 
+    // Check if the account is locked
+    await checkAccountLockStatus(userDetails);
+
+    // Delete the refresh token
     await TokenModel.findOneAndDelete({ token: refreshToken });
 
-    const newAuthToken = await tokenService.generateAuthTokens(user);
+    // Generate new auth tokens
+    const newAuthToken = await tokenService.generateAuthTokens(userDetails);
 
+    // Return the new auth token
     return sendServiceResponse(
         httpStatus.OK,
         'Refresh successful.',
@@ -167,40 +170,57 @@ const refreshAuth = async refreshToken => {
 };
 
 const resetPassword = async (resetPasswordToken, newPassword) => {
+    // Reset password token verification
     const resetPasswordTokenDoc = await tokenService.verifyToken(
         resetPasswordToken,
         tokenTypes.RESET_PASSWORD
     );
 
-    const user = await userService.getUserById(resetPasswordTokenDoc.user);
+    // Find the user with the reset password token
+    const userDetails = await userService.getUserById(
+        resetPasswordTokenDoc.user
+    );
 
-    if (!user) {
+    // Check if the user exists with the reset password token
+    if (!userDetails) {
         throw {
             statusCode: httpStatus.NOT_FOUND,
             message: 'User not found with the reset password token.',
         };
     }
 
+    // Check if the account is locked
+    await checkAccountLockStatus(userDetails);
+
     // Update the user password
-    await userService.updateUserById(user?.id, { password: newPassword });
+    await userService.updateUserById(userDetails?.id, {
+        password: newPassword,
+    });
 
     // Send the verification email
-    await EmailService.sendPasswordResetSuccessEmail(user?.name, user?.email);
+    await EmailService.sendPasswordResetSuccessEmail(
+        userDetails?.name,
+        userDetails?.email
+    );
 
     // Delete the reset password token
     await TokenModel.deleteMany({
-        user: user?.id,
+        user: userDetails?.id,
         type: tokenTypes.RESET_PASSWORD,
     });
 
+    // Return a successful response
     return sendServiceResponse(httpStatus.OK, 'Password reset successful.', {});
 };
 
 const verifyEmail = async verifyEmailToken => {
+    // Verify email token
     const verifyEmailTokenDoc = await tokenService.verifyToken(
         verifyEmailToken,
         tokenTypes.VERIFY_EMAIL
     );
+
+    // Find the user with the verified email token
     const userDetails = await userService.getUserById(
         verifyEmailTokenDoc?.serviceData?.user
     );
@@ -212,6 +232,9 @@ const verifyEmail = async verifyEmailToken => {
             message: 'User not found with the verify email token.',
         };
     }
+
+    // Check if the account is locked
+    await checkAccountLockStatus(userDetails);
 
     // Delete the verify email token
     await TokenModel.deleteMany({
@@ -230,11 +253,35 @@ const verifyEmail = async verifyEmailToken => {
         userDetails?.email
     );
 
+    // Return a successful response
     return sendServiceResponse(
         httpStatus.OK,
         'Email verification successful.',
         {}
     );
+};
+
+const deleteExpiredTokens = async userDetails => {
+    // Retrieve all associated refresh tokens
+    const tokenQuery = {
+        user: userDetails.id,
+        type: tokenTypes.REFRESH,
+        blacklisted: false,
+    };
+    const tokens = await TokenService.findTokenWithQuery(tokenQuery);
+    const currentTime = moment.utc();
+    const expiredTokens = tokens?.filter(token =>
+        moment(token?.expires).isBefore(currentTime)
+    );
+
+    // Delete expired tokens if any
+    if (expiredTokens?.length > 0) {
+        const expiredTokensList = expiredTokens?.map(token => token?.token);
+
+        await TokenService.deleteTokensByIds(expiredTokensList);
+    }
+
+    return { tokens, expiredTokens };
 };
 
 const AuthServices = {
@@ -243,6 +290,7 @@ const AuthServices = {
     refreshAuth,
     resetPassword,
     verifyEmail,
+    deleteExpiredTokens,
 };
 
 export default AuthServices;

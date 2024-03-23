@@ -1,3 +1,4 @@
+import moment from 'moment';
 import httpStatus from 'http-status';
 
 import config from '../config/config.js';
@@ -5,6 +6,7 @@ import EmailService from '../modules/email/email.service.js';
 import userService from '../modules/user/user.service.js';
 import TokenService from '../modules/auth/token/token.service.js';
 import tokenTypes from '../config/tokens.config.js';
+import AuthServices from '../modules/auth/auth.service.js';
 
 const processSuccessfulLogin = async userDetails => {
     const maximumLoginAttempts = config.auth.loginAttempts;
@@ -22,15 +24,14 @@ const processSuccessfulLogin = async userDetails => {
         });
     }
 
-    const tokenQuery = {
-        user: userDetails?.id,
-        type: tokenTypes.REFRESH,
-        blacklisted: false,
-    };
-    const tokenDetails = await TokenService.findTokenWithQuery(tokenQuery);
+    const { tokens, expiredTokens } =
+        await AuthServices.deleteExpiredTokens(userDetails);
+
+    // After successful login, check active (non-expired) sessions
+    const activeTokensCount = tokens?.length - expiredTokens?.length;
 
     // Check if the user has more than 3 active sessions
-    if (tokenDetails?.length > config.auth.activeSessions) {
+    if (activeTokensCount > config.auth.activeSessions) {
         // Send the verification email
         await EmailService.sendMaximumActiveSessionEmail(
             userDetails?.name,
