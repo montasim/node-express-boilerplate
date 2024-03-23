@@ -43,7 +43,10 @@ const setupInitialUserWithRoleAndPermissions = async () => {
         // Collect all permissions for the roles (improve efficiency for large datasets)
         const allPermissions = await PermissionModel.find({});
         const permissionMap = new Map(
-            allPermissions.map(permission => [permission.name, permission.id])
+            allPermissions?.map(permission => [
+                permission?.name,
+                permission?.id,
+            ])
         ); // Efficiently create a permission ID map
 
         // Define roles
@@ -57,8 +60,8 @@ const setupInitialUserWithRoleAndPermissions = async () => {
             let roleDoc = await RoleModel.findOne({ name: role.name });
 
             const formattedRoleData = {
-                name: role.name,
-                permissions: role.permissions.map(permissionId => ({
+                name: role?.name,
+                permissions: role?.permissions.map(permissionId => ({
                     permission: permissionId,
                 })),
                 createdBy,
