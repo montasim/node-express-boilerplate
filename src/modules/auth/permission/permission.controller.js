@@ -4,110 +4,73 @@ import sendControllerErrorResponse from '../../../utils/sendControllerErrorRespo
 import sendControllerSuccessResponse from '../../../utils/sendControllerSuccessResponse.js';
 
 import PermissionService from './permission.service.js';
+import asyncErrorHandler from '../../../utils/asyncErrorHandler.js';
+import TokenService from '../token/token.service.js';
+import EmailService from '../../email/email.service.js';
+import httpStatus from 'http-status';
 
-const createPermission = async (req, res) => {
-    try {
-        const sessionUser = req?.sessionUser || null;
-        const createPermissionData = await PermissionService.createPermission(
-            sessionUser,
-            req.body
-        );
+const createPermission = asyncErrorHandler(async (req, res) => {
+    const sessionUser = req?.sessionUser || null;
+    const createPermissionData = await PermissionService.createPermission(
+        sessionUser,
+        req.body
+    );
 
-        // Send the new permission data
-        return sendControllerSuccessResponse(res, createPermissionData);
-    } catch (error) {
-        return sendControllerErrorResponse(
-            res,
-            error,
-            'PermissionController.createPermission()'
-        );
-    }
-};
+    // Send the new permission data
+    return sendControllerSuccessResponse(res, createPermissionData);
+});
 
-const getPermissions = async (req, res) => {
-    try {
-        const sessionUser = req?.sessionUser || null;
-        const filter = pick(req.query, [
-            'name',
-            'isActive',
-            'createdBy',
-            'updatedBy',
-            'createdAt',
-            'updatedAt',
-        ]);
-        const options = pick(req.query, ['sortBy', 'limit', 'page']);
+const getPermissions = asyncErrorHandler(async (req, res) => {
+    const sessionUser = req?.sessionUser || null;
+    const filter = pick(req.query, [
+        'name',
+        'isActive',
+        'createdBy',
+        'updatedBy',
+        'createdAt',
+        'updatedAt',
+    ]);
+    const options = pick(req.query, ['sortBy', 'limit', 'page']);
 
-        const createPermissionData = await PermissionService.getPermissions(
-            sessionUser,
-            filter,
-            options
-        );
+    const createPermissionData = await PermissionService.getPermissions(
+        sessionUser,
+        filter,
+        options
+    );
 
-        // Send the permissions data
-        return sendControllerSuccessResponse(res, createPermissionData);
-    } catch (error) {
-        return sendControllerErrorResponse(
-            res,
-            error,
-            'PermissionController.getPermissions()'
-        );
-    }
-};
+    // Send the permissions data
+    return sendControllerSuccessResponse(res, createPermissionData);
+});
 
-const getPermission = async (req, res) => {
-    try {
-        const permissionId = req?.params?.permissionId || null;
-        const permissionData =
-            await PermissionService.getPermission(permissionId);
+const getPermission = asyncErrorHandler(async (req, res) => {
+    const permissionId = req?.params?.permissionId || null;
+    const permissionData = await PermissionService.getPermission(permissionId);
 
-        // Send the permission data
-        return sendControllerSuccessResponse(res, permissionData);
-    } catch (error) {
-        return sendControllerErrorResponse(
-            res,
-            error,
-            'PermissionController.getPermission()'
-        );
-    }
-};
+    // Send the permission data
+    return sendControllerSuccessResponse(res, permissionData);
+});
 
-const updatePermission = async (req, res) => {
-    try {
-        const sessionUser = req?.sessionUser || null;
-        const permissionId = req?.params?.permissionId || null;
-        const createPermissionData = await PermissionService.updatePermission(
-            sessionUser,
-            permissionId,
-            req.body
-        );
+const updatePermission = asyncErrorHandler(async (req, res) => {
+    const sessionUser = req?.sessionUser || null;
+    const permissionId = req?.params?.permissionId || null;
+    const createPermissionData = await PermissionService.updatePermission(
+        sessionUser,
+        permissionId,
+        req.body
+    );
 
-        // Send the permission data
-        return sendControllerSuccessResponse(res, createPermissionData);
-    } catch (error) {
-        return sendControllerErrorResponse(
-            res,
-            error,
-            'PermissionController.updatePermission()'
-        );
-    }
-};
+    // Send the permission data
+    return sendControllerSuccessResponse(res, createPermissionData);
+});
 
-const deletePermission = async (req, res) => {
-    try {
-        const permissionId = req?.params?.permissionId || null;
-        const createPermissionData =
-            await PermissionService.deletePermission(permissionId);
+const deletePermission = asyncErrorHandler(async (req, res) => {
+    const permissionId = req?.params?.permissionId || null;
+    const createPermissionData =
+        await PermissionService.deletePermission(permissionId);
 
-        // Send the permission data
-        return sendControllerSuccessResponse(res, createPermissionData);
-    } catch (error) {
-        return sendControllerErrorResponse(
-            res,
-            error,
-            'PermissionController.deletePermission()'
-        );
-    }
-};
+    // Send the permission data
+    return sendControllerSuccessResponse(res, createPermissionData);
+});
 
 const PermissionController = {
     createPermission,

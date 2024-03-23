@@ -1,111 +1,68 @@
 import pick from '../../../utils/pick.js';
 
-import sendControllerErrorResponse from '../../../utils/sendControllerErrorResponse.js';
 import sendControllerSuccessResponse from '../../../utils/sendControllerSuccessResponse.js';
+import asyncErrorHandler from '../../../utils/asyncErrorHandler.js';
 
 import RoleService from './role.service.js';
 
-const createRole = async (req, res) => {
-    try {
-        const sessionUser = req?.sessionUser || null;
-        const createRoleData = await RoleService.createRole(
-            sessionUser,
-            req.body
-        );
+const createRole = asyncErrorHandler(async (req, res) => {
+    const sessionUser = req?.sessionUser || null;
+    const createRoleData = await RoleService.createRole(sessionUser, req.body);
 
-        // Send the new role data
-        return sendControllerSuccessResponse(res, createRoleData);
-    } catch (error) {
-        return sendControllerErrorResponse(
-            res,
-            error,
-            'RoleController.createRole()'
-        );
-    }
-};
+    // Send the new role data
+    return sendControllerSuccessResponse(res, createRoleData);
+});
 
-const getRoles = async (req, res) => {
-    try {
-        const sessionUser = req?.sessionUser || null;
-        const filter = pick(req.query, [
-            'name',
-            'isActive',
-            'createdBy',
-            'updatedBy',
-            'createdAt',
-            'updatedAt',
-        ]);
-        const options = pick(req.query, ['sortBy', 'limit', 'page']);
+const getRoles = asyncErrorHandler(async (req, res) => {
+    const sessionUser = req?.sessionUser || null;
+    const filter = pick(req.query, [
+        'name',
+        'isActive',
+        'createdBy',
+        'updatedBy',
+        'createdAt',
+        'updatedAt',
+    ]);
+    const options = pick(req.query, ['sortBy', 'limit', 'page']);
 
-        const createRoleData = await RoleService.getRoles(
-            sessionUser,
-            filter,
-            options
-        );
+    const createRoleData = await RoleService.getRoles(
+        sessionUser,
+        filter,
+        options
+    );
 
-        // Send the roles data
-        return sendControllerSuccessResponse(res, createRoleData);
-    } catch (error) {
-        return sendControllerErrorResponse(
-            res,
-            error,
-            'RoleController.getRoles()'
-        );
-    }
-};
+    // Send the roles data
+    return sendControllerSuccessResponse(res, createRoleData);
+});
 
-const getRole = async (req, res) => {
-    try {
-        const roleId = req?.params?.roleId || null;
-        const roleData = await RoleService.getRole(roleId);
+const getRole = asyncErrorHandler(async (req, res) => {
+    const roleId = req?.params?.roleId || null;
+    const roleData = await RoleService.getRole(roleId);
 
-        // Send the role data
-        return sendControllerSuccessResponse(res, roleData);
-    } catch (error) {
-        return sendControllerErrorResponse(
-            res,
-            error,
-            'RoleController.getRole()'
-        );
-    }
-};
+    // Send the role data
+    return sendControllerSuccessResponse(res, roleData);
+});
 
-const updateRole = async (req, res) => {
-    try {
-        const sessionUser = req?.sessionUser || null;
-        const roleId = req?.params?.roleId || null;
-        const createRoleData = await RoleService.updateRole(
-            sessionUser,
-            roleId,
-            req.body
-        );
+const updateRole = asyncErrorHandler(async (req, res) => {
+    const sessionUser = req?.sessionUser || null;
+    const roleId = req?.params?.roleId || null;
+    const createRoleData = await RoleService.updateRole(
+        sessionUser,
+        roleId,
+        req.body
+    );
 
-        // Send the role data
-        return sendControllerSuccessResponse(res, createRoleData);
-    } catch (error) {
-        return sendControllerErrorResponse(
-            res,
-            error,
-            'RoleController.updateRole()'
-        );
-    }
-};
+    // Send the role data
+    return sendControllerSuccessResponse(res, createRoleData);
+});
 
-const deleteRole = async (req, res) => {
-    try {
-        const roleId = req?.params?.roleId || null;
-        const createRoleData = await RoleService.deleteRole(roleId);
+const deleteRole = asyncErrorHandler(async (req, res) => {
+    const roleId = req?.params?.roleId || null;
+    const createRoleData = await RoleService.deleteRole(roleId);
 
-        // Send the role data
-        return sendControllerSuccessResponse(res, createRoleData);
-    } catch (error) {
-        return sendControllerErrorResponse(
-            res,
-            error,
-            'RoleController.deleteRole()'
-        );
-    }
-};
+    // Send the role data
+    return sendControllerSuccessResponse(res, createRoleData);
+});
 
 const RoleController = {
     createRole,
