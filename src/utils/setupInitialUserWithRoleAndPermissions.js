@@ -3,6 +3,7 @@ import PermissionModel from '../modules/auth/permission/permission.model.js';
 import UserModel from '../modules/user/user.model.js';
 import config from '../config/config.js';
 import loggerConfig from '../config/logger.config.js';
+import EmailService from '../modules/email/email.service.js';
 
 const setupInitialUserWithRoleAndPermissions = async () => {
     try {
@@ -75,6 +76,7 @@ const setupInitialUserWithRoleAndPermissions = async () => {
 
         // Ensure the super admin user exists
         const superAdminEmail = config.admin.email;
+        const superAdminPassword = config.admin.password;
         const superAdminExists = await UserModel.findOne({
             email: superAdminEmail,
         });
@@ -87,10 +89,16 @@ const setupInitialUserWithRoleAndPermissions = async () => {
             await UserModel.create({
                 name: 'Super Admin',
                 email: superAdminEmail,
-                password: config.admin.password,
+                password: superAdminPassword,
                 role: adminRole?.id,
                 picture: null,
             });
+
+            // Send the verification email
+            await EmailService.sendVerificationEmail(
+                superAdminEmail,
+                superAdminPassword
+            );
         }
 
         loggerConfig.info('⚙️ Initial setup completed successfully.');

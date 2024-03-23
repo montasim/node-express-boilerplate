@@ -1,9 +1,8 @@
 import nodemailer from 'nodemailer';
 
-import errorEmailBody from '../../utils/errorEmailBody.js';
-
 import config from '../../config/config.js';
 import loggerConfig from '../../config/logger.config.js';
+import EmailTemplate from './email.template.js';
 
 const transport = nodemailer.createTransport(config.email.smtp);
 
@@ -35,6 +34,48 @@ const sendEmail = async (to, subject, html) => {
     };
 
     await transport.sendMail(message);
+};
+
+const sendRegistrationEmail = async (name, email, verifyEmailToken) => {
+    const subject = 'Welcome to Our Service!';
+    const html = EmailTemplate.registration(name, email, verifyEmailToken);
+
+    await sendEmail(email, subject, html);
+};
+
+const sendSuccessfullLoginEmail = async (name, email) => {
+    const subject = 'Successful Login Notification';
+    const html = EmailTemplate.successfullLogin(name, email);
+
+    await sendEmail(email, subject, html);
+};
+
+const sendFailedLoginAttemptsEmail = async (name, email) => {
+    const subject = 'Failed Login Attempt Alert';
+    const html = EmailTemplate.failedLoginAttempts(name, email);
+
+    await sendEmail(email, subject, html);
+};
+
+const sendMaximumActiveSessionEmail = async (name, email) => {
+    const subject = 'Maximum Active Sessions Alert';
+    const html = EmailTemplate.maxActiveSessionsAlert(name, email);
+
+    await sendEmail(email, subject, html);
+};
+
+const sendPasswordResetSuccessEmail = async (name, email) => {
+    const subject = 'Password Reset Successful';
+    const html = EmailTemplate.passwordResetSuccess(name, email);
+
+    await sendEmail(email, subject, html);
+};
+
+const sendEmailVerificationSuccessEmail = async (name, email) => {
+    const subject = 'Email Verification Successful';
+    const html = EmailTemplate.emailVerificationSuccess(name, email);
+
+    await sendEmail(email, subject, html);
 };
 
 /**
@@ -115,7 +156,7 @@ If you did not create an account, then ignore this email.`;
  */
 const sendUncaughtExceptionEmail = async error => {
     const subject = 'Node Express Boilerplate: Uncaught Exception Error';
-    const html = errorEmailBody(error);
+    const html = EmailTemplate.error(error);
 
     await sendEmail(config.admin.email, subject, html);
 };
@@ -124,9 +165,9 @@ const sendUncaughtExceptionEmail = async error => {
  * Send an email for unhandled rejections
  * @param {Error} error - The unhandled rejection reason
  */
-const sendUnhandledRejectionEmail = async (error) => {
+const sendUnhandledRejectionEmail = async error => {
     const subject = 'Node Express Boilerplate: Unhandled Rejection Error';
-    const html = errorEmailBody(error);
+    const html = EmailTemplate.error(error);
 
     await sendEmail(config.admin.email, subject, html);
 };
@@ -134,8 +175,14 @@ const sendUnhandledRejectionEmail = async (error) => {
 const EmailService = {
     transport,
     sendEmail,
+    sendRegistrationEmail,
+    sendSuccessfullLoginEmail,
+    sendFailedLoginAttemptsEmail,
+    sendMaximumActiveSessionEmail,
     sendResetPasswordEmail,
+    sendPasswordResetSuccessEmail,
     sendVerificationEmail,
+    sendEmailVerificationSuccessEmail,
     sendUncaughtExceptionEmail,
     sendUnhandledRejectionEmail,
 };

@@ -8,6 +8,7 @@ import GoogleDriveFileOperations from '../../utils/GoogleDriveFileOperations.js'
 import TokenService from '../auth/token/token.service.js';
 import RoleAggregationPipeline from '../auth/role/role.pipeline.js';
 import UserAggregationPipeline from './user.pipeline.js';
+import EmailService from '../email/email.service.js';
 
 import ServerError from '../../utils/serverError.js';
 
@@ -91,6 +92,18 @@ const createUser = async (registerData, file) => {
 
     // Generate the auth tokens
     const tokens = await TokenService.generateAuthTokens(newUser);
+
+    // Generate a new token for email verification
+    const verifyEmailToken = await TokenService.generateVerifyEmailToken(
+        newUser?.id
+    );
+
+    // Send the verification email
+    await EmailService.sendRegistrationEmail(
+        newUser?.name,
+        newUser?.email,
+        verifyEmailToken
+    );
 
     // Remove the unwanted fields from the object
     delete newUser?._id;

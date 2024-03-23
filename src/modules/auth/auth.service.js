@@ -12,10 +12,12 @@ import RoleAggregationPipeline from './role/role.pipeline.js';
 import RoleModel from './role/role.model.js';
 import UserModel from '../user/user.model.js';
 import config from '../../config/config.js';
+import EmailService from '../email/email.service.js';
 
 const loginUserWithEmailAndPassword = async (email, password) => {
     const userDetails = await userService.getUserByEmail(email);
 
+    // Check if the user exists and the email is correct
     if (!userDetails || userDetails?.email !== email) {
         throw {
             statusCode: httpStatus.UNAUTHORIZED,
@@ -25,7 +27,14 @@ const loginUserWithEmailAndPassword = async (email, password) => {
 
     const passwordMatch = await bcrypt.compare(password, userDetails?.password);
 
+    // Check if the password is correct
     if (!passwordMatch) {
+        // Send the verification email
+        await EmailService.sendFailedLoginAttemptsEmail(
+            userDetails?.name,
+            userDetails?.email
+        );
+
         throw {
             statusCode: httpStatus.UNAUTHORIZED,
             message: 'Wrong email or password',
@@ -41,6 +50,12 @@ const loginUserWithEmailAndPassword = async (email, password) => {
 
     // Check if the user has more than 3 active sessions
     if (tokenDetails?.length > config.auth.activeSessions) {
+        // Send the verification email
+        await EmailService.sendMaximumActiveSessionEmail(
+            userDetails?.name,
+            userDetails?.email
+        );
+
         throw {
             statusCode: httpStatus.FORBIDDEN,
             message: `Too many active sessions. Maximum ${config.auth.activeSessions} session allowed at a time. Please logout from one of the active sessions.`,
@@ -51,6 +66,12 @@ const loginUserWithEmailAndPassword = async (email, password) => {
 
     // Convert the Mongoose document to a plain JavaScript object
     let userData = userDetails.toObject();
+
+    // Send the verification email
+    await EmailService.sendSuccessfullLoginEmail(
+        userData?.name,
+        userData?.email
+    );
 
     // Aggregation pipeline to fetch and populate the updated document
     const aggregationPipeline = RoleAggregationPipeline.getRole(
@@ -74,6 +95,7 @@ const loginUserWithEmailAndPassword = async (email, password) => {
     delete userData?.password;
     delete userData?.role;
 
+    // Return the user data with the role and token
     return sendServiceResponse(
         token ? httpStatus.OK : httpStatus.UNAUTHORIZED,
         token ? 'Login successful.' : 'Invalid email or password',
@@ -149,7 +171,13 @@ const resetPassword = async (resetPasswordToken, newPassword) => {
         };
     }
 
+    // Update the user password
     await userService.updateUserById(user?.id, { password: newPassword });
+
+    // Send the verification email
+    await EmailService.sendPasswordResetSuccessEmail(user?.name, user?.email);
+
+    // Delete the reset password token
     await TokenModel.deleteMany({
         user: user?.id,
         type: tokenTypes.RESET_PASSWORD,
@@ -167,6 +195,7 @@ const verifyEmail = async verifyEmailToken => {
         verifyEmailTokenDoc?.serviceData?.user
     );
 
+    // Check if the user exists with the verified email token
     if (!userDetails) {
         throw {
             statusCode: httpStatus.FORBIDDEN,
@@ -174,14 +203,22 @@ const verifyEmail = async verifyEmailToken => {
         };
     }
 
+    // Delete the verify email token
     await TokenModel.deleteMany({
         user: userDetails?.id,
         type: tokenTypes.VERIFY_EMAIL,
     });
 
+    // Update the user email verification status
     await userService.updateUserById(userDetails?.id, {
         isEmailVerified: true,
     });
+
+    // Send the verification email
+    await EmailService.sendEmailVerificationSuccessEmail(
+        userDetails?.name,
+        userDetails?.email
+    );
 
     return sendServiceResponse(
         httpStatus.OK,
