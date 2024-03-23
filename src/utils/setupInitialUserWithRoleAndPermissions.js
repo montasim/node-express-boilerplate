@@ -95,7 +95,7 @@ const setupInitialUserWithRoleAndPermissions = async () => {
 
         loggerConfig.info('⚙️ Initial setup completed successfully.');
     } catch (error) {
-        console.error('❌ Error during initial setup:', error);
+        loggerConfig.error('❌ Error during initial setup:', error);
 
         throw error; // Rethrow or handle as appropriate for your application
     }
