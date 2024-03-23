@@ -31,7 +31,7 @@ let server;
 const startServer = () => {
     server = app.listen(config.port, () => {
         loggerConfig.info(`✅  Listening to port ${config.port}`);
-        loggerConfig.info(`💻  Loading environment for ${config.env}`);
+        loggerConfig.info(`💻 Loading environment for ${config.env}`);
     });
 };
 

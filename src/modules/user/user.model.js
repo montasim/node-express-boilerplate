@@ -9,6 +9,7 @@ import loadCommonPasswords from '../../utils/loadCommonPasswords.js';
 import mongooseSchemaHelpers from '../../utils/mongooseSchemaHelpers.js';
 import UserConstants from './user.constant.js';
 import constants from '../../constants/constants.js';
+import config from '../../config/config.js';
 
 const { Schema } = mongoose;
 
@@ -162,6 +163,33 @@ const userSchema = Schema({
     isEmailMobile: {
         type: Boolean,
         default: false,
+    },
+    maximumLoginAttempts: {
+        type: Number,
+        default: config.auth.loginAttempts,
+    },
+    maximumResetPasswordAttempts: {
+        type: Number,
+        default: config.auth.resetPasswordAttempts,
+    },
+    maximumEmailVerificationAttempts: {
+        type: Number,
+        default: config.auth.verifyEmailAttempts,
+    },
+    maximumChangeEmailAttempts: {
+        type: Number,
+        default: config.auth.changeEmailAttempts,
+    },
+    maximumChangePasswordAttempts: {
+        type: Number,
+        default: config.auth.changePasswordAttempts,
+    },
+    isLocked: {
+        type: Boolean,
+        default: false,
+    },
+    lockDuration: {
+        type: Date,
     },
     isActive: {
         type: Boolean,

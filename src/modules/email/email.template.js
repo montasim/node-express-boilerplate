@@ -1,3 +1,5 @@
+import config from '../../config/config.js';
+
 const emailStyle = () => {
     return `
         body {
@@ -37,7 +39,7 @@ const emailStyle = () => {
             border-radius: 5px;
             font-size: 16px;
             margin-top: 20px;
-        }
+   -    }
         .footer {
             font-size: 14px;
             text-align: center;
@@ -194,7 +196,7 @@ const maxActiveSessionsAlert = (name, userEmailAddress) => {
                 <div class="header">Maximum Active Sessions Reached</div>
                 <div class="content">
                     <p>Dear ${name},</p>
-                    <p>Your account with the email address <strong>${userEmailAddress}</strong> has reached the maximum number of active sessions allowed. This might occur if you've logged in from many devices or if someone else is using your account.</p>
+                    <p>Your account with the email address <strong>${userEmailAddress}</strong> has reached the maximum number of active sessions allowed (${config.auth.activeSessions}). This might occur if you've logged in from many devices or if someone else is using your account.</p>
                     <p>If you believe this is an error, or if you did not initiate these sessions, we strongly recommend taking the following actions to secure your account:</p>
                     <ul>
                         <li>Log out of all other sessions except the one you're currently using. You can do this from your account settings page.</li>
@@ -290,6 +292,43 @@ const emailVerificationSuccess = (name, userEmailAddress) => {
     `;
 };
 
+const accountLockedEmail = (name, userEmailAddress) => {
+    return `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Account Locked Notification</title>
+            <style>
+                ${emailStyle}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">Important: Account Locked</div>
+                <div class="content">
+                    <p>Dear ${name},</p>
+                    <p>Due to multiple unsuccessful login attempts, we have temporarily locked your account with the email address <strong>${userEmailAddress}</strong> as a security measure.</p>
+                    <p>This is to protect your account against unauthorized access. The lock will be lifted automatically after ${config.auth.lockDuration} hour. If you need immediate access, or if you did not attempt to log in multiple times, please follow the steps below to reset your password and unlock your account:</p>
+                    <ul>
+                        <li>Visit our password-reset page.</li>
+                        <li>Follow the instructions to create a new, strong password.</li>
+                        <li>If you suspect any unauthorized activity on your account, please contact our support team immediately.</li>
+                    </ul>
+                    <p>You can reset your password using the link below:</p>
+                    <a href="https://example.com/password-reset" target="_blank" rel="noopener noreferrer" class="button">Reset Password</a>
+                    <p>If you have any concerns or require further assistance, do not hesitate to get in touch with us.</p>
+                </div>
+                <div class="footer">
+                    Warm regards,<br>Your Team at Our Service
+                </div>
+            </div>
+        </body>
+        </html>
+    `;
+};
+
 const error = error => {
     return `
         <!DOCTYPE html>
@@ -332,6 +371,7 @@ const EmailTemplate = {
     maxActiveSessionsAlert,
     passwordResetSuccess,
     emailVerificationSuccess,
+    accountLockedEmail,
     error,
 };
 

@@ -54,9 +54,9 @@ const envVarsSchema = Joi.object({
     MAXIMUM_ACTIVE_SESSIONS: Joi.number()
         .required()
         .description('maximum number of active sessions'),
-    LOCK_DURATION_MINUTES: Joi.number()
+    LOCK_DURATION_HOUR: Joi.number()
         .required()
-        .description('duration in minutes to lock the account'),
+        .description('duration in hours to lock the account'),
     TIMEOUT_IN_SECONDS: Joi.number()
         .required()
         .description('timeout in seconds'),
@@ -137,7 +137,7 @@ const config = {
         changeEmailAttempts: envVars.MAXIMUM_CHANGE_EMAIL_ATTEMPTS,
         changePasswordAttempts: envVars.MAXIMUM_CHANGE_PASSWORD_ATTEMPTS,
         activeSessions: envVars.MAXIMUM_ACTIVE_SESSIONS,
-        lockDuration: envVars.LOCK_DURATION_MINUTES,
+        lockDuration: envVars.LOCK_DURATION_HOUR,
     },
     timeout: getInt(envVars.TIMEOUT_IN_SECONDS),
     cache: {

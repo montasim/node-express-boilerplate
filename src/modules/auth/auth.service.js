@@ -1,7 +1,11 @@
 import bcrypt from 'bcryptjs';
 import httpStatus from 'http-status';
+import moment from 'moment';
 
 import sendServiceResponse from '../../utils/sendServiceResponse.js';
+import processFailedLoginAttempt from '../../utils/processFailedLoginAttempt.js';
+import processSuccessfulLogin from '../../utils/processSuccessfulLogin.js';
+import excludeSensitiveFields from '../../utils/excludeSensitiveFields.js';
 
 import tokenService from './token/token.service.js';
 import userService from '../user/user.service.js';
@@ -11,13 +15,12 @@ import tokenTypes from '../../config/tokens.config.js';
 import RoleAggregationPipeline from './role/role.pipeline.js';
 import RoleModel from './role/role.model.js';
 import UserModel from '../user/user.model.js';
-import config from '../../config/config.js';
 import EmailService from '../email/email.service.js';
 
 const loginUserWithEmailAndPassword = async (email, password) => {
     const userDetails = await userService.getUserByEmail(email);
 
-    // Check if the user exists and the email is correct
+    // Early return if user doesn't exist or if the email is incorrect
     if (!userDetails || userDetails?.email !== email) {
         throw {
             statusCode: httpStatus.UNAUTHORIZED,
@@ -25,41 +28,32 @@ const loginUserWithEmailAndPassword = async (email, password) => {
         };
     }
 
+    // Handle account lock status and check for lock duration
+    if (userDetails?.isLocked && userDetails?.lockDuration) {
+        const lockDuration = moment.utc(userDetails.lockDuration); // Moment object of lockDuration
+        const currentTime = moment.utc(); // Current time in UTC
+
+        // Check if the lockDuration is still in the future compared to the current time
+        if (lockDuration.isAfter(currentTime)) {
+            // Calculate the remaining lock time in a human-friendly format
+            const remainingLockTime = lockDuration.fromNow();
+
+            throw {
+                statusCode: httpStatus.FORBIDDEN,
+                message: `Account is locked. Please try again after ${remainingLockTime}.`,
+            };
+        }
+    }
+
     const passwordMatch = await bcrypt.compare(password, userDetails?.password);
 
     // Check if the password is correct
     if (!passwordMatch) {
-        // Send the verification email
-        await EmailService.sendFailedLoginAttemptsEmail(
-            userDetails?.name,
-            userDetails?.email
-        );
-
-        throw {
-            statusCode: httpStatus.UNAUTHORIZED,
-            message: 'Wrong email or password',
-        };
-    }
-
-    const tokenQuery = {
-        user: userDetails?.id,
-        type: tokenTypes.REFRESH,
-        blacklisted: false,
-    };
-    const tokenDetails = await TokenService.findTokenWithQuery(tokenQuery);
-
-    // Check if the user has more than 3 active sessions
-    if (tokenDetails?.length > config.auth.activeSessions) {
-        // Send the verification email
-        await EmailService.sendMaximumActiveSessionEmail(
-            userDetails?.name,
-            userDetails?.email
-        );
-
-        throw {
-            statusCode: httpStatus.FORBIDDEN,
-            message: `Too many active sessions. Maximum ${config.auth.activeSessions} session allowed at a time. Please logout from one of the active sessions.`,
-        };
+        // Process failed login attempt and possibly lock an account
+        await processFailedLoginAttempt(userDetails);
+    } else {
+        // Process successful login
+        await processSuccessfulLogin(userDetails);
     }
 
     const token = await TokenService.generateAuthTokens(userDetails);
@@ -90,20 +84,36 @@ const loginUserWithEmailAndPassword = async (email, password) => {
     }
 
     // Remove the password field from the object
-    delete userData?._id;
-    delete userData?.__v;
-    delete userData?.password;
-    delete userData?.role;
+    const fieldsToRemove = [
+        '_id',
+        '__v',
+        'password',
+        'role',
+        'maximumLoginAttempts',
+        'maximumResetPasswordAttempts',
+        'maximumEmailVerificationAttempts',
+        'maximumChangeEmailAttempts',
+        'maximumChangePasswordAttempts',
+    ];
+
+    // Remove sensitive fields from userDetails
+    const sanitizedUserDetails = excludeSensitiveFields(
+        userDetails?.toObject(),
+        fieldsToRemove
+    );
+
+    // Create the response object
+    const response = {
+        ...sanitizedUserDetails, // Spread sanitized user details instead of original userDetails
+        role: populatedPermission[0], // Include role details
+        token, // Include token
+    };
 
     // Return the user data with the role and token
     return sendServiceResponse(
         token ? httpStatus.OK : httpStatus.UNAUTHORIZED,
         token ? 'Login successful.' : 'Invalid email or password',
-        {
-            ...userData,
-            role: populatedPermission[0],
-            token,
-        }
+        response
     );
 };
 

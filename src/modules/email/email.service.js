@@ -172,6 +172,13 @@ const sendUnhandledRejectionEmail = async error => {
     await sendEmail(config.admin.email, subject, html);
 };
 
+const sendAccountLockedEmail = async (name, email) => {
+    const subject = 'Account Locked Notification';
+    const html = EmailTemplate.accountLockedEmail(name, email);
+
+    await sendEmail(email, subject, html);
+};
+
 const EmailService = {
     transport,
     sendEmail,
@@ -185,6 +192,7 @@ const EmailService = {
     sendEmailVerificationSuccessEmail,
     sendUncaughtExceptionEmail,
     sendUnhandledRejectionEmail,
+    sendAccountLockedEmail,
 };
 
 export default EmailService;
