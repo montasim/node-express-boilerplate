@@ -1,7 +1,6 @@
 import express from 'express';
 
 import validateRequestMiddleware from '../../middleware/validateRequest.middleware.js';
-import authMiddleware from '../../middleware/auth.middleware.js';
 
 import AuthValidation from './auth.validation.js';
 import fileUploadMiddleware from '../../middleware/fileUpload.middleware.js';
