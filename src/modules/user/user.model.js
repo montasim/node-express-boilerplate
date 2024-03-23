@@ -51,6 +51,10 @@ const userSchema = Schema({
         type: String,
         unique: true,
     },
+    userName: {
+        type: String,
+        unique: true,
+    },
     name: {
         type: String,
         trim: true,
@@ -84,6 +88,25 @@ const userSchema = Schema({
                 return true;
             },
             message: props => `${props.value} is not a valid email.`,
+        },
+    },
+    mobile: {
+        type: String,
+        trim: true,
+        unique: [
+            true,
+            'Mobile number already taken. Please use a different mobile number.',
+        ],
+        validate: {
+            validator: async value => {
+                if (!constants.bangladeshiMobileRegex.test(value)) {
+                    return false; // Pattern does not match
+                }
+
+                return true;
+            },
+            message: props =>
+                `${props.value} is not a valid mobile number. Only valid Bangladeshi mobile numbers are allowed.`,
         },
     },
     password: {
@@ -128,6 +151,9 @@ const userSchema = Schema({
                 'Picture downloadLink must be less than 500 characters long',
             ],
         },
+    },
+    dateOfBirth: {
+        type: Date,
     },
     isEmailVerified: {
         type: Boolean,
@@ -202,8 +228,15 @@ userSchema.pre('save', async function (next) {
         this.id = mongooseSchemaHelpers.generateUniqueIdWithPrefix('user');
     }
 
-    if (user.isModified('password')) {
-        user.password = await bcrypt.hash(user.password, 8);
+    // Only generate a new userName if the document is new
+    if (this.isNew) {
+        this.userName = await mongooseSchemaHelpers.generateUserNameWithRetry(
+            user?.name
+        );
+    }
+
+    if (this.isModified('password')) {
+        this.password = await bcrypt.hash(user?.password, 8);
     }
 
     next();

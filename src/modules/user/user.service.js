@@ -1,12 +1,11 @@
 import httpStatus from 'http-status';
 
-import UserModel from './user.model.js';
-import GoogleDriveFileOperations from '../../utils/GoogleDriveFileOperations.js';
-import TokenService from '../auth/token/token.service.js';
-
 import sendServiceResponse from '../../utils/sendServiceResponse.js';
 
+import UserModel from './user.model.js';
 import RoleModel from '../auth/role/role.model.js';
+import GoogleDriveFileOperations from '../../utils/GoogleDriveFileOperations.js';
+import TokenService from '../auth/token/token.service.js';
 import RoleAggregationPipeline from '../auth/role/role.pipeline.js';
 import UserAggregationPipeline from './user.pipeline.js';
 
@@ -60,13 +59,13 @@ const createUser = async (registerData, file) => {
     // Create the user with the default role
     const newUserDetails = await UserModel.create({
         ...registerData,
-        role: defaultRole.id,
+        role: defaultRole?.id,
         picture: pictureData || null,
     });
 
     // Populate the role details for the response
     const roleAggregationPipeline = RoleAggregationPipeline.getRole(
-        defaultRole.id
+        defaultRole?.id
     );
     const populatedRoleDetails = await RoleModel.aggregate(
         roleAggregationPipeline
@@ -91,17 +90,17 @@ const createUser = async (registerData, file) => {
     let newUser = newUserDetails.toObject();
 
     // Generate the auth tokens
-    const { serviceData } = await TokenService.generateAuthTokens(newUser);
+    const tokens = await TokenService.generateAuthTokens(newUser);
 
     // Remove the unwanted fields from the object
-    delete newUser._id;
-    delete newUser.__v;
-    delete newUser.password;
+    delete newUser?._id;
+    delete newUser?.__v;
+    delete newUser?.password;
 
     // If a picture was uploaded, remove the fileId and shareableLink from the object
-    if (newUser.picture) {
-        delete newUser.picture.fileId;
-        delete newUser.picture.shareableLink;
+    if (newUser?.picture) {
+        delete newUser?.picture.fileId;
+        delete newUser?.picture.shareableLink;
     }
 
     // Attach role details to the newUser object
@@ -113,7 +112,7 @@ const createUser = async (registerData, file) => {
         'User created successfully.',
         {
             ...newUser,
-            token: serviceData,
+            token: tokens,
         }
     );
 };
