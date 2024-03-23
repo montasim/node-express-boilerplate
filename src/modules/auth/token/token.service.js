@@ -59,7 +59,7 @@ const verifyToken = async (token, type) => {
     const tokenDetails = await TokenModel.findOne({
         token,
         type,
-        user: payload.sub,
+        user: payload?.sub,
         blacklisted: false,
     });
 
@@ -81,7 +81,7 @@ const generateAuthTokens = async user => {
         'minutes'
     );
     const accessToken = generateToken(
-        user.id,
+        user?.id,
         accessTokenExpires,
         tokenTypes.ACCESS
     );
@@ -91,14 +91,14 @@ const generateAuthTokens = async user => {
         'days'
     );
     const refreshToken = generateToken(
-        user.id,
+        user?.id,
         refreshTokenExpires,
         tokenTypes.REFRESH
     );
 
     await saveToken(
         refreshToken,
-        user.id,
+        user?.id,
         refreshTokenExpires,
         tokenTypes.REFRESH
     );
@@ -135,14 +135,14 @@ const generateResetPasswordToken = async email => {
         'minutes'
     );
     const resetPasswordToken = generateToken(
-        userDetails.id,
+        userDetails?.id,
         expires,
         tokenTypes.RESET_PASSWORD
     );
 
     await saveToken(
         resetPasswordToken,
-        userDetails.id,
+        userDetails?.id,
         expires,
         tokenTypes.RESET_PASSWORD
     );

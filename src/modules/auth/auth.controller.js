@@ -1,7 +1,6 @@
 import httpStatus from 'http-status';
 
 import asyncErrorHandler from '../../utils/asyncErrorHandler.js';
-import sendControllerResponse from '../../utils/sendControllerResponse.js';
 import sendControllerSuccessResponse from '../../utils/sendControllerSuccessResponse.js';
 
 import AuthServices from './auth.service.js';
@@ -67,34 +66,24 @@ const refreshTokens = asyncErrorHandler(async (req, res) => {
     return sendControllerSuccessResponse(res, refreshTokenData);
 });
 
-const forgotPassword = async (req, res) => {
-    const requestStartTime = Date.now(); // Get the request start time
-    const { email } = req.body;
+const forgotPassword = asyncErrorHandler(async (req, res) => {
+    const email = req.body.email;
+    const forgotPasswordData =
+        await TokenService.generateResetPasswordToken(email);
 
-    await sendControllerResponse(
-        req,
-        res,
-        requestStartTime,
-        TokenService.generateResetPasswordToken,
-        [email],
-        'AuthController.forgotPassword()'
+    return sendControllerSuccessResponse(res, forgotPasswordData);
+});
+
+const resetPassword = asyncErrorHandler(async (req, res) => {
+    const token = req.query.roken;
+    const password = req.body.password;
+    const forgotPasswordData = await AuthServices.resetPassword(
+        token,
+        password
     );
-};
 
-const resetPassword = async (req, res) => {
-    const requestStartTime = Date.now(); // Get the request start time
-    const { token } = req.query;
-    const { password } = req.body;
-
-    await sendControllerResponse(
-        req,
-        res,
-        requestStartTime,
-        AuthServices.resetPassword,
-        [token, password],
-        'AuthController.resetPassword()'
-    );
-};
+    return sendControllerSuccessResponse(res, forgotPasswordData);
+});
 
 const sendVerificationEmail = asyncErrorHandler(async (req, res) => {
     const verifyEmailToken = await TokenService.generateVerifyEmailToken(
@@ -119,11 +108,11 @@ const verifyEmail = asyncErrorHandler(async (req, res) => {
     }
 
     await TokenModel.deleteMany({
-        user: user.id,
+        user: user?.id,
         type: tokenTypes.VERIFY_EMAIL,
     });
 
-    await userService.updateUserById(user.id, { isEmailVerified: true });
+    await userService.updateUserById(user?.id, { isEmailVerified: true });
 });
 
 const AuthController = {

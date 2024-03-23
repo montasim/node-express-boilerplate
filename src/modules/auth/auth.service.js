@@ -22,7 +22,7 @@ const loginUserWithEmailAndPassword = async (email, password) => {
         };
     }
 
-    const passwordMatch = await bcrypt.compare(password, userDetails.password);
+    const passwordMatch = await bcrypt.compare(password, userDetails?.password);
 
     if (!passwordMatch) {
         throw {
@@ -53,10 +53,10 @@ const loginUserWithEmailAndPassword = async (email, password) => {
     }
 
     // Remove the password field from the object
-    delete userData._id;
-    delete userData.__v;
-    delete userData.password;
-    delete userData.role;
+    delete userData?._id;
+    delete userData?.__v;
+    delete userData?.password;
+    delete userData?.role;
 
     return sendServiceResponse(
         token ? httpStatus.OK : httpStatus.UNAUTHORIZED,
@@ -101,7 +101,7 @@ const refreshAuth = async refreshToken => {
         type: tokenTypes.REFRESH,
     });
 
-    const user = await UserModel.findOne({ id: refreshTokenDoc.user });
+    const user = await UserModel.findOne({ id: refreshTokenDoc?.user });
 
     if (!user) {
         throw new Error();
@@ -133,9 +133,9 @@ const resetPassword = async (resetPasswordToken, newPassword) => {
         };
     }
 
-    await userService.updateUserById(user.id, { password: newPassword });
+    await userService.updateUserById(user?.id, { password: newPassword });
     await TokenModel.deleteMany({
-        user: user.id,
+        user: user?.id,
         type: tokenTypes.RESET_PASSWORD,
     });
 
@@ -148,7 +148,7 @@ const verifyEmail = async verifyEmailToken => {
         tokenTypes.VERIFY_EMAIL
     );
     const userDetails = await userService.getUserById(
-        verifyEmailTokenDoc.serviceData.user
+        verifyEmailTokenDoc?.serviceData?.user
     );
 
     if (!userDetails) {
@@ -159,11 +159,11 @@ const verifyEmail = async verifyEmailToken => {
     }
 
     await TokenModel.deleteMany({
-        user: userDetails.id,
+        user: userDetails?.id,
         type: tokenTypes.VERIFY_EMAIL,
     });
 
-    await userService.updateUserById(userDetails.id, {
+    await userService.updateUserById(userDetails?.id, {
         isEmailVerified: true,
     });
 

@@ -28,7 +28,7 @@ const createRole = async (sessionUser, roleData) => {
         };
     }
 
-    // Create the new role
+    // Create a new role
     const newRole = await RoleModel.create({
         ...roleData,
         createdBy: 'system-20240317230608-000000001',
@@ -40,7 +40,7 @@ const createRole = async (sessionUser, roleData) => {
     const populatedRole = await RoleModel.aggregate(aggregationPipeline);
 
     // Handle a case where the population fails
-    if (populatedRole.length === 0) {
+    if (populatedRole?.length === 0) {
         throw {
             statusCode: httpStatus.OK, // Consider if this should actually be an error state
             message: 'Role created but population failed.',
@@ -61,34 +61,34 @@ const getRoles = async (sessionUser, filter, options) => {
 
     // Check if the filter options are available
     if (filter) {
-        if (filter.name) {
+        if (filter?.name) {
             // For partial match on the name field
-            matchStage.$match.name = { $regex: filter.name, $options: 'i' };
+            matchStage.$match.name = { $regex: filter?.name, $options: 'i' };
         }
-        if (filter.isActive !== undefined) {
+        if (filter?.isActive !== undefined) {
             // For exact match on the isActive field
-            matchStage.$match.isActive = filter.isActive === 'true';
+            matchStage.$match.isActive = filter?.isActive === 'true';
         }
-        if (filter.createdBy) {
-            matchStage.$match.createdBy = filter.createdBy;
+        if (filter?.createdBy) {
+            matchStage.$match.createdBy = filter?.createdBy;
         }
-        if (filter.updatedBy) {
-            matchStage.$match.updatedBy = filter.updatedBy;
+        if (filter?.updatedBy) {
+            matchStage.$match.updatedBy = filter?.updatedBy;
         }
-        if (filter.createdAt) {
-            const startOfDay = new Date(filter.createdAt);
+        if (filter?.createdAt) {
+            const startOfDay = new Date(filter?.createdAt);
             startOfDay.setHours(0, 0, 0, 0);
-            const endOfDay = new Date(filter.createdAt);
+            const endOfDay = new Date(filter?.createdAt);
             endOfDay.setHours(23, 59, 59, 999);
             matchStage.$match.createdAt = {
                 $gte: startOfDay,
                 $lte: endOfDay,
             };
         }
-        if (filter.updatedAt) {
-            const startOfDay = new Date(filter.updatedAt);
+        if (filter?.updatedAt) {
+            const startOfDay = new Date(filter?.updatedAt);
             startOfDay.setHours(0, 0, 0, 0);
-            const endOfDay = new Date(filter.updatedAt);
+            const endOfDay = new Date(filter?.updatedAt);
             endOfDay.setHours(23, 59, 59, 999);
             matchStage.$match.updatedAt = {
                 $gte: startOfDay,
@@ -101,8 +101,8 @@ const getRoles = async (sessionUser, filter, options) => {
     let sortStage = { $sort: { createdAt: -1 } }; // Default sort if no sortBy provided
 
     // Check if the sortBy options are available
-    if (options.sortBy) {
-        const sortParts = options.sortBy.split(':');
+    if (options?.sortBy) {
+        const sortParts = options?.sortBy?.split(':');
         const sortField = sortParts[0];
         const sortOrder = sortParts[1] === 'desc' ? -1 : 1; // Default to ascending if not specified
 
@@ -112,8 +112,8 @@ const getRoles = async (sessionUser, filter, options) => {
         }
     }
 
-    const limit = options.limit ? parseInt(options.limit, 10) : 10;
-    const skip = options.page ? (parseInt(options.page, 10) - 1) * limit : 0;
+    const limit = options?.limit ? parseInt(options?.limit, 10) : 10;
+    const skip = options?.page ? (parseInt(options?.page, 10) - 1) * limit : 0;
 
     // Build the dynamic aggregation pipeline
     const aggregationPipeline = RoleAggregationPipeline.getRoles(
@@ -198,7 +198,7 @@ const updateRole = async (sessionUser, roleId, roleData) => {
 
     // Convert permissions to a set for easier checking
     const existingPermissionsSet = new Set(
-        oldRole.permissions.map(p => p.permission)
+        oldRole?.permissions?.map(p => p.permission)
     );
 
     // Get the existing permissions from the PermissionModel
@@ -206,14 +206,14 @@ const updateRole = async (sessionUser, roleId, roleData) => {
 
     // Create a set of valid permission IDs for easy lookup
     const validPermissionIdsSet = new Set(
-        existingPermissions.map(perm => perm.id)
+        existingPermissions?.map(perm => perm?.id)
     );
 
     // Handle addPermissions
-    if (roleData.addPermissions) {
+    if (roleData?.addPermissions) {
         for (const { permission } of roleData.addPermissions) {
             // Check if the permission already exists in the role
-            if (existingPermissionsSet.has(permission)) {
+            if (existingPermissionsSet?.has(permission)) {
                 throw {
                     statusCode: httpStatus.BAD_REQUEST,
                     message: `Permission ${permission} already exists in the role.`,
@@ -232,9 +232,9 @@ const updateRole = async (sessionUser, roleId, roleData) => {
     }
 
     // Handle deletePermissions
-    if (roleData.deletePermissions) {
+    if (roleData?.deletePermissions) {
         for (const { permission } of roleData.deletePermissions) {
-            if (!existingPermissionsSet.has(permission)) {
+            if (!existingPermissionsSet?.has(permission)) {
                 throw {
                     statusCode: httpStatus.BAD_REQUEST,
                     message: `Permission ${permission} does not exist in the role.`,
@@ -242,10 +242,10 @@ const updateRole = async (sessionUser, roleId, roleData) => {
             }
         }
 
-        oldRole.permissions = oldRole.permissions.filter(
+        oldRole.permissions = oldRole?.permissions.filter(
             p =>
                 !roleData.deletePermissions.some(
-                    dp => dp.permission === p.permission
+                    dp => dp?.permission === p?.permission
                 )
         );
     }
@@ -258,9 +258,9 @@ const updateRole = async (sessionUser, roleId, roleData) => {
     };
 
     // Remove properties not needed for update
-    delete updateData._id;
-    delete updateData.addPermissions;
-    delete updateData.deletePermissions;
+    delete updateData?._id;
+    delete updateData?.addPermissions;
+    delete updateData?.deletePermissions;
 
     // Update the role using the custom roleId
     const updatedRole = await RoleModel.findOneAndUpdate(

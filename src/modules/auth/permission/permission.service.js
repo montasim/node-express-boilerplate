@@ -64,7 +64,7 @@ const createPermission = async (sessionUser, permissionData) => {
         await PermissionModel.aggregate(aggregationPipeline);
 
     // Handle a case where the population fails
-    if (populatedPermission.length === 0) {
+    if (populatedPermission?.length === 0) {
         throw {
             statusCode: httpStatus.OK, // Consider if this should actually be an error state
             message: 'Permission created but population failed.',
@@ -125,8 +125,8 @@ const getPermissions = async (sessionUser, filter, options) => {
     let sortStage = { $sort: { createdAt: -1 } }; // Default sort if no sortBy provided
 
     // Check if the sortBy options are available
-    if (options.sortBy) {
-        const sortParts = options.sortBy.split(':');
+    if (options?.sortBy) {
+        const sortParts = options?.sortBy?.split(':');
         const sortField = sortParts[0];
         const sortOrder = sortParts[1] === 'desc' ? -1 : 1; // Default to ascending if not specified
 
@@ -136,8 +136,8 @@ const getPermissions = async (sessionUser, filter, options) => {
         }
     }
 
-    const limit = options.limit ? parseInt(options.limit, 10) : 10;
-    const skip = options.page ? (parseInt(options.page, 10) - 1) * limit : 0;
+    const limit = options?.limit ? parseInt(options?.limit, 10) : 10;
+    const skip = options?.page ? (parseInt(options?.page, 10) - 1) * limit : 0;
 
     // Build the dynamic aggregation pipeline
     const aggregationPipeline = [
@@ -243,7 +243,7 @@ const getPermissions = async (sessionUser, filter, options) => {
     }
 
     const permissionsData = {
-        total: permissions.length,
+        total: permissions?.length,
         limit: limit,
         page: options.page || 1,
         permissions: permissions,
