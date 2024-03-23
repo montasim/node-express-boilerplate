@@ -5,6 +5,7 @@ import moment from 'moment';
 import config from '../../../config/config.js';
 import userService from '../../user/user.service.js';
 import TokenModel from './token.model.js';
+import tokenModel from './token.model.js';
 import tokenTypes from '../../../config/tokens.config.js';
 import EmailService from '../../email/email.service.js';
 
@@ -173,6 +174,10 @@ const generateVerifyEmailToken = async userId => {
     return verifyEmailToken;
 };
 
+const findTokenWithQuery = async query => {
+    return await tokenModel.find(query);
+};
+
 const TokenService = {
     generateToken,
     saveToken,
@@ -180,6 +185,7 @@ const TokenService = {
     generateAuthTokens,
     generateResetPasswordToken,
     generateVerifyEmailToken,
+    findTokenWithQuery,
 };
 
 export default TokenService;

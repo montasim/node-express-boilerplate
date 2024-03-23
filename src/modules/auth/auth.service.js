@@ -11,6 +11,7 @@ import tokenTypes from '../../config/tokens.config.js';
 import RoleAggregationPipeline from './role/role.pipeline.js';
 import RoleModel from './role/role.model.js';
 import UserModel from '../user/user.model.js';
+import config from '../../config/config.js';
 
 const loginUserWithEmailAndPassword = async (email, password) => {
     const userDetails = await userService.getUserByEmail(email);
@@ -28,6 +29,21 @@ const loginUserWithEmailAndPassword = async (email, password) => {
         throw {
             statusCode: httpStatus.UNAUTHORIZED,
             message: 'Wrong email or password',
+        };
+    }
+
+    const tokenQuery = {
+        user: userDetails?.id,
+        type: tokenTypes.REFRESH,
+        blacklisted: false,
+    };
+    const tokenDetails = await TokenService.findTokenWithQuery(tokenQuery);
+
+    // Check if the user has more than 3 active sessions
+    if (tokenDetails?.length > config.auth.activeSessions) {
+        throw {
+            statusCode: httpStatus.FORBIDDEN,
+            message: `Too many active sessions. Maximum ${config.auth.activeSessions} session allowed at a time. Please logout from one of the active sessions.`,
         };
     }
 

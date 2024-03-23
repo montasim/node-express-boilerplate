@@ -36,6 +36,27 @@ const envVarsSchema = Joi.object({
     JWT_VERIFY_EMAIL_EXPIRATION_MINUTES: Joi.number()
         .required()
         .description('minutes after which verify email token expires'),
+    MAXIMUM_LOGIN_ATTEMPTS: Joi.number()
+        .required()
+        .description('maximum number of login attempts'),
+    MAXIMUM_RESET_PASSWORD_ATTEMPTS: Joi.number()
+        .required()
+        .description('maximum number of reset password attempts'),
+    MAXIMUM_VERIFY_EMAIL_ATTEMPTS: Joi.number()
+        .required()
+        .description('maximum number of verify email attempts'),
+    MAXIMUM_CHANGE_EMAIL_ATTEMPTS: Joi.number()
+        .required()
+        .description('maximum number of change email attempts'),
+    MAXIMUM_CHANGE_PASSWORD_ATTEMPTS: Joi.number()
+        .required()
+        .description('maximum number of change password attempts'),
+    MAXIMUM_ACTIVE_SESSIONS: Joi.number()
+        .required()
+        .description('maximum number of active sessions'),
+    LOCK_DURATION_MINUTES: Joi.number()
+        .required()
+        .description('duration in minutes to lock the account'),
     TIMEOUT_IN_SECONDS: Joi.number()
         .required()
         .description('timeout in seconds'),
@@ -108,6 +129,15 @@ const config = {
         verifyEmailExpirationMinutes: getInt(
             envVars.JWT_VERIFY_EMAIL_EXPIRATION_MINUTES
         ),
+    },
+    auth: {
+        loginAttempts: envVars.MAXIMUM_LOGIN_ATTEMPTS,
+        resetPasswordAttempts: envVars.MAXIMUM_RESET_PASSWORD_ATTEMPTS,
+        verifyEmailAttempts: envVars.MAXIMUM_VERIFY_EMAIL_ATTEMPTS,
+        changeEmailAttempts: envVars.MAXIMUM_CHANGE_EMAIL_ATTEMPTS,
+        changePasswordAttempts: envVars.MAXIMUM_CHANGE_PASSWORD_ATTEMPTS,
+        activeSessions: envVars.MAXIMUM_ACTIVE_SESSIONS,
+        lockDuration: envVars.LOCK_DURATION_MINUTES,
     },
     timeout: getInt(envVars.TIMEOUT_IN_SECONDS),
     cache: {
