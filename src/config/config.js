@@ -68,6 +68,7 @@ const envVarsSchema = Joi.object({
         .required()
         .description('the from field in the emails sent by the app'),
     ADMIN_EMAIL: Joi.string().email().required().description('admin email'),
+    ADMIN_PASSWORD: Joi.string().required().description('admin password'),
     GOOGLE_DRIVE_SCOPE: Joi.string()
         .required()
         .description('scope for google drive api'),
@@ -134,6 +135,7 @@ const config = {
     },
     admin: {
         email: envVars.ADMIN_EMAIL,
+        password: envVars.ADMIN_PASSWORD,
     },
     googleDrive: {
         scope: envVars.GOOGLE_DRIVE_SCOPE,

@@ -18,6 +18,7 @@ import config from './config/config.js';
 import loggerConfig from './config/logger.config.js';
 import EmailService from './modules/email/email.service.js';
 import Middleware from './middleware/middleware.js';
+import setupInitialUserWithRoleAndPermissions from './utils/setupInitialUserWithRoleAndPermissions.js';
 
 let server;
 
@@ -50,6 +51,7 @@ const initialize = async () => {
 };
 
 initialize(); // Start the application by initializing it.
+setupInitialUserWithRoleAndPermissions(); // Set up initial user with role and permissions
 
 /**
  * Gracefully shuts down the server. This function is designed to be called

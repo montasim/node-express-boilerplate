@@ -1,14 +1,18 @@
 import mongoose from 'mongoose';
 import httpStatus from 'http-status';
+
 import config from '../config/config.js';
 import loggerConfig from '../config/logger.config.js';
+
 import ServerError from '../utils/serverError.js';
 
 const errorConverter = (err, req, res, next) => {
     let error = err;
     if (!(error instanceof ServerError)) {
         const statusCode =
-      error.statusCode || error instanceof mongoose.Error ? httpStatus.BAD_REQUEST : httpStatus.INTERNAL_SERVER_ERROR;
+            error.statusCode || error instanceof mongoose.Error
+                ? httpStatus.BAD_REQUEST
+                : httpStatus.INTERNAL_SERVER_ERROR;
         const message = error.message || httpStatus[statusCode];
         error = new ServerError(statusCode, message, false, err.stack);
     }
