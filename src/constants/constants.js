@@ -7,9 +7,11 @@ const upperCaseRegex = /[A-Z]/;
 const lowerCaseRegex = /[a-z]/;
 const digitsRegex = /\d/;
 const specialCharRegex = /[\s~`!@#$%^&*+=\-[\]\\';,/{}|\\":<>?()._]/;
-const roleNamePattern = /^role-\d{14}-\d+$/;
 const permissionNamePattern = /^[a-z]+-(create|modify|get|update|delete)$/;
-const userNamePattern = /^user-\d{14}-\d+$/;
+const userNamePattern = /^[A-Z][a-zA-Z ]{2,49}$/;
+const roleNamePattern = /^[A-Z][a-zA-Z ]{2,49}$/;
+const roleIdPattern = /^role-\d{14}-\d+$/;
+const userIdPattern = /^user-\d{14}-\d+$/;
 
 const constants = {
     objectIdPattern,
@@ -20,9 +22,11 @@ const constants = {
     lowerCaseRegex,
     digitsRegex,
     specialCharRegex,
-    roleNamePattern,
+    roleIdPattern,
     permissionNamePattern,
+    userIdPattern,
     userNamePattern,
+    roleNamePattern,
 };
 
 export default constants;

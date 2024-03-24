@@ -126,7 +126,7 @@ const userSchema = Schema({
         validate: {
             validator: async value => {
                 // First, check if the role ID matches the custom ID pattern
-                if (!constants.roleNamePattern.test(value)) {
+                if (!constants.roleIdPattern.test(value)) {
                     return false; // Immediately return false if the pattern does not match
                 }
 

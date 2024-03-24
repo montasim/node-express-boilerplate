@@ -13,16 +13,16 @@ const createUser = {
             .external(CustomValidation.email),
         password: Joi.string().required().external(CustomValidation.password),
         name: customValidation
-            .stringValidator('user', constants.userNamePattern, 3, 50)
+            .stringValidator('user', constants.userIdPattern, 3, 50)
             .required(),
-        role: customValidation.id(constants.roleNamePattern),
+        role: customValidation.id(constants.roleIdPattern),
     }),
 };
 
 const getUsers = {
     query: Joi.object().keys({
         name: Joi.string().trim(),
-        role: customValidation.id(constants.roleNamePattern),
+        role: customValidation.id(constants.roleIdPattern),
         sortBy: Joi.string().trim(),
         limit: Joi.number().integer().min(1).min(100),
         page: Joi.number().integer().min(1).max(10),
@@ -31,23 +31,23 @@ const getUsers = {
 
 const getUser = {
     params: Joi.object().keys({
-        userId: customValidation.id(constants.userNamePattern).required(),
+        userId: customValidation.id(constants.userIdPattern).required(),
     }),
 };
 
 const updateUser = {
     params: Joi.object().keys({
-        userId: customValidation.id(constants.userNamePattern).required(),
+        userId: customValidation.id(constants.userIdPattern).required(),
     }),
     body: Joi.object()
         .keys({
             name: customValidation.stringValidator(
                 'user',
-                constants.userNamePattern,
+                constants.userIdPattern,
                 3,
                 50
             ),
-            role: customValidation.id(constants.roleNamePattern),
+            role: customValidation.id(constants.roleIdPattern),
             isActive: customValidation.isActive(),
         })
         .or('email', 'password', 'name', 'role', 'isActive')
@@ -58,7 +58,7 @@ const updateUser = {
 
 const deleteUser = {
     params: Joi.object().keys({
-        userId: customValidation.id(constants.userNamePattern).required(),
+        userId: customValidation.id(constants.userIdPattern).required(),
     }),
 };
 

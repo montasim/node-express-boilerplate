@@ -6,7 +6,7 @@ import constants from '../../../constants/constants.js';
 const createRole = {
     body: Joi.object().keys({
         name: customValidation
-            .stringValidator('role', constants.roleNamePattern, 3, 50)
+            .stringValidator('role', constants.roleIdPattern, 3, 50)
             .required(),
         permissions: Joi.array()
             .items(
@@ -43,7 +43,7 @@ const getRoles = {
         .keys({
             name: customValidation.stringValidator(
                 'role',
-                constants.roleNamePattern,
+                constants.roleIdPattern,
                 3,
                 50
             ),
@@ -61,19 +61,19 @@ const getRoles = {
 
 const getRole = {
     params: Joi.object().keys({
-        roleId: customValidation.id(constants.roleNamePattern).required(),
+        roleId: customValidation.id(constants.roleIdPattern).required(),
     }),
 };
 
 const updateRole = {
     params: Joi.object().keys({
-        roleId: customValidation.id(constants.roleNamePattern).required(),
+        roleId: customValidation.id(constants.roleIdPattern).required(),
     }),
     body: Joi.object()
         .keys({
             name: customValidation.stringValidator(
                 'role',
-                constants.roleNamePattern,
+                constants.roleIdPattern,
                 3,
                 50
             ),
@@ -158,7 +158,7 @@ const updateRole = {
 
 const deleteRole = {
     params: Joi.object().keys({
-        roleId: customValidation.id(constants.roleNamePattern).required(),
+        roleId: customValidation.id(constants.roleIdPattern).required(),
     }),
 };
 
