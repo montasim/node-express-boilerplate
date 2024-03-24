@@ -35,6 +35,7 @@ coverage/
 /logs/
 *.log
 /dist/
+/docs/
 
 # Deployment files
 # Ignore Vercel configuration files to prevent accidentally publishing development-specific configurations to production environments.

@@ -1,9 +1,28 @@
 {
-  "source": {
-    "include": ["src"],
-    "exclude": ["node_modules"]
-  },
-  "opts": {
-    "destination": "docs/"
-  }
+    "source": {
+        "include": ["src"],
+        "includePattern": ".js$",
+        "excludePattern": "(node_modules/|docs)"
+    },
+    "plugins": ["plugins/markdown"],
+    "templates": {
+        "cleverLinks": true,
+        "monospaceLinks": true,
+        "default": {
+            "outputSourceFiles": true
+        }
+    },
+    "opts": {
+        "recurse": true,
+        "encoding": "utf8",
+        "destination": "./docs/"
+    },
+    "markdown": {
+        "parser": "gfm",
+        "hardwrap": true
+    },
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc", "closure"]
+    }
 }
