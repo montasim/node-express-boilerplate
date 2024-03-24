@@ -53,7 +53,7 @@ const authMiddleware =
                     { session: false },
                     (err, user, info) => {
                         try {
-                            const verification = verifyCallback(
+                                const verification = verifyCallback(
                                 req,
                                 requiredRights
                             );
