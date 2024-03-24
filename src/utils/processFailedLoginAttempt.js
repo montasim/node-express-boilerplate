@@ -1,3 +1,8 @@
+/**
+ * @fileOverview Functions for processing failed login attempts and updating user details accordingly.
+ * @module FailedLoginProcessor
+ */
+
 import moment from 'moment';
 import httpStatus from 'http-status';
 
@@ -5,6 +10,16 @@ import EmailService from '../modules/email/email.service.js';
 import userService from '../modules/user/user.service.js';
 import config from '../config/config.js';
 
+/**
+ * Processes a failed login attempt by updating user's login attempts count and lock status if necessary.
+ * @param {Object} userDetails - The details of the user attempting to log in.
+ * @param {string} userDetails.id - The unique identifier of the user.
+ * @param {number} userDetails.maximumLoginAttempts - The maximum allowed login attempts for the user.
+ * @param {string} userDetails.name - The name of the user.
+ * @param {string} userDetails.email - The email of the user.
+ * @returns {Promise<void>} - A promise that resolves once the login attempt is processed.
+ * @throws {Object} - An object containing status code and message if the login attempt fails.
+ */
 const processFailedLoginAttempt = async userDetails => {
     const attemptsLeft = userDetails?.maximumLoginAttempts - 1;
 
