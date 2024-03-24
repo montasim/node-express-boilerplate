@@ -1,13 +1,13 @@
 import httpStatus from 'http-status';
 
 import sendServiceResponse from '../../utils/sendServiceResponse.js';
+import excludeSensitiveFields from '../../utils/excludeSensitiveFields.js';
 
 import UserModel from './user.model.js';
 import RoleModel from '../auth/role/role.model.js';
 import GoogleDriveFileOperations from '../../utils/GoogleDriveFileOperations.js';
 import TokenService from '../auth/token/token.service.js';
 import RoleAggregationPipeline from '../auth/role/role.pipeline.js';
-import UserAggregationPipeline from './user.pipeline.js';
 import EmailService from '../email/email.service.js';
 
 import ServerError from '../../utils/serverError.js';
@@ -64,14 +64,6 @@ const createUser = async (registerData, file) => {
         picture: pictureData || null,
     });
 
-    // Populate the role details for the response
-    const roleAggregationPipeline = RoleAggregationPipeline.getRole(
-        defaultRole?.id
-    );
-    const populatedRoleDetails = await RoleModel.aggregate(
-        roleAggregationPipeline
-    );
-
     // If the user creation fails for any reason, this check is somewhat redundant
     // because `create` will throw an error rather than returning `null`.
     // However, it's kept here for consistency with your original error handling.
@@ -91,7 +83,7 @@ const createUser = async (registerData, file) => {
     let newUser = newUserDetails.toObject();
 
     // Generate the auth tokens
-    const tokens = await TokenService.generateAuthTokens(newUser);
+    const authTokens = await TokenService.generateAuthTokens(newUser);
 
     // Generate a new token for email verification
     const verifyEmailToken = await TokenService.generateVerifyEmailToken(
@@ -105,28 +97,51 @@ const createUser = async (registerData, file) => {
         verifyEmailToken
     );
 
-    // Remove the unwanted fields from the object
-    delete newUser?._id;
-    delete newUser?.__v;
-    delete newUser?.password;
+    // Aggregation pipeline to fetch and populate the updated document
+    const aggregationPipeline = RoleAggregationPipeline.getRole(newUser?.role);
 
-    // If a picture was uploaded, remove the fileId and shareableLink from the object
-    if (newUser?.picture) {
-        delete newUser?.picture.fileId;
-        delete newUser?.picture.shareableLink;
+    // Fetch the updated permission using the aggregation pipeline
+    const populatedRole = await RoleModel.aggregate(aggregationPipeline);
+
+    // Check if the populatedPermission query returned a document
+    if (!populatedRole || populatedRole?.length === 0) {
+        throw {
+            statusCode: httpStatus.OK,
+            message: 'User creation successful but role population failed.',
+        };
     }
 
-    // Attach role details to the newUser object
-    newUser.role = populatedRoleDetails[0] || null;
+    // Remove the password field from the object
+    const fieldsToRemove = [
+        '_id',
+        '__v',
+        'password',
+        'role',
+        'maximumLoginAttempts',
+        'maximumResetPasswordAttempts',
+        'maximumEmailVerificationAttempts',
+        'maximumChangeEmailAttempts',
+        'maximumChangePasswordAttempts',
+    ];
+
+    // Remove sensitive fields from userDetails
+    const sanitizedUserDetails = excludeSensitiveFields(
+        newUser,
+        fieldsToRemove
+    );
+
+    // Create the response object
+    const response = {
+        ...sanitizedUserDetails, // Spread sanitized user details instead of original userDetails
+        role: populatedRole[0], // Include role details
+        token: authTokens, // Include token
+    };
 
     // Return the newly created user information along with auth tokens
     return sendServiceResponse(
         httpStatus.CREATED,
         'User created successfully.',
-        {
-            ...newUser,
-            token: tokens,
-        }
+        response
     );
 };
 
@@ -202,12 +217,6 @@ const queryUsers = async (filter, options) => {
             },
         },
         {
-            $unwind: {
-                path: '$role',
-                preserveNullAndEmptyArrays: true,
-            },
-        },
-        {
             $lookup: {
                 from: 'users', // Assuming 'users' is the collection name for both createdBy and updatedBy
                 localField: 'createdBy',
@@ -227,11 +236,13 @@ const queryUsers = async (filter, options) => {
             $project: {
                 _id: 0,
                 __v: 0,
-                password: 0, // Assuming you don't want to return these fields
-                // Adjust the fields here based on what you want to exclude or include
-                // For example, to not include some fields from populated documents:
-                'role._id': 0,
-                'role.__v': 0,
+                password: 0,
+                role: 0,
+                maximumLoginAttempts: 0,
+                maximumResetPasswordAttempts: 0,
+                maximumEmailVerificationAttempts: 0,
+                maximumChangeEmailAttempts: 0,
+                maximumChangePasswordAttempts: 0,
             },
         },
     ].filter(stage => Object.keys(stage).length); // Filter out empty stages
@@ -263,7 +274,66 @@ const queryUsers = async (filter, options) => {
 };
 
 const getUserById = async userId => {
-    return UserModel.findById(userId);
+    // Find the user by ID
+    const existingUser = await UserModel.findOne({ id: userId });
+
+    if (!existingUser) {
+        throw {
+            statusCode: httpStatus.NOT_FOUND,
+            message: 'User not found.',
+        };
+    }
+
+    // Convert a Mongoose document to a JavaScript object for easier manipulation
+    const userObject = existingUser.toObject();
+
+    // Aggregation pipeline to fetch and populate the updated document
+    const aggregationPipeline = RoleAggregationPipeline.getRole(
+        userObject?.role
+    );
+
+    // Fetch the updated permission using the aggregation pipeline
+    const populatedRole = await RoleModel.aggregate(aggregationPipeline);
+
+    // Check if the populatedRole query returned a document
+    if (!populatedRole || populatedRole?.length === 0) {
+        throw {
+            statusCode: httpStatus.OK,
+            message: 'User found successfully but role population failed.',
+        };
+    }
+
+    // Remove the password field from the object
+    const fieldsToRemove = [
+        '_id',
+        '__v',
+        'password',
+        'role',
+        'maximumLoginAttempts',
+        'maximumResetPasswordAttempts',
+        'maximumEmailVerificationAttempts',
+        'maximumChangeEmailAttempts',
+        'maximumChangePasswordAttempts',
+    ];
+
+    // Remove sensitive fields from userDetails
+    const sanitizedUserDetails = excludeSensitiveFields(
+        userObject,
+        fieldsToRemove
+    );
+
+    // Create the response object
+    const response = {
+        ...sanitizedUserDetails, // Spread sanitized user details instead of original userDetails
+        role: populatedRole[0], // Include role details
+    };
+
+    // Return the newly created user information along with auth tokens
+    return sendServiceResponse(
+        httpStatus.CREATED,
+        'User found successfully.',
+        response
+    );
 };
 
 const getUserByEmail = async email => {
@@ -331,7 +401,13 @@ const updateUserById = async (userId, userData, file) => {
             };
         }
 
-        // TODO: Remove the old picture from Google Drive
+        // Check if the old picture exists
+        if (oldUserData?.picture?.fileId) {
+            // Remove the old picture from Google Drive
+            await GoogleDriveFileOperations.deleteFile(
+                oldUserData?.picture?.fileId
+            );
+        }
 
         // Update the picture data
         userData.picture = pictureData; // Assuming pictureData structure matches your UserModel
@@ -356,40 +432,61 @@ const updateUserById = async (userId, userData, file) => {
     if (!updatedUserDetails) {
         throw {
             statusCode: httpStatus.NOT_FOUND,
-            message: 'Failed to update permission. Please try again.',
+            message: 'Failed to update user. Please try again.',
         };
+    }
+
+    // Remove the password field from the object
+    const fieldsToRemove = [
+        '_id',
+        '__v',
+        'password',
+        'maximumLoginAttempts',
+        'maximumResetPasswordAttempts',
+        'maximumEmailVerificationAttempts',
+        'maximumChangeEmailAttempts',
+        'maximumChangePasswordAttempts',
+    ];
+
+    // Remove sensitive fields from userDetails
+    const sanitizedUserDetails = excludeSensitiveFields(
+        updatedUserDetails,
+        fieldsToRemove
+    );
+
+    // Remove picture file ID and shareable link if picture exists
+    if (sanitizedUserDetails?.picture) {
+        delete sanitizedUserDetails?.picture.fileId;
+        delete sanitizedUserDetails?.picture.shareableLink;
     }
 
     // Aggregation pipeline to fetch and populate the updated document
-    const aggregationPipeline = UserAggregationPipeline.getUser(userId);
+    const aggregationPipeline = RoleAggregationPipeline.getRole(
+        sanitizedUserDetails?.role
+    );
 
     // Fetch the updated permission using the aggregation pipeline
-    const populatedPermission = await UserModel.aggregate(aggregationPipeline);
+    const populatedRole = await RoleModel.aggregate(aggregationPipeline);
 
     // Check if the populatedPermission query returned a document
-    if (!populatedPermission || populatedPermission?.length === 0) {
+    if (!populatedRole || populatedRole?.length === 0) {
         throw {
             statusCode: httpStatus.OK,
-            message: 'Permission updated but population failed.',
+            message: 'User creation successful but role population failed.',
         };
     }
 
-    // Remove sensitive information
-    delete updatedUserDetails?._id;
-    delete updatedUserDetails?.__v;
-    delete updatedUserDetails?.password;
-
-    // Remove picture file ID and shareable link if picture exists
-    if (updatedUserDetails?.picture) {
-        delete updatedUserDetails?.picture.fileId;
-        delete updatedUserDetails?.picture.shareableLink;
-    }
+    // Create the response object
+    const response = {
+        ...sanitizedUserDetails, // Spread sanitized user details instead of original userDetails
+        role: populatedRole[0], // Include role details
+    };
 
     // Return the updated user information
     return sendServiceResponse(
         httpStatus.OK,
         'User updated successfully.',
-        populatedPermission[0]
+        response
     );
 };
 
