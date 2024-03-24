@@ -12,7 +12,7 @@ const createRole = {
             .items(
                 Joi.object({
                     permission: customValidation.id(
-                        constants.permissionNamePattern
+                        constants.permissionIdPattern
                     ),
                 }).required()
             )
@@ -81,7 +81,7 @@ const updateRole = {
                 .items(
                     Joi.object({
                         permission: customValidation.id(
-                            constants.permissionNamePattern
+                            constants.permissionIdPattern
                         ),
                     }).required()
                 )
@@ -108,7 +108,7 @@ const updateRole = {
                 .items(
                     Joi.object({
                         permission: customValidation.id(
-                            constants.permissionNamePattern
+                            constants.permissionIdPattern
                         ),
                     }).required()
                 )

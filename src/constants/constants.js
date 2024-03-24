@@ -10,8 +10,9 @@ const specialCharRegex = /[\s~`!@#$%^&*+=\-[\]\\';,/{}|\\":<>?()._]/;
 const permissionNamePattern = /^[a-z]+-(create|modify|get|update|delete)$/;
 const userNamePattern = /^[A-Z][a-zA-Z ]{2,49}$/;
 const roleNamePattern = /^[A-Z][a-zA-Z ]{2,49}$/;
-const roleIdPattern = /^role-\d{14}-\d+$/;
-const userIdPattern = /^user-\d{14}-\d+$/;
+const roleIdPattern = /^role-\d{14}-\d{10}$/;
+const userIdPattern = /^user-\d{14}-\d{10}$/;
+const permissionIdPattern = /^permission-\d{14}-\d{10}$/;
 
 const constants = {
     objectIdPattern,
@@ -27,6 +28,7 @@ const constants = {
     userIdPattern,
     userNamePattern,
     roleNamePattern,
+    permissionIdPattern,
 };
 
 export default constants;

@@ -13,7 +13,7 @@ const permissionSchema = new Schema(
             ref: 'Permission',
             validate: {
                 validator: function (v) {
-                    return constants.customIdPattern.test(v);
+                    return constants.permissionIdPattern.test(v);
                 },
                 message: 'Invalid permission ID format.',
             },
