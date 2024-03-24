@@ -24,7 +24,10 @@ const indexService = () => {
             },
             statusInformation: "✅ All systems are currently operational.",
             termsOfService: "/terms",
-            apiDocumentation: "/docs",
+            documentation: {
+                "apiDocumentation": "/docs./api",
+                "codeDocumentation": "/docs./code"
+            },
             rateLimit: {
                 limit: `🕛 ${config.rateLimit.max} requests per ${config.rateLimit.windowMs} milliseconds.`,
                 info: `To ensure fair usage, our API limits the number of requests to ${config.rateLimit.max} every ${config.rateLimit.windowMs} milliseconds.`
