@@ -1,5 +1,6 @@
 import express from 'express';
 
+import authMiddleware from '../../middleware/auth.middleware.js';
 import validateRequestMiddleware from '../../middleware/validateRequest.middleware.js';
 
 import UserValidation from './user.validation.js';
@@ -20,6 +21,7 @@ router
         UserController.createUser
     )
     .get(
+        authMiddleware(['user-get']),
         validateRequestMiddleware(UserValidation.getUsers),
         UserController.getUsers
     );
@@ -27,15 +29,18 @@ router
 router
     .route('/:userId')
     .get(
+        authMiddleware(['user-get', 'user-update']),
         validateRequestMiddleware(UserValidation.getUser),
         UserController.getUser
     )
     .put(
+        authMiddleware(['user-update', 'user-modify']),
         fileUploadMiddleware.single('picture'),
         validateRequestMiddleware(UserValidation.updateUser),
         UserController.updateUser
     )
     .delete(
+        authMiddleware(['user-delete', 'user-modify']),
         validateRequestMiddleware(UserValidation.deleteUser),
         UserController.deleteUser
     );
@@ -104,7 +109,7 @@ export default router;
  *         $ref: '#/components/responses/Forbidden'
  *
  *   get:
- *     summary: Get all users
+ *     summary: Get all-users
  *     description: Only admins can retrieve all users.
  *     tags: [Users]
  *     security:
@@ -114,7 +119,7 @@ export default router;
  *         name: name
  *         schema:
  *           type: string
- *         description: User name
+ *         description: Username
  *       - in: query
  *         name: role
  *         schema:
@@ -174,7 +179,7 @@ export default router;
  * /users/{id}:
  *   get:
  *     summary: Get a user
- *     description: Logged in users can fetch only their own user information. Only admins can fetch other users.
+ *     description: Logged-in users can fetch only their own user information. Only admins can fetch other users.
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -201,7 +206,7 @@ export default router;
  *
  *   patch:
  *     summary: Update a user
- *     description: Logged in users can only update their own information. Only admins can update other users.
+ *     description: Logged-in users can only update their own information. Only admins can update other users.
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -252,7 +257,7 @@ export default router;
  *
  *   delete:
  *     summary: Delete a user
- *     description: Logged in users can delete only themselves. Only admins can delete other users.
+ *     description: Logged-in users can delete only themselves. Only admins can delete other users.
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
