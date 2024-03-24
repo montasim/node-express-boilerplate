@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
 import mongooseSchemaHelpers from '../../../utils/mongooseSchemaHelpers.js';
-import RoleConstants from './role.constants.js';
 import constants from '../../../constants/constants.js';
 
 const { Schema } = mongoose;
@@ -36,7 +35,7 @@ const roleSchema = new Schema({
         maxlength: [50, 'Role name must be less than 50 characters long'],
         validate: {
             validator: async value => {
-                if (!RoleConstants.ROLE_NAME_PATTERN.test(value)) {
+                if (!constants.roleNamePattern.test(value)) {
                     return false; // Pattern does not match
                 }
                 return true;

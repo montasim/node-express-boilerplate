@@ -1,18 +1,19 @@
 import Joi from 'joi';
 
-import RoleConstants from './role.constants.js';
 import customValidation from '../../../validations/custom.validation.js';
 import constants from '../../../constants/constants.js';
 
 const createRole = {
     body: Joi.object().keys({
         name: customValidation
-            .stringValidator('role', RoleConstants.ROLE_NAME_PATTERN, 3, 50)
+            .stringValidator('role', constants.roleNamePattern, 3, 50)
             .required(),
         permissions: Joi.array()
             .items(
                 Joi.object({
-                    permission: Joi.string().pattern(constants.customIdPattern),
+                    permission: customValidation.id(
+                        constants.permissionNamePattern
+                    ),
                 }).required()
             )
             // Here we apply a custom validation to ensure that each "permission" in the array is unique.
@@ -42,7 +43,7 @@ const getRoles = {
         .keys({
             name: customValidation.stringValidator(
                 'role',
-                RoleConstants.ROLE_NAME_PATTERN,
+                constants.roleNamePattern,
                 3,
                 50
             ),
@@ -60,27 +61,27 @@ const getRoles = {
 
 const getRole = {
     params: Joi.object().keys({
-        roleId: customValidation.id().required(),
+        roleId: customValidation.id(constants.roleNamePattern).required(),
     }),
 };
 
 const updateRole = {
     params: Joi.object().keys({
-        roleId: customValidation.id().required(),
+        roleId: customValidation.id(constants.roleNamePattern).required(),
     }),
     body: Joi.object()
         .keys({
             name: customValidation.stringValidator(
                 'role',
-                RoleConstants.ROLE_NAME_PATTERN,
+                constants.roleNamePattern,
                 3,
                 50
             ),
             addPermissions: Joi.array()
                 .items(
                     Joi.object({
-                        permission: Joi.string().pattern(
-                            constants.customIdPattern
+                        permission: customValidation.id(
+                            constants.permissionNamePattern
                         ),
                     }).required()
                 )
@@ -106,8 +107,8 @@ const updateRole = {
             deletePermissions: Joi.array()
                 .items(
                     Joi.object({
-                        permission: Joi.string().pattern(
-                            constants.customIdPattern
+                        permission: customValidation.id(
+                            constants.permissionNamePattern
                         ),
                     }).required()
                 )
@@ -157,7 +158,7 @@ const updateRole = {
 
 const deleteRole = {
     params: Joi.object().keys({
-        roleId: customValidation.id().required(),
+        roleId: customValidation.id(constants.roleNamePattern).required(),
     }),
 };
 

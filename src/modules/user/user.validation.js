@@ -2,7 +2,7 @@ import Joi from 'joi';
 
 import CustomValidation from '../../validations/custom.validation.js';
 import customValidation from '../../validations/custom.validation.js';
-import UserConstants from './user.constant.js';
+import constants from '../../constants/constants.js';
 
 const createUser = {
     body: Joi.object().keys({
@@ -13,16 +13,16 @@ const createUser = {
             .external(CustomValidation.email),
         password: Joi.string().required().external(CustomValidation.password),
         name: customValidation
-            .stringValidator('user', UserConstants.USER_NAME_PATTERN, 3, 50)
+            .stringValidator('user', constants.userNamePattern, 3, 50)
             .required(),
-        role: customValidation.id().trim(),
+        role: customValidation.id(constants.roleNamePattern),
     }),
 };
 
 const getUsers = {
     query: Joi.object().keys({
         name: Joi.string().trim(),
-        role: Joi.string().trim(),
+        role: customValidation.id(constants.roleNamePattern),
         sortBy: Joi.string().trim(),
         limit: Joi.number().integer().min(1).min(100),
         page: Joi.number().integer().min(1).max(10),
@@ -31,23 +31,23 @@ const getUsers = {
 
 const getUser = {
     params: Joi.object().keys({
-        userId: customValidation.id().required(),
+        userId: customValidation.id(constants.userNamePattern).required(),
     }),
 };
 
 const updateUser = {
     params: Joi.object().keys({
-        userId: customValidation.id().required(),
+        userId: customValidation.id(constants.userNamePattern).required(),
     }),
     body: Joi.object()
         .keys({
             name: customValidation.stringValidator(
                 'user',
-                UserConstants.USER_NAME_PATTERN,
+                constants.userNamePattern,
                 3,
                 50
             ),
-            role: customValidation.id(),
+            role: customValidation.id(constants.roleNamePattern),
             isActive: customValidation.isActive(),
         })
         .or('email', 'password', 'name', 'role', 'isActive')
@@ -58,7 +58,7 @@ const updateUser = {
 
 const deleteUser = {
     params: Joi.object().keys({
-        userId: customValidation.id().required(),
+        userId: customValidation.id(constants.userNamePattern).required(),
     }),
 };
 

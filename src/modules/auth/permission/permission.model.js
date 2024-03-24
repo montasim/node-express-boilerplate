@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
 import mongooseSchemaHelpers from '../../../utils/mongooseSchemaHelpers.js';
-import PermissionConstants from './permission.constants.js';
 import constants from '../../../constants/constants.js';
 
 const { Schema } = mongoose;
@@ -20,7 +19,7 @@ const permissionSchema = new Schema({
         validate: {
             validator: async value => {
                 // First, validate the pattern
-                if (!PermissionConstants.PERMISSION_NAME_PATTERN.test(value)) {
+                if (!constants.permissionNamePattern.test(value)) {
                     return false; // Pattern does not match
                 }
 

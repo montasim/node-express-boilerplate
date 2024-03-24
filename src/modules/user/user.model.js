@@ -7,16 +7,16 @@ import toJSON from '../../plugins/toJSON.plugin.js';
 import loadCommonPasswords from '../../utils/loadCommonPasswords.js';
 
 import mongooseSchemaHelpers from '../../utils/mongooseSchemaHelpers.js';
-import UserConstants from './user.constant.js';
 import constants from '../../constants/constants.js';
 import config from '../../config/config.js';
+import RoleModel from '../auth/role/role.model.js';
 
 const { Schema } = mongoose;
 
 const passwordValidation = {
     validator: async function (value) {
         // Check minimum and maximum length
-        if (value.length < 8 || value.length > 20) {
+        if (value?.length < 8 || value?.length > 20) {
             throw new Error('Password must be between 8 and 20 characters');
         }
 
@@ -29,9 +29,9 @@ const passwordValidation = {
 
         // Example simple pattern check (sequential characters or too simple)
         if (
-            value.match(/^(.)\1+$/) ||
+            value?.match(/^(.)\1+$/) ||
             value === '1234' ||
-            value.toLowerCase() === 'password'
+            value?.toLowerCase() === 'password'
         ) {
             throw new Error(
                 'Password contains a simple pattern or is a common password'
@@ -40,7 +40,7 @@ const passwordValidation = {
 
         // Check against common passwords asynchronously
         const commonPasswords = await loadCommonPasswords();
-        if (commonPasswords.has(value)) {
+        if (commonPasswords?.has(value)) {
             throw new Error('Use of common password is not allowed');
         }
     },
@@ -64,7 +64,7 @@ const userSchema = Schema({
         maxlength: [50, 'Name must be less than 50 characters long'],
         validate: {
             validator: async value => {
-                if (!UserConstants.USER_NAME_PATTERN.test(value)) {
+                if (!constants.userNamePattern.test(value)) {
                     return false; // Pattern does not match
                 }
 
@@ -121,13 +121,27 @@ const userSchema = Schema({
     },
     role: {
         type: String,
+        trim: true,
         ref: 'Role',
         validate: {
-            validator: function (v) {
-                return constants.customIdPattern.test(v); // Matching the custom ID format
-            },
+            validator: async value => {
+                // First, check if the role ID matches the custom ID pattern
+                if (!constants.roleNamePattern.test(value)) {
+                    return false; // Immediately return false if the pattern does not match
+                }
 
-            message: 'Invalid role ID format.',
+                // Proceed to check for the role's existence in the database only if the pattern matches
+                const roleExists = await RoleModel.findOne({ id: value });
+
+                // Check if a role was found
+                if (roleExists?.length > 0) {
+                    return false; // Role does not exist
+                }
+
+                return true; // Role exists
+            },
+            message:
+                'Invalid role: Either the role ID format is incorrect or the role does not exist.',
         },
     },
     picture: {

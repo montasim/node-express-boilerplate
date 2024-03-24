@@ -15,7 +15,7 @@ const objectId = (value, helpers) => {
     return value;
 };
 
-const detailedIdValidator = (value, helpers) => {
+const detailedIdValidator = (value, helpers, pattern) => {
     // Define the pattern to extract parts from the ID
     const match = value.match(constants.customIdPattern);
 
@@ -27,7 +27,7 @@ const detailedIdValidator = (value, helpers) => {
     }
 
     // Extract parts based on the pattern
-    const [, prefix, dateTime, randomNumbers] = match;
+    const [input, prefix, dateTime, randomNumbers] = match;
 
     if (prefix.length < 3) {
         return helpers.message(
@@ -93,9 +93,9 @@ const detailedIdValidator = (value, helpers) => {
     }
 
     // Validate randomNumbers
-    if (randomNumbers.length < 8 || randomNumbers.length > 10) {
+    if (randomNumbers?.length !== 10) {
         return helpers.message(
-            'Invalid random number sequence in the provided ID. It must be 8 to 10 digits long.'
+            'Invalid random number sequence in the provided ID. It must be 10 digits long.'
         );
     }
 
@@ -268,8 +268,12 @@ const isActive = () => {
 };
 
 // Common Parameter Validation for permissionId
-const id = () => {
-    return Joi.string().custom(detailedIdValidator);
+const id = pattern => {
+    return Joi.string()
+        .trim()
+        .custom((value, helpers) => {
+            return detailedIdValidator(value, helpers, pattern);
+        });
 };
 
 // Common Error Messages for Queries

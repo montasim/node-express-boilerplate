@@ -1,14 +1,14 @@
 import Joi from 'joi';
 
-import PermissionConstants from './permission.constants.js';
 import customValidation from '../../../validations/custom.validation.js';
+import constants from '../../../constants/constants.js';
 
 const createPermission = {
     body: Joi.object().keys({
         name: customValidation
             .stringValidator(
                 'permission',
-                PermissionConstants.PERMISSION_NAME_PATTERN,
+                constants.permissionNamePattern,
                 3,
                 50
             )
@@ -22,7 +22,7 @@ const getPermissions = {
         .keys({
             name: customValidation.stringValidator(
                 'permission',
-                PermissionConstants.PERMISSION_NAME_PATTERN,
+                constants.permissionNamePattern,
                 3,
                 50
             ),
@@ -40,19 +40,23 @@ const getPermissions = {
 
 const getPermission = {
     params: Joi.object().keys({
-        permissionId: customValidation.id().required(),
+        permissionId: customValidation
+            .id(constants.permissionNamePattern)
+            .required(),
     }),
 };
 
 const updatePermission = {
     params: Joi.object().keys({
-        permissionId: customValidation.id().required(),
+        permissionId: customValidation
+            .id(constants.permissionNamePattern)
+            .required(),
     }),
     body: Joi.object()
         .keys({
             name: customValidation.stringValidator(
                 'permission',
-                PermissionConstants.PERMISSION_NAME_PATTERN,
+                constants.permissionNamePattern,
                 3,
                 50
             ),
@@ -66,7 +70,9 @@ const updatePermission = {
 
 const deletePermission = {
     params: Joi.object().keys({
-        permissionId: customValidation.id().required(),
+        permissionId: customValidation
+            .id(constants.permissionNamePattern)
+            .required(),
     }),
 };
 
