@@ -60,7 +60,21 @@ app.use(xss());
 app.use(mongoSanitize());
 
 // gzip compression
-app.use(compression());
+app.use(
+    compression({
+        level: 9, // Maximum compression level
+        threshold: 0, // Always compress, regardless of response size
+        filter: (req, res) => {
+            if (req.headers['x-no-compression']) {
+                // Do not compress responses if the 'x-no-compression' header is present
+                return false;
+            }
+
+            // Always compress when the 'x-no-compression' header is not present
+            return compression.filter(req, res);
+        },
+    })
+);
 
 // prevent HTTP parameter pollution
 app.use(hpp());
