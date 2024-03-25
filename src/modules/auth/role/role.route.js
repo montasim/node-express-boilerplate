@@ -8,18 +8,26 @@ import RoleController from './role.controller.js';
 
 const router = express.Router();
 
-// TODO: Add permission population when fetching roles
-// TODO: Add permission population when fetching a role
-// TODO: Individually add or remove permissions from a role
-
 router
     .route('/')
-    .post(validateRequestMiddleware(RoleValidation.createRole), RoleController.createRole)
-    .get(validateRequestMiddleware(RoleValidation.getRoles), RoleController.getRoles);
+    .post(
+        authMiddleware('role-create'),
+        validateRequestMiddleware(RoleValidation.createRole),
+        RoleController.createRole
+    )
+    .get(
+        authMiddleware('role-view'),
+        validateRequestMiddleware(RoleValidation.getRoles),
+        RoleController.getRoles
+    );
 
 router
     .route('/:roleId')
-    .get(validateRequestMiddleware(RoleValidation.getRole), RoleController.getRole)
+    .get(
+        authMiddleware('role-view'),
+        validateRequestMiddleware(RoleValidation.getRole),
+        RoleController.getRole
+    )
     .put(
         authMiddleware('role-modify'),
         validateRequestMiddleware(RoleValidation.updateRole),
