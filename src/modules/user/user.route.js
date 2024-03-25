@@ -1,3 +1,29 @@
+/**
+ * @fileoverview User Management Routing Module for Node.js Express API.
+ *
+ * This module defines the routes for user management functionalities within a Node.js Express application,
+ * integrating comprehensive security and validation mechanisms. It leverages middleware for authentication,
+ * authorization, request validation, and file upload handling to ensure that user-related operations are
+ * securely processed and conform to defined validation rules.
+ *
+ * The routes covered in this module allow for creating, viewing, updating, and deleting user records,
+ * each protected by authentication and authorization checks to ensure that only authorized users can
+ * perform these operations. Additionally, request validation middleware ensures that incoming data for
+ * user operations meets the application's criteria for format and completeness.
+ *
+ * Highlights include:
+ * - Utilization of `authMiddleware` to secure routes based on specific permissions (e.g., 'user-create', 'user-view'),
+ *   ensuring that operations are performed only by users with the appropriate rights.
+ * - Application of `validateRequestMiddleware` with `UserValidation` schemas to enforce data integrity and format for
+ *   user operations, reducing the risk of invalid or malicious data being processed.
+ * - Integration of `fileUploadMiddleware` for handling profile picture uploads during user updates, demonstrating
+ *   a practical approach to managing file uploads within user management scenarios.
+ *
+ * This routing module exemplifies a robust approach to handling user management tasks in a secure, scalable,
+ * and maintainable manner within a Node.js Express API, making it an essential component of a production-ready
+ * application.
+ */
+
 import express from 'express';
 
 import authMiddleware from '../../middleware/auth.middleware.js';
@@ -9,19 +35,15 @@ import fileUploadMiddleware from '../../middleware/fileUpload.middleware.js';
 
 const router = express.Router();
 
-// TODO: Authenticated users can only create new users with the role of 'Admin' or 'Super Admin'
-// TODO: Authenticated users can only retrieve their own user information, also 'Admin' or 'Super Admin' can retrieve any user
-// TODO: Authenticated users can only update their own user information
-// TODO: Authenticated users can only delete their own user information, also 'Admin' or 'Super Admin' can delete any user
-
 router
     .route('/')
     .post(
+        authMiddleware(['user-create']),
         validateRequestMiddleware(UserValidation.createUser),
         UserController.createUser
     )
     .get(
-        authMiddleware(['user-get']),
+        authMiddleware(['user-view']),
         validateRequestMiddleware(UserValidation.getUsers),
         UserController.getUsers
     );
@@ -29,18 +51,18 @@ router
 router
     .route('/:userId')
     .get(
-        authMiddleware(['user-get', 'user-update']),
+        authMiddleware(['user-view']),
         validateRequestMiddleware(UserValidation.getUser),
         UserController.getUser
     )
     .put(
-        authMiddleware(['user-update', 'user-modify']),
+        authMiddleware(['user-modify']),
         fileUploadMiddleware.single('picture'),
         validateRequestMiddleware(UserValidation.updateUser),
         UserController.updateUser
     )
     .delete(
-        authMiddleware(['user-delete', 'user-modify']),
+        authMiddleware(['user-modify']),
         validateRequestMiddleware(UserValidation.deleteUser),
         UserController.deleteUser
     );

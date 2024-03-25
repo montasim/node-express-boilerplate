@@ -107,6 +107,7 @@ const stringValidator = (fieldname, pattern, minLength, maxLength) => {
     const sentenceCaseFieldname = convertToSentenceCase(fieldname);
 
     return Joi.string()
+        .trim()
         .min(minLength)
         .message(
             `${sentenceCaseFieldname} name must be at least ${minLength} characters long`

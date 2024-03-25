@@ -11,7 +11,7 @@
  * 2. Establishment of 'Admin' and 'Super Admin' roles, each associated with the full set of permissions, to delineate
  *    different levels of system access and control.
  * 3. Verification of the existence of a super admin user account, with automatic creation if such an account does not
- *    exist, ensuring there's always a user with highest level access for system administration tasks.
+ *    exist, ensuring there's always a user with the highest level access for system administration tasks.
  * 4. Option to send a verification or notification email to the super admin upon account creation, facilitating
  *    immediate engagement with the system.
  *
@@ -34,11 +34,11 @@ import EmailService from '../modules/email/email.service.js';
  * super admin user exists with all permissions assigned.
  *
  * The function performs the following operations in sequence:
- * 1. Creates a list of permissions if they do not already exist in the database.
+ * 1. Create a list of permissions if they do not already exist in the database.
  * 2. Ensures that the 'Admin' and 'Super Admin' roles exist with all the created permissions.
  * 3. Checks for the existence of a super admin user and creates one if it doesn't exist, assigning the 'Super Admin'
  *    role to this user.
- * 4. Optionally sends a verification email to the super admin user upon creation.
+ * 4. Optionally, send a verification email to the super admin user upon creation.
  *
  * This function is typically called during the application's initial setup phase or when resetting the system to its
  * default state.
@@ -55,20 +55,14 @@ const setupInitialUserWithRoleAndPermissions = async () => {
         // Define permissions
         const permissions = [
             'role-create',
+            'role-view',
             'role-modify',
-            'role-get',
-            'role-update',
-            'role-delete',
             'permission-create',
+            'permission-view',
             'permission-modify',
-            'permission-get',
-            'permission-update',
-            'permission-delete',
             'user-create',
+            'user-view',
             'user-modify',
-            'user-get',
-            'user-update',
-            'user-delete',
         ];
         const createdBy = 'system-20240317230608-000000001'; // system user
 
@@ -97,8 +91,9 @@ const setupInitialUserWithRoleAndPermissions = async () => {
 
         // Define roles
         const roles = [
-            { name: 'Admin', permissions: [...permissionMap.values()] }, // Use permission IDs from the map
             { name: 'Super Admin', permissions: [...permissionMap.values()] },
+            { name: 'Admin', permissions: [...permissionMap.values()] },
+            { name: 'Default', permissions: [] },
         ];
 
         // Ensure roles exist (now with all permissions)
