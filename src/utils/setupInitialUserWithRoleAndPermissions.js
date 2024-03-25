@@ -29,31 +29,37 @@ import loggerConfig from '../config/logger.config.js';
 import EmailService from '../modules/email/email.service.js';
 
 /**
- * Asynchronously sets up initial roles, permissions, and a super admin user in the system. This setup function is
- * critical for initializing the application with a predefined set of permissions and roles, and ensuring that a
- * super admin user exists with all permissions assigned.
+ * Sets up initial user roles and permissions in the database, ensuring the system is prepared with
+ * a super admin user, admin and default roles, and specific permissions required for managing roles,
+ * permissions, and users. This function performs several key operations:
  *
- * The function performs the following operations in sequence:
- * 1. Create a list of permissions if they do not already exist in the database.
- * 2. Ensures that the 'Admin' and 'Super Admin' roles exist with all the created permissions.
- * 3. Checks for the existence of a super admin user and creates one if it doesn't exist, assigning the 'Super Admin'
- *    role to this user.
- * 4. Optionally, send a verification email to the super admin user upon creation.
+ * 1. Checks if specific permissions exist, and if not, creates them. These permissions include
+ *    capabilities related to role and permission creation, viewing, modification, as well as user
+ *    management functionalities.
  *
- * This function is typically called during the application's initial setup phase or when resetting the system to its
- * default state.
+ * 2. Collects all existing permissions and maps them for easy access. Then, it defines three primary
+ *    roles: Super Admin, Admin, and Default. The Super Admin and Admin roles are granted all available
+ *    permissions, while the Default role has no permissions assigned.
  *
- * @throws {Error} Throws an error if any part of the setup process fails, logging the error and rethrowing it for
- *                 higher-level error handling.
- * @example
- * setupInitialUserWithRoleAndPermissions()
- *   .then(() => console.log('Initial setup completed successfully.'))
- *   .catch(error => console.error('Failed during initial setup:', error));
+ * 3. Verifies the existence of these roles in the database and creates them if they do not exist,
+ *    associating the defined permissions with each role accordingly.
+ *
+ * 4. Ensures the existence of a super admin user. If this user does not exist, the function creates
+ *    it with the specified email and password, assigns it the Super Admin role, and sends a
+ *    verification email to the user.
+ *
+ * If the setup completes successfully, it logs a success message. If any part of the process fails,
+ * it logs the error and rethrows it for further handling. This is a crucial function for initializing
+ * the application with essential data and should be executed as part of the application setup or
+ * deployment process.
+ *
+ * @async
+ * @function setupInitialUserWithRoleAndPermissions
+ * @throws {Error} Throws an error if any part of the setup process fails.
  */
 const setupInitialUserWithRoleAndPermissions = async () => {
     try {
-        // Define permissions
-        const permissions = [
+        const permissionNames = [
             'role-create',
             'role-view',
             'role-modify',
@@ -64,13 +70,15 @@ const setupInitialUserWithRoleAndPermissions = async () => {
             'user-view',
             'user-modify',
         ];
-        const createdBy = 'system-20240317230608-000000001'; // system user
+        const createdBy = 'system-20240317230608-000000001'; // system user identifier
 
         // Ensure permissions exist
-        for (const permissionName of permissions) {
+        for (const permissionName of permissionNames) {
             const permissionExists = await PermissionModel.findOne({
                 name: permissionName,
             });
+
+            // Create the permission if it doesn't exist
             if (!permissionExists) {
                 await PermissionModel.create({
                     name: permissionName,
@@ -80,14 +88,11 @@ const setupInitialUserWithRoleAndPermissions = async () => {
             }
         }
 
-        // Collect all permissions for the roles (improve efficiency for large datasets)
+        // Collect all permissions for the role
         const allPermissions = await PermissionModel.find({});
         const permissionMap = new Map(
-            allPermissions?.map(permission => [
-                permission?.name,
-                permission?.id,
-            ])
-        ); // Efficiently create a permission ID map
+            allPermissions.map(permission => [permission.name, permission.id])
+        );
 
         // Define roles
         const roles = [
@@ -96,21 +101,19 @@ const setupInitialUserWithRoleAndPermissions = async () => {
             { name: 'Default', permissions: [] },
         ];
 
-        // Ensure roles exist (now with all permissions)
+        // Ensure roles exist
         for (const role of roles) {
             let roleDoc = await RoleModel.findOne({ name: role.name });
 
-            const formattedRoleData = {
-                name: role?.name,
-                permissions: role?.permissions.map(permissionId => ({
-                    permission: permissionId,
-                })),
-                createdBy,
-                isActive: true,
-            };
-
             if (!roleDoc) {
-                await RoleModel.create(formattedRoleData);
+                await RoleModel.create({
+                    name: role.name,
+                    permissions: role.permissions.map(permissionId => ({
+                        permission: permissionId,
+                    })),
+                    createdBy,
+                    isActive: true,
+                });
             }
         }
 
@@ -134,7 +137,7 @@ const setupInitialUserWithRoleAndPermissions = async () => {
                 picture: null,
             });
 
-            // Send the verification email
+            // Send a verification email
             await EmailService.sendVerificationEmail(
                 superAdminEmail,
                 superAdminPassword
@@ -145,7 +148,7 @@ const setupInitialUserWithRoleAndPermissions = async () => {
     } catch (error) {
         loggerConfig.error('❌ Error during initial setup:', error);
 
-        throw error; // Rethrow or handle as appropriate for your application
+        throw error; // Rethrow or handle as appropriate
     }
 };
 
