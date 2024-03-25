@@ -8,7 +8,7 @@ const swaggerDef = {
         version: packageJson.version, // Access the version property from the imported packageJson object
         license: {
             name: 'MIT',
-            url: 'https://github.com/hagopj13/node-express-boilerplate/blob/master/LICENSE',
+            url: 'https://github.com/montasim/node-express-boilerplate/blob/master/LICENSE',
         },
     },
     servers: [

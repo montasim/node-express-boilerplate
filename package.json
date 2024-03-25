@@ -6,7 +6,7 @@
     "main": "src/server.js",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/montasim/node-express-boilerplate.git"
+        "url": "https://github.com/montasim/node-express-boilerplate"
     },
     "bugs": {
         "url": "https://github.com/montasim/node-express-boilerplate/issues"
@@ -27,10 +27,9 @@
         "npm": ">=10.2.3"
     },
     "scripts": {
-        "preminify": "mkdirp dist",
-        "minify": "terser src/server.js -o dist/server.min.js",
-        "obfuscate": "javascript-obfuscator dist/minified.js --output dist/obfuscated.js",
-        "build": "yarn preminify && yarn minify && yarn obfuscate",
+        "minify": "mkdirp dist/min && terser src/server.js --compress ecma=2015,computed_props=false -o dist/min/server.min.js",
+        "obfuscate": "mkdirp dist/obf && javascript-obfuscator dist/min/server.min.js --output dist/obf/server.obf.js",
+        "build": "yarn minify && yarn obfuscate",
         "start": "pm2 start ecosystem.config.json --no-daemon",
         "dev": "cross-env NODE_ENV=development nodemon src/server.js",
         "test": "jest -i --colors --verbose --detectOpenHandles",
