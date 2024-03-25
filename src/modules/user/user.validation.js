@@ -53,7 +53,7 @@ const createUser = {
             .external(CustomValidation.email),
         password: Joi.string().required().external(CustomValidation.password),
         name: customValidation
-            .stringValidator('user', constants.userNamePattern, 3, 50)
+            .stringValidator('user', constants.namePattern, 3, 50)
             .required(),
         role: customValidation.id(constants.roleIdPattern),
     }),
@@ -95,7 +95,7 @@ const getUsers = {
     query: Joi.object().keys({
         name: customValidation.stringValidator(
             'user',
-            constants.userNamePattern,
+            constants.namePattern,
             3,
             50
         ),
@@ -176,7 +176,7 @@ const updateUser = {
         .keys({
             name: customValidation.stringValidator(
                 'user',
-                constants.userNamePattern,
+                constants.namePattern,
                 3,
                 50
             ),

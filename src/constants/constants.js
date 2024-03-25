@@ -8,8 +8,8 @@ const lowerCaseRegex = /[a-z]/;
 const digitsRegex = /\d/;
 const specialCharRegex = /[\s~`!@#$%^&*+=\-[\]\\';,/{}|\\":<>?()._]/;
 const permissionNamePattern = /^[a-z]+-(create|view|modify)$/;
-const userNamePattern = /^[A-Z][a-zA-Z ]$/;
-const roleNamePattern = /^[A-Z][a-zA-Z ]{2,49}$/;
+const namePattern = /^[A-Z][a-zA-Z\s]*$/;
+const roleNamePattern = /^[A-Z][a-zA-Z\s]*$/;
 const roleIdPattern = /^role-\d{14}-\d{10}$/;
 const userIdPattern = /^user-\d{14}-\d{10}$/;
 const permissionIdPattern = /^permission-\d{14}-\d{10}$/;
@@ -26,7 +26,7 @@ const constants = {
     roleIdPattern,
     permissionNamePattern,
     userIdPattern,
-    userNamePattern,
+    namePattern,
     roleNamePattern,
     permissionIdPattern,
 };

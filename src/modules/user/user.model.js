@@ -147,14 +147,14 @@ const userSchema = Schema({
         maxlength: [50, 'Name must be less than 50 characters long'],
         validate: {
             validator: async value => {
-                if (!constants.userNamePattern.test(value)) {
+                if (!constants.namePattern.test(value)) {
                     return false; // Pattern does not match
                 }
 
                 return true;
             },
             message: props =>
-                `${props.value} is not a valid name. Only letters, periods, and hyphens are allowed.`,
+                `${props.value} is not a valid name. Name must start with an uppercase letter and contain only letters.`,
         },
     },
     email: {
