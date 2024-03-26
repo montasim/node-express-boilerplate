@@ -28,6 +28,7 @@ coverage/
 # Package lock files
 # Ignore package-lock.json to prevent conflicts arising from npm versions discrepancies. Note: Consider including if using npm for deterministic installs.
 /package-lock.json
+/yarn.lock
 
 # Temporary files
 # Ignore temporary files and logs to maintain a clean repository, avoiding clutter from compilation and runtime artifacts.
