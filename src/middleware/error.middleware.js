@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import httpStatus from 'http-status';
 
 import config from '../config/config.js';
-import loggerConfig from '../config/logger.config.js';
+import logger from '../config/logger.config.js';
 
 import ServerError from '../utils/serverError.js';
 
@@ -36,7 +36,7 @@ const errorHandler = (err, req, res, next) => {
     };
 
     if (config.env === 'development') {
-        loggerConfig.error(err);
+        logger.error(err);
     }
 
     res.status(statusCode).send(response);

@@ -29,7 +29,7 @@ import jwtStrategy from './config/passport.config.js';
 import appRoute from './modules/app/app.route.js';
 import corsConfig from './config/cors.config.js';
 import sessionConfig from './config/session.config.js';
-import loggerConfig from './config/logger.config.js';
+import logger from './config/logger.config.js';
 import Middleware from './middleware/middleware.js';
 
 import undefinedService from './modules/undefined/undefined.service.js';
@@ -157,7 +157,7 @@ app.use((req, res, next) => {
 app.use((error, req, res, next) => {
     if (error.code === 'ECONNREFUSED') {
         // Handle ECONNREFUSED error specifically
-        loggerConfig.error('Connection refused error:', error);
+        logger.error('Connection refused error:', error);
 
         res.status(httpStatus.SERVICE_UNAVAILABLE).send(
             'Service temporarily unavailable. Please try again later.'

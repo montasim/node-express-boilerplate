@@ -25,7 +25,7 @@ import RoleModel from '../modules/auth/role/role.model.js';
 import PermissionModel from '../modules/auth/permission/permission.model.js';
 import UserModel from '../modules/user/user.model.js';
 import config from '../config/config.js';
-import loggerConfig from '../config/logger.config.js';
+import logger from '../config/logger.config.js';
 import EmailService from '../modules/email/email.service.js';
 import constants from '../constants/constants.js';
 
@@ -145,9 +145,9 @@ const setupInitialUserWithRoleAndPermissions = async () => {
             );
         }
 
-        loggerConfig.info('⚙️ Initial setup completed successfully.');
+        logger.info('⚙️ Initial setup completed successfully.');
     } catch (error) {
-        loggerConfig.error('❌ Error during initial setup:', error);
+        logger.error('❌  Error during initial setup:', error);
 
         throw error; // Rethrow or handle as appropriate
     }

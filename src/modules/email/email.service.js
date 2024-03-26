@@ -1,21 +1,32 @@
 import nodemailer from 'nodemailer';
 
 import config from '../../config/config.js';
-import loggerConfig from '../../config/logger.config.js';
+import logger from '../../config/logger.config.js';
 import EmailTemplate from './email.template.js';
 
-const transport = nodemailer.createTransport(config.email.smtp);
+const transporter = nodemailer.createTransport({
+    host: config.email.smtp.host,
+    port: config.email.smtp.port,
+    secure: false, // Use TLS. When false, connection will use upgraded TLS (if available) via STARTTLS command.
+    auth: {
+        user: config.email.smtp.auth.user, // Email sender's address
+        pass: config.email.smtp.auth.pass, // Email sender's password
+    },
+});
 
 /* istanbul ignore next */
 if (config.env !== 'test') {
-    transport
-        .verify()
-        .then(() => loggerConfig.info('✉️ Connected to email server'))
-        .catch(() =>
-            loggerConfig.warn(
+    (async () => {
+        try {
+            await transporter.verify();
+
+            logger.info('✉️ Connected to email server');
+        } catch (error) {
+            logger.warn(
                 'Unable to connect to email server. Make sure you have configured the SMTP options in .env'
-            )
-        );
+            );
+        }
+    })();
 }
 
 /**
@@ -25,7 +36,14 @@ if (config.env !== 'test') {
  * @param {string} html
  * @returns {Promise}
  */
-const sendEmail = async (to, subject, html) => {
+const sendEmail = async (
+    to,
+    subject,
+    html,
+    retryCount = 3,
+    retryDelay = 5000
+) => {
+    let attempts = 0;
     const message = {
         from: config.email.from,
         to: to || config.admin.email,
@@ -33,7 +51,32 @@ const sendEmail = async (to, subject, html) => {
         html,
     };
 
-    await transport.sendMail(message);
+    const send = async () => {
+        try {
+            await transporter.sendMail(message);
+
+            logger.info('✉️ Email sent successfully');
+        } catch (error) {
+            attempts++;
+
+            logger.error(
+                `Attempt ${attempts}: Failed to send email. Error: ${error.message}`
+            );
+
+            if (attempts < retryCount) {
+                logger.info(
+                    `Retrying to send email in ${retryDelay / 1000} seconds...`
+                );
+
+                await new Promise(resolve => setTimeout(resolve, retryDelay));
+                await send(); // Retry sending the email
+            } else {
+                logger.error('All attempts to send email have failed.');
+            }
+        }
+    };
+
+    await send();
 };
 
 const sendRegistrationEmail = async (name, email, verifyEmailToken) => {
@@ -180,7 +223,6 @@ const sendAccountLockedEmail = async (name, email) => {
 };
 
 const EmailService = {
-    transport,
     sendEmail,
     sendRegistrationEmail,
     sendSuccessfullLoginEmail,

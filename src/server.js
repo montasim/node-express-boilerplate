@@ -9,49 +9,37 @@
  * @requires app The main Express application module.
  * @requires DatabaseMiddleware A module to manage the database connection.
  * @requires config Configuration settings for the application.
- * @requires loggerConfig A logging utility to standardize log format and levels.
+ * @requires logger A logging utility to standardize log format and levels.
  * @requires EmailService A service module for sending email notifications on errors.
  */
 
 import app from './app.js';
 import config from './config/config.js';
-import loggerConfig from './config/logger.config.js';
+import logger from './config/logger.config.js';
 import EmailService from './modules/email/email.service.js';
 import Middleware from './middleware/middleware.js';
 import setupInitialUserWithRoleAndPermissions from './utils/setupInitialUserWithRoleAndPermissions.js';
 
-let server;
-
-/**
- * Starts the web server listening on a specified port. It logs the startup
- * status including the port number and environment mode. This function is
- * essential for bootstrapping the application and making it ready to accept
- * incoming HTTP requests.
- */
-const startServer = () => {
-    server = app.listen(config.port, () => {
-        loggerConfig.info(`✅  Listening to port ${config.port}`);
-        loggerConfig.info(`💻 Loading environment for ${config.env}`);
-    });
-};
-
-/**
- * Initializes the application by establishing a database connection followed by starting the server.
- * It encapsulates the primary startup logic including error handling during the initialization phase.
- * If the database connection fails, it logs the error without proceeding to start the server.
- */
-const initialize = async () => {
+const server = app.listen(config.port, async () => {
     try {
+        logger.info(`✅  Listening to port ${config.port}`);
+        logger.info(`💻 Loading environment for ${config.env}`);
+
         await Middleware.database.connect();
-
-        startServer();
+        await setupInitialUserWithRoleAndPermissions();
     } catch (error) {
-        loggerConfig.error('Failed to connect to the database:', error);
-    }
-};
+        try {
+            // Send an email notification about the exception
+            await EmailService.sendUncaughtExceptionEmail(error);
+        } catch (error) {
+            logger.error('❌  Failed to send error notification email:', error);
+        }
 
-initialize(); // Start the application by initializing it.
-setupInitialUserWithRoleAndPermissions(); // Set up initial user with role and permissions
+        logger.error(
+            `❌  Failed to start server on port ${config.port}: ${error}`
+        );
+    }
+});
 
 /**
  * Gracefully shuts down the server. This function is designed to be called
@@ -86,14 +74,14 @@ const exitHandler = async () => {
         await new Promise((resolve, reject) => {
             server.close(error => {
                 if (error) {
-                    console.error('Error closing server:', error);
+                    logger.error('Error closing server:', error);
 
                     reject(error); // or resolve to avoid throwing
 
                     return;
                 }
 
-                loggerConfig.info('Server closed');
+                logger.info('Server closed');
 
                 resolve();
             });
@@ -116,9 +104,7 @@ const exitHandler = async () => {
  * @param {Error} error - The error object that was thrown.
  */
 const unexpectedErrorHandler = async (type, error) => {
-    loggerConfig.error(error);
-
-    console.error(type, error);
+    logger.error(type, error);
 
     await exitHandler();
 };
@@ -161,7 +147,7 @@ process.on('uncaughtException', async error => {
  *                          shutting down.
  */
 process.on('unhandledRejection', async (reason, promise) => {
-    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
 
     await unexpectedErrorHandler('unhandledRejection', reason);
 });
@@ -183,7 +169,7 @@ process.on('unhandledRejection', async (reason, promise) => {
  *                          to exit.
  */
 process.on('SIGTERM', async () => {
-    loggerConfig.info('SIGTERM received');
+    logger.info('SIGTERM received');
 
     if (server) {
         server.close();
