@@ -107,14 +107,14 @@ if (config.env === 'production') {
     // limit repeated failed requests to auth endpoints
     app.use('/v1/auth', Middleware.rateLimit);
 
-    // secure apps by setting various HTTP headers
-    app.use((req, res, next) => {
-        if (req.header('x-forwarded-proto') !== 'https') {
-            res.redirect(`https://${req.header('host')}${req.url}`);
-        } else {
-            next();
-        }
-    });
+    // // secure apps by setting various HTTP headers
+    // app.use((req, res, next) => {
+    //     if (req.header('x-forwarded-proto') !== 'https') {
+    //         res.redirect(`https://${req.header('host')}${req.url}`);
+    //     } else {
+    //         next();
+    //     }
+    // });
 }
 
 // v1 api routes
