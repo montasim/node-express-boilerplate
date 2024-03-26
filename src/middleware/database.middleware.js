@@ -29,52 +29,52 @@ import logger from '../config/logger.config.js';
  * @function connect
  * @returns {Promise<void>} A promise that resolves when the database connection is successful.
  */
-// const connect = async () => {
-//     // Setting up connection event listeners before initiating the connecting
-//     mongoose.connection.on('error', error =>
-//         logger.error(`Database connection error: ${error}`)
-//     );
-//
-//     mongoose.connection.on('reconnected', () =>
-//         logger.info('Database reconnected')
-//     );
-//
-//     mongoose.connection.on('disconnected', async () => {
-//         logger.info('Database disconnected! Attempting to reconnect...');
-//
-//         try {
-//             await mongoose.connect(config.mongoose.url);
-//
-//             logger.info('🚀 Database reconnected successfully');
-//         } catch (error) {
-//             logger.error('Database reconnection error:', error);
-//         }
-//     });
-//
-//     try {
-//         await mongoose.connect(config.mongoose.url);
-//
-//         logger.info('🚀 Database connected successfully');
-//     } catch (error) {
-//         logger.error('Database connection error:', error);
-//
-//         throw error; // Re-throwing is necessary for the caller to handle it
-//     }
-// };
-
 const connect = async () => {
-    if (mongoose.connection.readyState !== 1) {
+    // Setting up connection event listeners before initiating the connecting
+    mongoose.connection.on('error', error =>
+        logger.error(`Database connection error: ${error}`)
+    );
+
+    mongoose.connection.on('reconnected', () =>
+        logger.info('Database reconnected')
+    );
+
+    mongoose.connection.on('disconnected', async () => {
+        logger.info('Database disconnected! Attempting to reconnect...');
+
         try {
             await mongoose.connect(config.mongoose.url);
 
-            logger.info('🚀 Database connected successfully');
+            logger.info('🚀 Database reconnected successfully');
         } catch (error) {
-            logger.error(`Database connection error: ${error}`);
-
-            throw new Error('Database connection error');
+            logger.error('Database reconnection error:', error);
         }
+    });
+
+    try {
+        await mongoose.connect(config.mongoose.url);
+
+        logger.info('🚀 Database connected successfully');
+    } catch (error) {
+        logger.error('Database connection error:', error);
+
+        throw error; // Re-throwing is necessary for the caller to handle it
     }
 };
+
+// const connect = async () => {
+//     if (mongoose.connection.readyState !== 1) {
+//         try {
+//             await mongoose.connect(config.mongoose.url);
+//
+//             logger.info('🚀 Database connected successfully');
+//         } catch (error) {
+//             logger.error(`Database connection error: ${error}`);
+//
+//             throw new Error('Database connection error');
+//         }
+//     }
+// };
 
 /**
  * Disconnects from the MongoDB database using Mongoose.
