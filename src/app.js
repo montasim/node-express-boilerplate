@@ -25,6 +25,7 @@ import config from './config/config.js';
 import MorganConfig from './config/morgan.config.js';
 import helmetConfig from './config/helmet.config.js';
 import jwtStrategy from './config/passport.config.js';
+import middleware from './middleware/middleware.js';
 import appRoute from './modules/app/app.route.js';
 import corsConfig from './config/cors.config.js';
 import sessionConfig from './config/session.config.js';
@@ -33,6 +34,7 @@ import Middleware from './middleware/middleware.js';
 import compressionConfig from './config/compression.config.js';
 
 import undefinedService from './modules/undefined/undefined.service.js';
+// import setupInitialUserWithRoleAndPermissions from './utils/setupInitialUserWithRoleAndPermissions.js';
 
 const app = express();
 
@@ -102,6 +104,22 @@ if (config.env === 'production') {
     //     }
     // });
 }
+
+app.use(async (req, res, next) => {
+    try {
+        // Connect to the database
+        await middleware.database.connect();
+
+        // Setup initial user with role and permissions
+        // await setupInitialUserWithRoleAndPermissions();
+
+        // Proceed to the next middleware
+        next();
+    } catch (error) {
+        // Pass any errors to the error-handling middleware
+        next(error);
+    }
+});
 
 // v1 api routes
 app.use('/', appRoute);
