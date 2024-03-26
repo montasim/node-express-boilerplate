@@ -29,7 +29,7 @@
     "scripts": {
         "minify": "mkdirp dist/min && terser src/server.js --compress ecma=2015,computed_props=false -o dist/min/server.min.js",
         "obfuscate": "mkdirp dist/obf && javascript-obfuscator dist/min/server.min.js --output dist/obf/server.obf.js",
-        "build": "yarn minify && yarn obfuscate",
+        "usethiscommandtobuild": "yarn minify && yarn obfuscate",
         "start": "pm2 start ecosystem.config.json --no-daemon",
         "dev": "cross-env NODE_ENV=development nodemon src/server.js",
         "test": "jest -i --colors --verbose --detectOpenHandles",
