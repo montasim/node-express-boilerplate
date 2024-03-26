@@ -14,21 +14,6 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-/* istanbul ignore next */
-if (config.env !== 'test') {
-    (async () => {
-        try {
-            await transporter.verify();
-
-            logger.info('✉️ Connected to email server');
-        } catch (error) {
-            logger.warn(
-                'Unable to connect to email server. Make sure you have configured the SMTP options in .env'
-            );
-        }
-    })();
-}
-
 /**
  * Send an email
  * @param {string} to

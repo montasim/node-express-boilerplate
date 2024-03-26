@@ -51,10 +51,10 @@ const loginUserWithEmailAndPassword = async (email, password) => {
     let userData = userDetails?.toObject();
 
     // Send the verification email
-    await EmailService.sendSuccessfullLoginEmail(
-        userData?.name,
-        userData?.email
-    );
+    // await EmailService.sendSuccessfullLoginEmail(
+    //     userData?.name,
+    //     userData?.email
+    // );
 
     // Aggregation pipeline to fetch and populate the updated document
     const aggregationPipeline = RoleAggregationPipeline.getRole(

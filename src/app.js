@@ -111,7 +111,7 @@ app.use(async (req, res, next) => {
         await middleware.database.connect();
 
         // Setup initial user with role and permissions
-        await setupInitialUserWithRoleAndPermissions();
+        // await setupInitialUserWithRoleAndPermissions();
 
         // Proceed to the next middleware
         next();
