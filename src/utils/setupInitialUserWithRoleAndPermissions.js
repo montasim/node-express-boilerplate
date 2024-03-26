@@ -27,6 +27,7 @@ import UserModel from '../modules/user/user.model.js';
 import config from '../config/config.js';
 import loggerConfig from '../config/logger.config.js';
 import EmailService from '../modules/email/email.service.js';
+import constants from '../constants/constants.js';
 
 /**
  * Sets up initial user roles and permissions in the database, ensuring the system is prepared with
@@ -70,7 +71,7 @@ const setupInitialUserWithRoleAndPermissions = async () => {
             'user-view',
             'user-modify',
         ];
-        const createdBy = 'system-20240317230608-000000001'; // system user identifier
+        const createdBy = constants.defaultUserId; // system user identifier
 
         // Ensure permissions exist
         for (const permissionName of permissionNames) {

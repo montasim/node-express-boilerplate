@@ -51,7 +51,9 @@ import UserService from './user.service.js';
  * // by the `asyncErrorHandler`.
  */
 const createUser = asyncErrorHandler(async (req, res) => {
-    const newUser = await UserService.createUser(req.body);
+    const sessionUser = req?.sessionUser || null;
+    const file = req.file;
+    const newUser = await UserService.createUser(sessionUser, req.body, file);
 
     // Send the roles data
     return sendControllerSuccessResponse(res, newUser);
@@ -156,7 +158,15 @@ const getUser = asyncErrorHandler(async (req, res) => {
  * // user information.
  */
 const updateUser = asyncErrorHandler(async (req, res) => {
-    const user = await UserService.updateUserById(req.params.userId, req.body);
+    const sessionUser = req?.sessionUser || null;
+    const userId = req?.params?.permissionId || null;
+    const file = req.file;
+    const user = await UserService.updateUserById(
+        sessionUser,
+        userId,
+        req.body,
+        file
+    );
 
     res.send(user);
 });

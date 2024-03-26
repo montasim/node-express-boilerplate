@@ -1,24 +1,17 @@
 import httpStatus from 'http-status';
 
-import setDefaultSessionUser from '../../../utils/setDefaultSessionUser.js';
 import sendServiceResponse from '../../../utils/sendServiceResponse.js';
 
 import RoleModel from './role.model.js';
 import PermissionModel from '../permission/permission.model.js';
 import RoleAggregationPipeline from './role.pipeline.js';
+import constants from '../../../constants/constants.js';
 
 const createRole = async (sessionUser, roleData) => {
-    // Validate session user
-    const currentSessionUser = await setDefaultSessionUser(sessionUser);
-    if (!currentSessionUser?.id) {
-        throw {
-            statusCode: httpStatus.FORBIDDEN,
-            message: 'You are not authorized to perform this action.',
-        };
-    }
-
     // Check if the role name already exists
-    const existingRole = await RoleModel.findOne({ name: roleData?.name });
+    const existingRole = await RoleModel.findOne({
+        name: roleData?.name,
+    });
 
     // Throw an error if the role name already exists
     if (existingRole) {
@@ -29,9 +22,10 @@ const createRole = async (sessionUser, roleData) => {
     }
 
     // Create a new role
+    const createdBy = sessionUser?.id || constants.defaultUserId;
     const newRole = await RoleModel.create({
         ...roleData,
-        createdBy: 'system-20240317230608-000000001',
+        createdBy: createdBy,
     });
 
     // Aggregation pipeline to fetch and populate the updated document
@@ -172,17 +166,6 @@ const getRole = async roleId => {
 };
 
 const updateRole = async (sessionUser, roleId, roleData) => {
-    // Set the default session user
-    let currentSessionUser = await setDefaultSessionUser(sessionUser);
-
-    // Check if the current session user is available
-    if (!currentSessionUser?.id) {
-        throw {
-            statusCode: httpStatus.FORBIDDEN,
-            message: 'You are not authorized to perform this action.',
-        };
-    }
-
     // Find the old role
     const oldRole = await RoleModel.findOne({
         id: roleId,
@@ -251,9 +234,10 @@ const updateRole = async (sessionUser, roleId, roleData) => {
     }
 
     // Prepare the updated data
+    const updatedBy = sessionUser?.id || constants.defaultUserId;
     const updateData = {
         ...oldRole.toObject(), // Convert the mongoose document to a plain JavaScript object
-        updatedBy: 'system-20240317230608-000000001', // Use the current session user's ID
+        updatedBy: updatedBy,
         updatedAt: new Date(),
     };
 

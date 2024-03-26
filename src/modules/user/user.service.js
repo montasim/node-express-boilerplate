@@ -39,6 +39,7 @@ import GoogleDriveFileOperations from '../../utils/GoogleDriveFileOperations.js'
 import TokenService from '../auth/token/token.service.js';
 import RoleAggregationPipeline from '../auth/role/role.pipeline.js';
 import EmailService from '../email/email.service.js';
+import constants from '../../constants/constants.js';
 
 import ServerError from '../../utils/serverError.js';
 
@@ -59,7 +60,8 @@ import ServerError from '../../utils/serverError.js';
  *
  * If any step in this process fails, an appropriate error is thrown with a specific status code and message.
  *
- * @param {Object} registerData The data for registering the new user.
+ * @param sessionUser
+ * @param {Object} createUserData The data for registering the new user.
  * @param {Object} [file] An optional file object representing the user's picture to be uploaded.
  * @returns {Promise<Object>} A promise that resolves to the service response object containing the user's data,
  *                            authentication tokens, and populated role information. This response is sent back
@@ -77,9 +79,11 @@ import ServerError from '../../utils/serverError.js';
  *   .then(response => console.log(response))
  *   .catch(error => console.error(error));
  */
-const createUser = async (registerData, file) => {
+const createUser = async (sessionUser, createUserData, file) => {
     // Check if the email already exists
-    const checkIfEmailExists = await UserModel.isEmailTaken(registerData.email);
+    const checkIfEmailExists = await UserModel.isEmailTaken(
+        createUserData.email
+    );
 
     // If the email already exists, throw an error
     if (checkIfEmailExists) {
@@ -110,7 +114,7 @@ const createUser = async (registerData, file) => {
         defaultRole = await RoleModel.create({
             name: 'Default',
             isActive: true,
-            createdBy: 'system-20240317230608-000000001',
+            createdBy: constants.defaultUserId,
         });
     }
 
@@ -123,10 +127,12 @@ const createUser = async (registerData, file) => {
     }
 
     // Create the user with the default role
+    const createdBy = sessionUser?.id || constants.defaultUserId;
     const newUserDetails = await UserModel.create({
-        ...registerData,
+        ...createUserData,
         role: defaultRole?.id,
         picture: pictureData || null,
+        createdBy: createdBy,
     });
 
     // If the user creation fails for any reason, this check is somewhat redundant
@@ -481,8 +487,9 @@ const getUserByEmail = async email => {
  * are not inadvertently exposed in the response and populates the user's role with detailed information
  * from the Role model using an aggregation pipeline.
  *
+ * @param sessionUser
  * @param {string} userId The unique identifier of the user to update.
- * @param {Object} userData The new data for the user, which may include any fields from the user schema
+ * @param {Object} updateUserData The new data for the user, which may include any fields from the user schema
  *                          such as name, email, etc. If the email field is present and different from the
  *                          current one, its uniqueness is checked against the database.
  * @param {Object} [file] An optional file object representing the new picture to upload for the user. If
@@ -505,7 +512,7 @@ const getUserByEmail = async email => {
  *   .then(response => console.log('User updated successfully:', response))
  *   .catch(error => console.error('Error updating user:', error));
  */
-const updateUserById = async (userId, userData, file) => {
+const updateUserById = async (sessionUser, userId, updateUserData, file) => {
     // Find the user by ID
     const oldUserData = await UserModel.findOne({ id: userId });
 
@@ -521,7 +528,7 @@ const updateUserById = async (userId, userData, file) => {
     let isDataSame = true;
 
     // Checking for changes in the userData
-    for (const [key, value] of Object.entries(userData)) {
+    for (const [key, value] of Object.entries(updateUserData)) {
         if (JSON.stringify(oldUserData[key]) !== JSON.stringify(value)) {
             isDataSame = false;
             break;
@@ -536,10 +543,10 @@ const updateUserById = async (userId, userData, file) => {
         };
     }
 
-    if (userData?.email && userData?.email !== oldUserData?.email) {
+    if (updateUserData?.email && updateUserData?.email !== oldUserData?.email) {
         // Check if the new email already exists
         const emailTaken = await UserModel.findOne({
-            email: userData?.email,
+            email: updateUserData?.email,
         });
 
         // If the new email already exists and does not belong to the current user, throw an error
@@ -575,14 +582,15 @@ const updateUserById = async (userId, userData, file) => {
         }
 
         // Update the picture data
-        userData.picture = pictureData; // Assuming pictureData structure matches your UserModel
+        updateUserData.picture = pictureData; // Assuming pictureData structure matches your UserModel
     }
 
     // Prepare the updated data
+    const updatedBy = sessionUser?.id || constants.defaultUserId;
     const updateData = {
-        ...userData,
+        ...updateUserData,
         isEmailVerified: false,
-        updatedBy: 'system-20240317230608-000000001', // Assuming you're passing the current user's ID
+        updatedBy: updatedBy,
         updatedAt: new Date(),
     };
 

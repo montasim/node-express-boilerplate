@@ -1,58 +1,79 @@
 import NodeCache from 'node-cache';
+
 const cache = new NodeCache();
 
-/**
- * Middleware to cache GET requests. Caches only successful responses
- * and ensures error responses like unauthorized, forbidden, or server errors
- * are not cached. Clears cache on modifications for POST, PUT, DELETE requests.
- */
 const create = (duration = 3600) => {
     return (req, res, next) => {
-        const key = `${req.method}_${req.originalUrl || req.url}`;
+        let key;
+
+        // If the request is a GET request, extract the resource name from the URL
+        if (req.method === 'GET') {
+            // Extract the resource name from the URL
+            const urlSegments = req.originalUrl.split('/');
+
+            key = urlSegments[urlSegments.length - 1].split('?')[0];
+        } else {
+            const routeName = req.route.path
+                .replace(/\//g, '_')
+                .replace(/:/g, '');
+
+            key = `${routeName}_${req.method}_${req.originalUrl || req.url}`;
+        }
+
+        // Check if the key exists in the cache
         if (req.method === 'GET') {
             const cachedBody = cache.get(key);
+
             if (cachedBody) {
                 console.log(`Serving from cache: ${key}`);
                 return res.status(cachedBody.status).send(cachedBody.body);
             } else {
-                // Intercept the send function to cache successful responses only
                 const originalSend = res.send.bind(res);
                 const originalStatus = res.status.bind(res);
-                let responseStatus = 200; // Default to 200, adjust as necessary
+                let responseStatus = 200;
 
-                // Override status function to capture status code
+                // Override the send method to cache the response
                 res.status = code => {
                     responseStatus = code;
+
                     return originalStatus(code);
                 };
 
-                // Override send function to cache the response
+                // Override the send method to cache the response
                 res.send = body => {
                     if (responseStatus >= 200 && responseStatus < 300) {
-                        // Cache only successful responses
                         cache.set(
                             key,
                             { body, status: responseStatus },
                             duration
                         );
                     }
+
                     originalSend(body);
                 };
+
                 next();
             }
         } else {
-            // For non-GET requests, consider selectively invalidating related cache entries
             next();
         }
     };
 };
 
-/**
- * Invalidate cache entries based on a key pattern or exact match.
- * @param {String} pattern A pattern or key to match for cache invalidation.
- */
-const invalidate = pattern => {
-    cache.flushAll();
+const invalidate = routeName => {
+    return (req, res, next) => {
+        // Directly use the routeName as the key to invalidate
+        const keys = cache.keys();
+
+        // Loop through all the keys in the cache and delete the ones that match the routeName
+        keys.forEach(key => {
+            if (key.startsWith(routeName)) {
+                cache.del(key);
+            }
+        });
+
+        next();
+    };
 };
 
 const CacheMiddleware = {

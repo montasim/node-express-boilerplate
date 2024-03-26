@@ -13,6 +13,7 @@ const roleNamePattern = /^[A-Z][a-zA-Z\s]*$/;
 const roleIdPattern = /^role-\d{14}-\d{10}$/;
 const userIdPattern = /^user-\d{14}-\d{10}$/;
 const permissionIdPattern = /^permission-\d{14}-\d{10}$/;
+const defaultUserId = 'system-20240317230608-000000001';
 
 const constants = {
     objectIdPattern,
@@ -29,6 +30,7 @@ const constants = {
     namePattern,
     roleNamePattern,
     permissionIdPattern,
+    defaultUserId,
 };
 
 export default constants;

@@ -10,20 +10,13 @@ import authMiddleware from '../../../middleware/auth.middleware.js';
 
 const router = express.Router();
 
-// Middleware for cache invalidation after create, update, or delete
-const invalidatePermissionsCache = (req, res, next) => {
-    CacheMiddleware.invalidate('.*permission.*');
-
-    next();
-};
-
 router
     .route('/')
     .post(
+        CacheMiddleware.invalidate('permission'),
         authMiddleware(['permission-create']),
         validateRequestMiddleware(PermissionValidation.createPermission),
-        PermissionController.createPermission,
-        invalidatePermissionsCache
+        PermissionController.createPermission
     )
     .get(
         authMiddleware(['permission-view']),
@@ -41,16 +34,16 @@ router
         PermissionController.getPermission
     )
     .put(
+        CacheMiddleware.invalidate('permission'),
         authMiddleware(['permission-modify']),
         validateRequestMiddleware(PermissionValidation.updatePermission),
-        PermissionController.updatePermission,
-        invalidatePermissionsCache
+        PermissionController.updatePermission
     )
     .delete(
+        CacheMiddleware.invalidate('permission'),
         authMiddleware(['permission-modify']),
         validateRequestMiddleware(PermissionValidation.deletePermission),
-        PermissionController.deletePermission,
-        invalidatePermissionsCache
+        PermissionController.deletePermission
     );
 
 export default router;

@@ -73,7 +73,7 @@ const verifyCallback = (req, requiredRights) => async (error, user, info) => {
     }
 
     // Attach user to request object
-    req.user = user;
+    req.sessionUser = user;
 
     // Check if user has the required rights
     if (requiredRights?.length) {

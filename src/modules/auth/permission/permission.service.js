@@ -1,24 +1,15 @@
 import httpStatus from 'http-status';
 
-import setDefaultSessionUser from '../../../utils/setDefaultSessionUser.js';
 import sendServiceResponse from '../../../utils/sendServiceResponse.js';
 
 import PermissionModel from './permission.model.js';
 import RoleModel from '../role/role.model.js';
 import mongodbAggregationPipelineHelpers from '../../../utils/mongodbAggregationPipelineHelpers.js';
+import constants from '../../../constants/constants.js';
 
 const createPermission = async (sessionUser, permissionData) => {
-    // Validate session user
-    const currentSessionUser = await setDefaultSessionUser(sessionUser);
-    if (!currentSessionUser?.id) {
-        throw {
-            statusCode: httpStatus.FORBIDDEN,
-            message: 'You are not authorized to perform this action.',
-        };
-    }
-
     // Create the permission with added createdBy field
-    const createdBy = 'system-20240317230608-000000001'; // Example user ID or derive from sessionUser
+    const createdBy = sessionUser?.id || constants.defaultUserId;
     const newPermission = await PermissionModel.create({
         ...permissionData,
         createdBy,
@@ -283,17 +274,6 @@ const getPermission = async permissionId => {
 };
 
 const updatePermission = async (sessionUser, permissionId, permissionData) => {
-    // Set the default session user
-    let currentSessionUser = await setDefaultSessionUser(sessionUser);
-
-    // Check if the current session user is available
-    if (!currentSessionUser?.id) {
-        throw {
-            statusCode: httpStatus.FORBIDDEN,
-            message: 'You are not authorized to perform this action.',
-        };
-    }
-
     // Find the old permission
     const oldPermission = await PermissionModel.findOne({
         id: permissionId,
@@ -327,9 +307,10 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
     }
 
     // Prepare the updated data
+    const updatedBy = sessionUser?.id || constants.defaultUserId;
     const updateData = {
         ...permissionData,
-        updatedBy: 'system-20240317230608-000000001', // Assuming you're passing the current user's ID
+        updatedBy: updatedBy,
         updatedAt: new Date(),
     };
 
