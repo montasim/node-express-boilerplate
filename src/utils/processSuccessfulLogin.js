@@ -74,7 +74,7 @@ const processSuccessfulLogin = async userDetails => {
     const activeTokensCount = tokens?.length - expiredTokens?.length;
 
     // Check if the user has more than 3 active sessions
-    if (activeTokensCount > config.auth.activeSessions) {
+    if (activeTokensCount >= config.auth.activeSessions) {
         // Send the verification email
         await EmailService.sendMaximumActiveSessionEmail(
             userDetails?.name,
