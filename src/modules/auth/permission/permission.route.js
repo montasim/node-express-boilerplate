@@ -20,7 +20,7 @@ router
         PermissionController.createPermission
     )
     .get(
-        // authMiddleware(['permission-view']),
+        authMiddleware(['permission-view']),
         CacheMiddleware.create(3600),
         validateRequestMiddleware(PermissionValidation.getPermissions),
         PermissionController.getPermissions

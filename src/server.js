@@ -1,12 +1,13 @@
 /**
  * This is the main entry point for the Node.js application. It includes the initialization of the server,
- * and handling of global error events such as uncaught exceptions and unhandled promise rejections.
- * It ensures that the application gracefully handles shutdown signals and logs critical information
- * for debugging. This script leverages external modules for app configuration, logging, database
- * connection, and email notifications to maintain a robust and reliable service.
+ * setting up the database connection, and handling of global error events such as uncaught exceptions and
+ * unhandled promise rejections. It ensures that the application gracefully handles shutdown signals and
+ * logs critical information for debugging. This script leverages external modules for app configuration,
+ * logging, database connection, and email notifications to maintain a robust and reliable service.
  *
  * @fileoverview Initializes the server, connects to the database, and sets up global error handling.
  * @requires app The main Express application module.
+ * @requires DatabaseMiddleware A module to manage the database connection.
  * @requires config Configuration settings for the application.
  * @requires logger A logging utility to standardize log format and levels.
  * @requires EmailService A service module for sending email notifications on errors.
@@ -16,11 +17,16 @@ import app from './app.js';
 import config from './config/config.js';
 import logger from './config/logger.config.js';
 import EmailService from './modules/email/email.service.js';
+import Middleware from './middleware/middleware.js';
+import setupInitialUserWithRoleAndPermissions from './utils/setupInitialUserWithRoleAndPermissions.js';
 
 const server = app.listen(config.port, async () => {
     try {
         logger.info(`✅  Listening to port ${config.port}`);
         logger.info(`💻 Loading environment for ${config.env}`);
+
+        await Middleware.database.connect();
+        // await setupInitialUserWithRoleAndPermissions();
     } catch (error) {
         try {
             // Send an email notification about the exception
