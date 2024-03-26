@@ -24,9 +24,6 @@ const server = app.listen(config.port, async () => {
     try {
         logger.info(`✅  Listening to port ${config.port}`);
         logger.info(`💻 Loading environment for ${config.env}`);
-
-        await Middleware.database.connect();
-        await setupInitialUserWithRoleAndPermissions();
     } catch (error) {
         try {
             // Send an email notification about the exception

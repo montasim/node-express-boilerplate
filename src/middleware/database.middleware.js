@@ -17,48 +17,17 @@ import mongoose from 'mongoose';
 import config from '../config/config.js';
 import logger from '../config/logger.config.js';
 
-/**
- * Establishes a connection to the MongoDB database using Mongoose.
- * It listens to various connection events (error, reconnected, and disconnected) to log and handle
- * them appropriately. In case of disconnection, it attempts to reconnect.
- *
- * This function is asynchronous and returns a promise that resolves upon successful connection
- * or rejects if the connection cannot be established.
- *
- * @async
- * @function connect
- * @returns {Promise<void>} A promise that resolves when the database connection is successful.
- */
 const connect = async () => {
-    // Setting up connection event listeners before initiating the connecting
-    mongoose.connection.on('error', error =>
-        logger.error(`Database connection error: ${error}`)
-    );
-
-    mongoose.connection.on('reconnected', () =>
-        logger.info('Database reconnected')
-    );
-
-    mongoose.connection.on('disconnected', async () => {
-        logger.info('Database disconnected! Attempting to reconnect...');
-
+    if (mongoose.connection.readyState !== 1) {
         try {
             await mongoose.connect(config.mongoose.url);
 
-            logger.info('🚀 Database reconnected successfully');
+            logger.info('🚀 Database connected successfully');
         } catch (error) {
-            logger.error('Database reconnection error:', error);
+            logger.error(`Database connection error: ${error}`);
+
+            throw new Error('Database connection error');
         }
-    });
-
-    try {
-        await mongoose.connect(config.mongoose.url);
-
-        logger.info('🚀 Database connected successfully');
-    } catch (error) {
-        logger.error('Database connection error:', error);
-
-        throw error; // Re-throwing is necessary for the caller to handle it
     }
 };
 
