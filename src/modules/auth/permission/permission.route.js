@@ -14,6 +14,7 @@ router
     .route('/')
     .post(
         CacheMiddleware.invalidate('permission'),
+        // TODO: Implement easy way to add multiple permissions
         authMiddleware(['permission-create']),
         validateRequestMiddleware(PermissionValidation.createPermission),
         PermissionController.createPermission

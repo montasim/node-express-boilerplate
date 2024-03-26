@@ -11,12 +11,12 @@ const router = express.Router();
 router
     .route('/')
     .post(
-        authMiddleware('role-create'),
+        authMiddleware(['role-create']),
         validateRequestMiddleware(RoleValidation.createRole),
         RoleController.createRole
     )
     .get(
-        authMiddleware('role-view'),
+        authMiddleware(['role-view']),
         validateRequestMiddleware(RoleValidation.getRoles),
         RoleController.getRoles
     );
@@ -24,17 +24,17 @@ router
 router
     .route('/:roleId')
     .get(
-        authMiddleware('role-view'),
+        authMiddleware(['role-view']),
         validateRequestMiddleware(RoleValidation.getRole),
         RoleController.getRole
     )
     .put(
-        authMiddleware('role-modify'),
+        authMiddleware(['role-modify']),
         validateRequestMiddleware(RoleValidation.updateRole),
         RoleController.updateRole
     )
     .delete(
-        authMiddleware('role-modify'),
+        authMiddleware(['role-modify']),
         validateRequestMiddleware(RoleValidation.deleteRole),
         RoleController.deleteRole
     );
