@@ -17,7 +17,7 @@ import app from './app.js';
 import config from './config/config.js';
 import logger from './config/logger.config.js';
 import EmailService from './modules/email/email.service.js';
-// import Middleware from './middleware/middleware.js';
+import Middleware from './middleware/middleware.js';
 
 // import setupInitialUserWithRoleAndPermissions from './utils/setupInitialUserWithRoleAndPermissions.js';
 
@@ -26,7 +26,7 @@ const server = app.listen(config.port, async () => {
         logger.info(`✅  Listening to port ${config.port}`);
         logger.info(`💻 Loading environment for ${config.env}`);
 
-        // await Middleware.database.connect();
+        await Middleware.database.connect();
         // await setupInitialUserWithRoleAndPermissions();
     } catch (error) {
         try {
