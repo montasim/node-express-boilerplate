@@ -1,4 +1,5 @@
 import NodeCache from 'node-cache';
+import loggerConfig from '../config/logger.config.js';
 
 const cache = new NodeCache();
 
@@ -25,7 +26,8 @@ const create = (duration = 3600) => {
             const cachedBody = cache.get(key);
 
             if (cachedBody) {
-                console.log(`Serving from cache: ${key}`);
+                loggerConfig.info(`🍪 Serving from cache: ${key}`);
+
                 return res.status(cachedBody.status).send(cachedBody.body);
             } else {
                 const originalSend = res.send.bind(res);
