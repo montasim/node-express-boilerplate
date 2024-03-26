@@ -19,7 +19,7 @@ import logger from './config/logger.config.js';
 import EmailService from './modules/email/email.service.js';
 import Middleware from './middleware/middleware.js';
 
-import setupInitialUserWithRoleAndPermissions from './utils/setupInitialUserWithRoleAndPermissions.js';
+// import setupInitialUserWithRoleAndPermissions from './utils/setupInitialUserWithRoleAndPermissions.js';
 
 const server = app.listen(config.port, async () => {
     try {
@@ -27,7 +27,7 @@ const server = app.listen(config.port, async () => {
         logger.info(`💻 Loading environment for ${config.env}`);
 
         await Middleware.database.connect();
-        await setupInitialUserWithRoleAndPermissions();
+        // await setupInitialUserWithRoleAndPermissions();
     } catch (error) {
         try {
             // Send an email notification about the exception
