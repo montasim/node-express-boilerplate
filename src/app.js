@@ -13,7 +13,6 @@
 import express from 'express';
 import session from 'express-session';
 import helmet from 'helmet';
-import xss from 'xss-clean';
 import mongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
 import timeout from 'connect-timeout';
@@ -33,6 +32,7 @@ import logger from './config/logger.config.js';
 import Middleware from './middleware/middleware.js';
 import compressionConfig from './config/compression.config.js';
 
+import sanitizeRequest from './middleware/sanitizeRequest.middleware.js';
 import undefinedService from './modules/undefined/undefined.service.js';
 // import setupInitialUserWithRoleAndPermissions from './utils/setupInitialUserWithRoleAndPermissions.js';
 
@@ -58,7 +58,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // sanitize request data
-app.use(xss());
+app.use(sanitizeRequest);
 app.use(mongoSanitize());
 
 // gzip compression
