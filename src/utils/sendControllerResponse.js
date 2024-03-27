@@ -10,7 +10,7 @@
  * The `sendControllerSuccessResponse` function accepts the Express.js response object and a successData object,
  * which includes:
  * - `success`: A boolean flag indicating the successful completion of the requested operation.
- * - `statusCode`: An HTTP status code that succinctly represents the success of the operation, aiding in compliance
+ * - `status`: An HTTP status code that succinctly represents the success of the operation, aiding in compliance
  *   with web standards and client-side handling.
  * - `message`: A descriptive message that provides additional context about the operation's success, useful for
  *   logging, debugging, and user feedback.
@@ -31,29 +31,29 @@
  * @param {Object} res The response object provided by Express.js, used to send the response to the client.
  * @param {Object} successData An object containing the data for the success response, including:
  *                             - `success`: A boolean indicating the operation was successful.
- *                             - `statusCode`: The HTTP status code associated with the success response.
+ *                             - `status`: The HTTP status code associated with the success response.
  *                             - `message`: A descriptive message about the success.
  *                             - `data`: The payload containing any data to be returned to the client.
  * @example
  * // Example of sending a success response from a controller
  * const userData = {
  *   success: true,
- *   statusCode: 200,
+ *   status: 200,
  *   message: 'User data retrieved successfully',
  *   data: { id: 1, name: 'Jane Doe' }
  * };
  * sendControllerSuccessResponse(res, userData);
  * // This will send a response with status 200 and the included user data.
  */
-const sendControllerSuccessResponse = (res, successData) => {
+const sendControllerResponse = (res, successData) => {
     const errorResponse = {
         success: successData?.success,
-        statusCode: successData?.statusCode,
+        status: successData?.status,
         message: successData?.message,
         data: successData?.data,
     };
 
-    res.status(errorResponse.statusCode).json(errorResponse);
+    res.status(errorResponse.status).json(errorResponse);
 };
 
-export default sendControllerSuccessResponse;
+export default sendControllerResponse;

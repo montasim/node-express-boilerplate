@@ -60,7 +60,7 @@ const envVarsSchema = Joi.object({
     TIMEOUT_IN_SECONDS: Joi.number()
         .required()
         .description('timeout in seconds'),
-    CACHE_TTL_IN_MILLISECOND: Joi.number().required().description('cache ttl'),
+    CACHE_TTL_IN_SECONDS: Joi.number().required().description('cache ttl'),
     JSON_PAYLOAD_LIMIT: Joi.number()
         .required()
         .description('json payload limit'),
@@ -141,7 +141,7 @@ const config = {
     },
     timeout: getInt(envVars.TIMEOUT_IN_SECONDS),
     cache: {
-        timeout: getInt(envVars.CACHE_TTL_IN_MILLISECOND),
+        timeout: getInt(envVars.CACHE_TTL_IN_SECONDS),
     },
     jsonPayloadLimit: getInt(envVars.JSON_PAYLOAD_LIMIT),
     cors: {

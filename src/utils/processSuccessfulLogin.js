@@ -32,7 +32,7 @@ import AuthServices from '../modules/auth/auth.service.js';
  * it notifies the user via email and throws an error, preventing the login.
  *
  * @param {Object} userDetails An object containing details of the user who has logged in. Expected to include user ID, maximum login attempts, account lock status, lock duration, name, and email.
- * @throws {Object} Throws an object with `statusCode` and `message` if the user exceeds the allowed number of active sessions.
+ * @throws {Object} Throws an object with `status` and `message` if the user exceeds the allowed number of active sessions.
  * @example
  * const userDetails = {
  *   id: 'userId123',
@@ -82,7 +82,7 @@ const processSuccessfulLogin = async userDetails => {
         );
 
         throw {
-            statusCode: httpStatus.FORBIDDEN,
+            status: httpStatus.FORBIDDEN,
             message: `Too many active sessions. Maximum ${config.auth.activeSessions} session allowed at a time. Please logout from one of the active sessions.`,
         };
     }

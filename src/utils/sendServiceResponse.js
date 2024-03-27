@@ -8,7 +8,7 @@
  *
  * The function, `sendServiceResponse`, constructs a response object encapsulating essential information:
  * - `success`: A boolean flag indicating the successful execution of the requested operation.
- * - `statusCode`: An HTTP status code that succinctly represents the result of the operation, facilitating
+ * - `status`: An HTTP status code that succinctly represents the result of the operation, facilitating
  *   standard web protocol compliance and interoperability.
  * - `message`: A human-readable message providing context or details about the operation's outcome, aiding
  *   in debugging and user support.
@@ -27,7 +27,7 @@
  * of the responses sent back to clients or callers. The response object includes a success flag, an HTTP
  * status code, a descriptive message, and the payload (data) associated with the response.
  *
- * @param {number} statusCode The HTTP status code associated with the response, indicating the outcome
+ * @param {number} status The HTTP status code associated with the response, indicating the outcome
  *                            of the requested operation.
  * @param {string} message A descriptive message providing additional information about the response or
  *                         the outcome of the requested operation.
@@ -41,15 +41,15 @@
  * console.log(response);
  * // Output: {
  * //   success: true,
- * //   statusCode: 200,
+ * //   status: 200,
  * //   message: 'User fetched successfully',
  * * //  data: { id: 1, name: 'John Doe' }
  * // }
  */
-const sendServiceResponse = (statusCode, message, data) => {
+const sendServiceResponse = (status, message, data) => {
     return {
         success: true,
-        statusCode: statusCode,
+        status: status,
         message: message,
         data: data,
     };

@@ -57,7 +57,7 @@ const createPermission = async (sessionUser, permissionData) => {
     // Handle a case where the population fails
     if (populatedPermission?.length === 0) {
         throw {
-            statusCode: httpStatus.OK, // Consider if this should actually be an error state
+            status: httpStatus.OK, // Consider if this should actually be an error state
             message: 'Permission created but population failed.',
             data: newPermission,
         };
@@ -228,7 +228,7 @@ const getPermissions = async (sessionUser, filter, options) => {
     // Check if the permissions array is empty
     if (permissions?.length === 0) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'No permissions found.',
         };
     }
@@ -260,7 +260,7 @@ const getPermission = async permissionId => {
     // Check if the populatedPermission query returned a document
     if (permissions?.length === 0) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'Permission not found.',
         };
     }
@@ -282,7 +282,7 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
     // Check if the permission was found
     if (!oldPermission) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'Permission not found. Please try again.',
         };
     }
@@ -301,7 +301,7 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
     // Check if the data is the same
     if (isDataSame) {
         throw {
-            statusCode: httpStatus.BAD_REQUEST,
+            status: httpStatus.BAD_REQUEST,
             message: 'No changes detected. Update not performed.',
         };
     }
@@ -324,7 +324,7 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
     // Check if the permission was updated
     if (!updatedPermission) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'Failed to update permission. Please try again.',
         };
     }
@@ -342,7 +342,7 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
     // Check if the populatedPermission query returned a document
     if (!populatedPermission || populatedPermission?.length === 0) {
         throw {
-            statusCode: httpStatus.OK,
+            status: httpStatus.OK,
             message: 'Permission updated but population failed.',
         };
     }
@@ -364,7 +364,7 @@ const deletePermission = async permissionId => {
     // Check if the permission was found
     if (!oldPermission) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'Permission not found. Please try again.',
         };
     }
@@ -377,7 +377,7 @@ const deletePermission = async permissionId => {
     // Check if the permission was updated
     if (!deletePermission) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'Failed to delete permission. Please try again.',
         };
     }

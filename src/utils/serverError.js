@@ -3,12 +3,12 @@
  *
  * This module defines a custom error class, `ServerError`, extending the native JavaScript `Error` class,
  * designed to provide a structured approach to error handling within server-side applications. By incorporating
- * additional properties such as `statusCode` and `isOperational`, this class allows for more nuanced error
+ * additional properties such as `status` and `isOperational`, this class allows for more nuanced error
  * management, facilitating the differentiation between operational errors (which are part of the application's
  * normal functioning) and programmer errors (bugs).
  *
  * The `ServerError` class includes:
- * - `statusCode`: An HTTP status code that indicates the nature of the error to clients, enhancing the
+ * - `status`: An HTTP status code that indicates the nature of the error to clients, enhancing the
  *   interoperability and clarity of server responses.
  * - `isOperational`: A boolean indicating whether the error is an operational error, thereby helping in decision-making
  *   processes for logging, retries, and user notifications.
@@ -35,7 +35,7 @@ class ServerError extends Error {
     /**
      * Constructs an instance of the ServerError class.
      *
-     * @param {number} statusCode The HTTP status code associated with this error, indicating
+     * @param {number} status The HTTP status code associated with this error, indicating
      *                            the nature of the error in the context of HTTP requests.
      * @param {string} message The error message that describes the error. This message is passed
      *                         to the base Error class constructor and is accessible via the `message` property.
@@ -46,10 +46,11 @@ class ServerError extends Error {
      *                            the stack trace is captured automatically at the point where
      *                            the ServerError is instantiated.
      */
-    constructor(statusCode, message, isOperational = true, stack = '') {
+    constructor(status, message, isOperational = true, stack = '') {
         super(message);
 
-        this.statusCode = statusCode;
+        this.success = false;
+        this.status = status;
         this.isOperational = isOperational;
 
         if (stack) {

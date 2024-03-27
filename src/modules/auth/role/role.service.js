@@ -16,7 +16,7 @@ const createRole = async (sessionUser, roleData) => {
     // Throw an error if the role name already exists
     if (existingRole) {
         throw {
-            statusCode: httpStatus.CONFLICT,
+            status: httpStatus.CONFLICT,
             message: 'Role name already exists. Please use a different name.',
         };
     }
@@ -36,7 +36,7 @@ const createRole = async (sessionUser, roleData) => {
     // Handle a case where the population fails
     if (populatedRole?.length === 0) {
         throw {
-            statusCode: httpStatus.OK, // Consider if this should actually be an error state
+            status: httpStatus.OK, // Consider if this should actually be an error state
             message: 'Role created but population failed.',
             data: newRole,
         };
@@ -123,7 +123,7 @@ const getRoles = async (sessionUser, filter, options) => {
     // Check if the role array is empty
     if (roles?.length === 0) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'No roles found.',
         };
     }
@@ -152,7 +152,7 @@ const getRole = async roleId => {
     // Check if the populatedRole query returned a document
     if (roles?.length === 0) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'Role not found.',
         };
     }
@@ -174,7 +174,7 @@ const updateRole = async (sessionUser, roleId, roleData) => {
     // Check if the role was found
     if (!oldRole) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'Role not found. Please try again.',
         };
     }
@@ -198,14 +198,14 @@ const updateRole = async (sessionUser, roleId, roleData) => {
             // Check if the permission already exists in the role
             if (existingPermissionsSet?.has(permission)) {
                 throw {
-                    statusCode: httpStatus.BAD_REQUEST,
+                    status: httpStatus.BAD_REQUEST,
                     message: `Permission ${permission} already exists in the role.`,
                 };
             }
             // Check if the permission to be added is a valid permission by checking against the validPermissionIdsSet
             else if (!validPermissionIdsSet.has(permission)) {
                 throw {
-                    statusCode: httpStatus.BAD_REQUEST,
+                    status: httpStatus.BAD_REQUEST,
                     message: `Permission ${permission} is not a valid permission ID.`,
                 };
             } else {
@@ -219,7 +219,7 @@ const updateRole = async (sessionUser, roleId, roleData) => {
         for (const { permission } of roleData.deletePermissions) {
             if (!existingPermissionsSet?.has(permission)) {
                 throw {
-                    statusCode: httpStatus.BAD_REQUEST,
+                    status: httpStatus.BAD_REQUEST,
                     message: `Permission ${permission} does not exist in the role.`,
                 };
             }
@@ -256,7 +256,7 @@ const updateRole = async (sessionUser, roleId, roleData) => {
     // Check if the role was updated
     if (!updatedRole) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'Failed to update role. Please try again.',
         };
     }
@@ -272,7 +272,7 @@ const updateRole = async (sessionUser, roleId, roleData) => {
     // Check if the populatedRole query returned a document
     if (!populatedRole || populatedRole?.length === 0) {
         throw {
-            statusCode: httpStatus.OK,
+            status: httpStatus.OK,
             message: 'Role updated but population failed.',
         };
     }
@@ -294,7 +294,7 @@ const deleteRole = async roleId => {
     // Check if the role was found
     if (!oldRole) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'Role not found. Please try again.',
         };
     }
@@ -307,7 +307,7 @@ const deleteRole = async roleId => {
     // Check if the role was updated
     if (!deleteRole) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'Failed to delete role. Please try again.',
         };
     }

@@ -1,7 +1,7 @@
 import httpStatus from 'http-status';
 
 import asyncErrorHandler from '../../utils/asyncErrorHandler.js';
-import sendControllerSuccessResponse from '../../utils/sendControllerSuccessResponse.js';
+import sendControllerResponse from '../../utils/sendControllerResponse.js';
 
 import AuthServices from './auth.service.js';
 import TokenService from './token/token.service.js';
@@ -30,7 +30,7 @@ const register = asyncErrorHandler(async (req, res) => {
 
         if (fileValidationResult !== true) {
             throw {
-                statusCode: httpStatus.BAD_REQUEST,
+                status: httpStatus.BAD_REQUEST,
                 message: fileValidationResult,
             };
         }
@@ -40,7 +40,7 @@ const register = asyncErrorHandler(async (req, res) => {
     const newUserData = await UserService.createUser(req.body, file);
 
     // Send the new permission data
-    return sendControllerSuccessResponse(res, newUserData);
+    return sendControllerResponse(res, newUserData);
 });
 
 const login = asyncErrorHandler(async (req, res) => {
@@ -49,13 +49,13 @@ const login = asyncErrorHandler(async (req, res) => {
         req?.body?.password
     );
 
-    return sendControllerSuccessResponse(res, loginData);
+    return sendControllerResponse(res, loginData);
 });
 
 const logout = asyncErrorHandler(async (req, res) => {
     const logoutData = await AuthServices.logout(req?.body?.refreshToken);
 
-    return sendControllerSuccessResponse(res, logoutData);
+    return sendControllerResponse(res, logoutData);
 });
 
 const refreshTokens = asyncErrorHandler(async (req, res) => {
@@ -63,7 +63,7 @@ const refreshTokens = asyncErrorHandler(async (req, res) => {
         req?.body?.refreshToken
     );
 
-    return sendControllerSuccessResponse(res, refreshTokenData);
+    return sendControllerResponse(res, refreshTokenData);
 });
 
 const forgotPassword = asyncErrorHandler(async (req, res) => {
@@ -71,7 +71,7 @@ const forgotPassword = asyncErrorHandler(async (req, res) => {
     const forgotPasswordData =
         await TokenService.generateResetPasswordToken(email);
 
-    return sendControllerSuccessResponse(res, forgotPasswordData);
+    return sendControllerResponse(res, forgotPasswordData);
 });
 
 const resetPassword = asyncErrorHandler(async (req, res) => {
@@ -82,7 +82,7 @@ const resetPassword = asyncErrorHandler(async (req, res) => {
         password
     );
 
-    return sendControllerSuccessResponse(res, forgotPasswordData);
+    return sendControllerResponse(res, forgotPasswordData);
 });
 
 const sendVerificationEmail = asyncErrorHandler(async (req, res) => {

@@ -1,5 +1,5 @@
 import pick from '../../../utils/pick.js';
-import sendControllerSuccessResponse from '../../../utils/sendControllerSuccessResponse.js';
+import sendControllerResponse from '../../../utils/sendControllerResponse.js';
 import asyncErrorHandler from '../../../utils/asyncErrorHandler.js';
 
 import PermissionService from './permission.service.js';
@@ -12,7 +12,7 @@ const createPermission = asyncErrorHandler(async (req, res) => {
     );
 
     // Send the new permission data
-    return sendControllerSuccessResponse(res, createPermissionData);
+    return sendControllerResponse(res, createPermissionData);
 });
 
 const getPermissions = asyncErrorHandler(async (req, res) => {
@@ -34,7 +34,7 @@ const getPermissions = asyncErrorHandler(async (req, res) => {
     );
 
     // Send the permissions data
-    return sendControllerSuccessResponse(res, createPermissionData);
+    return sendControllerResponse(res, createPermissionData);
 });
 
 const getPermission = asyncErrorHandler(async (req, res) => {
@@ -42,7 +42,7 @@ const getPermission = asyncErrorHandler(async (req, res) => {
     const permissionData = await PermissionService.getPermission(permissionId);
 
     // Send the permission data
-    return sendControllerSuccessResponse(res, permissionData);
+    return sendControllerResponse(res, permissionData);
 });
 
 const updatePermission = asyncErrorHandler(async (req, res) => {
@@ -55,7 +55,7 @@ const updatePermission = asyncErrorHandler(async (req, res) => {
     );
 
     // Send the permission data
-    return sendControllerSuccessResponse(res, createPermissionData);
+    return sendControllerResponse(res, createPermissionData);
 });
 
 const deletePermission = asyncErrorHandler(async (req, res) => {
@@ -64,7 +64,7 @@ const deletePermission = asyncErrorHandler(async (req, res) => {
         await PermissionService.deletePermission(permissionId);
 
     // Send the permission data
-    return sendControllerSuccessResponse(res, createPermissionData);
+    return sendControllerResponse(res, createPermissionData);
 });
 
 const PermissionController = {

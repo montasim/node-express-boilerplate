@@ -48,7 +48,7 @@ import config from '../config/config.js';
  *     await processFailedLoginAttempt(user);
  * } catch (error) {
  *     // Handle the error, e.g., by sending it to the client
- *     res.status(error.statusCode).send(error.message);
+ *     res.status(error.status).send(error.message);
  * }
  */
 const processFailedLoginAttempt = async userDetails => {
@@ -82,7 +82,7 @@ const processFailedLoginAttempt = async userDetails => {
     }
 
     throw {
-        statusCode: httpStatus.UNAUTHORIZED,
+        status: httpStatus.UNAUTHORIZED,
         message:
             updatedLoginAttempts > 0
                 ? `Wrong email or password. ${updatedLoginAttempts} attempts left.`

@@ -25,7 +25,7 @@ import httpStatus from 'http-status';
 
 import pick from '../../utils/pick.js';
 import asyncErrorHandler from '../../utils/asyncErrorHandler.js';
-import sendControllerSuccessResponse from '../../utils/sendControllerSuccessResponse.js';
+import sendControllerResponse from '../../utils/sendControllerResponse.js';
 
 import UserService from './user.service.js';
 
@@ -56,7 +56,7 @@ const createUser = asyncErrorHandler(async (req, res) => {
     const newUser = await UserService.createUser(sessionUser, req.body, file);
 
     // Send the roles data
-    return sendControllerSuccessResponse(res, newUser);
+    return sendControllerResponse(res, newUser);
 });
 
 /**
@@ -102,7 +102,7 @@ const getUsers = asyncErrorHandler(async (req, res) => {
     );
 
     // Send the roles data
-    return sendControllerSuccessResponse(res, getRoleData);
+    return sendControllerResponse(res, getRoleData);
 });
 
 /**
@@ -131,7 +131,7 @@ const getUser = asyncErrorHandler(async (req, res) => {
     const userData = await UserService.getUserById(userId); // Get the user data
 
     // Send the role data
-    return sendControllerSuccessResponse(res, userData);
+    return sendControllerResponse(res, userData);
 });
 
 /**

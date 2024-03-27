@@ -13,6 +13,7 @@
  * @requires EmailService A service module for sending email notifications on errors.
  */
 
+import { promisify } from 'util';
 import app from './app.js';
 import config from './config/config.js';
 import logger from './config/logger.config.js';
@@ -66,24 +67,21 @@ const server = app.listen(config.port, async () => {
  */
 const exitHandler = async () => {
     if (server) {
-        await new Promise((resolve, reject) => {
-            server.close(error => {
-                if (error) {
-                    logger.error('Error closing server:', error);
+        try {
+            // Convert server.close into a promise-returning function
+            const closeServer = promisify(server.close.bind(server));
 
-                    reject(error); // or resolve to avoid throwing
+            // Await the promise returned by closeServer
+            await closeServer();
 
-                    return;
-                }
-
-                logger.info('Server closed');
-
-                resolve();
-            });
-        });
-
-        // eslint-disable-next-line no-process-exit
-        process.exit(1);
+            logger.info('Server closed');
+        } catch (error) {
+            // Handle any errors that occur during server close
+            logger.error('Failed to close the server cleanly:', error);
+        } finally {
+            // eslint-disable-next-line no-process-exit
+            process.exit(1);
+        }
     } else {
         // eslint-disable-next-line no-process-exit
         process.exit(1);

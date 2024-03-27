@@ -26,15 +26,15 @@ import httpStatus from 'http-status';
  * access their account during a lock period are appropriately informed of when they can try again.
  *
  * @param {Object} userDetails An object containing the user's account details, including the lock status and lock duration.
- * @throws {Object} Throws an object with `statusCode` and `message` properties if the account is currently locked, indicating
- *                  the remaining duration of the lock. The `statusCode` is set to `httpStatus.FORBIDDEN`.
+ * @throws {Object} Throws an object with `status` and `message` properties if the account is currently locked, indicating
+ *                  the remaining duration of the lock. The `status` is set to `httpStatus.FORBIDDEN`.
  * @example
  * // Example usage within an authentication process
  * try {
  *     await checkAccountLockStatus(userDetails);
  *     // Proceed with authentication...
  * } catch (error) {
- *     if (error.statusCode === httpStatus.FORBIDDEN) {
+ *     if (error.status === httpStatus.FORBIDDEN) {
  *         console.log(error.message); // Logs: 'Account is locked. Please try again in x minutes.'
  *     }
  * }
@@ -51,7 +51,7 @@ const checkAccountLockStatus = async userDetails => {
             const remainingLockTime = lockDuration.fromNow();
 
             throw {
-                statusCode: httpStatus.FORBIDDEN,
+                status: httpStatus.FORBIDDEN,
                 message: `Account is locked. Please try again after ${remainingLockTime}.`,
             };
         }

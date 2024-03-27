@@ -88,7 +88,7 @@ const createUser = async (sessionUser, createUserData, file) => {
     // If the email already exists, throw an error
     if (checkIfEmailExists) {
         throw {
-            statusCode: httpStatus.BAD_REQUEST,
+            status: httpStatus.BAD_REQUEST,
             message: 'Email already taken. Please use a different email.',
         };
     }
@@ -100,7 +100,7 @@ const createUser = async (sessionUser, createUserData, file) => {
         pictureData = await GoogleDriveFileOperations.uploadFile(file);
         if (pictureData instanceof Error) {
             throw {
-                statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+                status: httpStatus.INTERNAL_SERVER_ERROR,
                 message: 'Failed to upload picture to Google Drive.',
             };
         }
@@ -121,7 +121,7 @@ const createUser = async (sessionUser, createUserData, file) => {
     // Ensure the default role was either found or created successfully
     if (!defaultRole) {
         throw {
-            statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+            status: httpStatus.INTERNAL_SERVER_ERROR,
             message: 'Failed to assign a default role.',
         };
     }
@@ -145,7 +145,7 @@ const createUser = async (sessionUser, createUserData, file) => {
         // );
 
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'Could not create user.',
         };
     }
@@ -177,7 +177,7 @@ const createUser = async (sessionUser, createUserData, file) => {
     // Check if the populatedPermission query returned a document
     if (!populatedRole || populatedRole?.length === 0) {
         throw {
-            statusCode: httpStatus.OK,
+            status: httpStatus.OK,
             message: 'User creation successful but role population failed.',
         };
     }
@@ -348,7 +348,7 @@ const queryUsers = async (filter, options) => {
     // Check if the permissions array is empty
     if (permissions?.length === 0) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'No users found.',
         };
     }
@@ -396,7 +396,7 @@ const getUserById = async userId => {
 
     if (!existingUser) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'User not found.',
         };
     }
@@ -415,7 +415,7 @@ const getUserById = async userId => {
     // Check if the populatedRole query returned a document
     if (!populatedRole || populatedRole?.length === 0) {
         throw {
-            statusCode: httpStatus.OK,
+            status: httpStatus.OK,
             message: 'User found successfully but role population failed.',
         };
     }
@@ -519,7 +519,7 @@ const updateUserById = async (sessionUser, userId, updateUserData, file) => {
     // Check if the user was found
     if (!oldUserData) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'User not found.',
         };
     }
@@ -538,7 +538,7 @@ const updateUserById = async (sessionUser, userId, updateUserData, file) => {
     // Check if the data is the same
     if (isDataSame && !file) {
         throw {
-            statusCode: httpStatus.BAD_REQUEST,
+            status: httpStatus.BAD_REQUEST,
             message: 'No changes detected. Update not performed.',
         };
     }
@@ -552,7 +552,7 @@ const updateUserById = async (sessionUser, userId, updateUserData, file) => {
         // If the new email already exists and does not belong to the current user, throw an error
         if (emailTaken) {
             throw {
-                statusCode: httpStatus.BAD_REQUEST,
+                status: httpStatus.BAD_REQUEST,
                 message: 'Email already taken. Please use a different email.',
             };
         }
@@ -568,7 +568,7 @@ const updateUserById = async (sessionUser, userId, updateUserData, file) => {
         // Check if the picture upload failed
         if (pictureData instanceof Error) {
             throw {
-                statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+                status: httpStatus.INTERNAL_SERVER_ERROR,
                 message: 'Failed to upload picture to Google Drive.',
             };
         }
@@ -604,7 +604,7 @@ const updateUserById = async (sessionUser, userId, updateUserData, file) => {
     // Check if the permission was updated
     if (!updatedUserDetails) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'Failed to update user. Please try again.',
         };
     }
@@ -644,7 +644,7 @@ const updateUserById = async (sessionUser, userId, updateUserData, file) => {
     // Check if the populatedPermission query returned a document
     if (!populatedRole || populatedRole?.length === 0) {
         throw {
-            statusCode: httpStatus.OK,
+            status: httpStatus.OK,
             message: 'User creation successful but role population failed.',
         };
     }

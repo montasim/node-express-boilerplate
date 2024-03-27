@@ -32,6 +32,8 @@ import validateRequestMiddleware from '../../middleware/validateRequest.middlewa
 import UserValidation from './user.validation.js';
 import UserController from './user.controller.js';
 import fileUploadMiddleware from '../../middleware/fileUpload.middleware.js';
+import CacheMiddleware from '../../middleware/cache.middleware.js';
+import config from '../../config/config.js';
 
 const router = express.Router();
 
@@ -39,11 +41,13 @@ router
     .route('/')
     .post(
         authMiddleware(['user-create']),
+        CacheMiddleware.invalidate('user'),
         validateRequestMiddleware(UserValidation.createUser),
         UserController.createUser
     )
     .get(
         authMiddleware(['user-view']),
+        CacheMiddleware.create(config.cache.timeout),
         validateRequestMiddleware(UserValidation.getUsers),
         UserController.getUsers
     );
@@ -52,17 +56,20 @@ router
     .route('/:userId')
     .get(
         authMiddleware(['user-view']),
+        CacheMiddleware.create(config.cache.timeout),
         validateRequestMiddleware(UserValidation.getUser),
         UserController.getUser
     )
     .put(
         authMiddleware(['user-modify']),
+        CacheMiddleware.invalidate('user'),
         fileUploadMiddleware.single('picture'),
         validateRequestMiddleware(UserValidation.updateUser),
         UserController.updateUser
     )
     .delete(
         authMiddleware(['user-modify']),
+        CacheMiddleware.invalidate('user'),
         validateRequestMiddleware(UserValidation.deleteUser),
         UserController.deleteUser
     );

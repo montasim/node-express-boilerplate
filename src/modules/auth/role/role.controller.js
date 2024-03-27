@@ -1,6 +1,6 @@
 import pick from '../../../utils/pick.js';
 
-import sendControllerSuccessResponse from '../../../utils/sendControllerSuccessResponse.js';
+import sendControllerResponse from '../../../utils/sendControllerResponse.js';
 import asyncErrorHandler from '../../../utils/asyncErrorHandler.js';
 
 import RoleService from './role.service.js';
@@ -10,7 +10,7 @@ const createRole = asyncErrorHandler(async (req, res) => {
     const createRoleData = await RoleService.createRole(sessionUser, req.body);
 
     // Send the new role data
-    return sendControllerSuccessResponse(res, createRoleData);
+    return sendControllerResponse(res, createRoleData);
 });
 
 const getRoles = asyncErrorHandler(async (req, res) => {
@@ -32,7 +32,7 @@ const getRoles = asyncErrorHandler(async (req, res) => {
     );
 
     // Send the roles data
-    return sendControllerSuccessResponse(res, createRoleData);
+    return sendControllerResponse(res, createRoleData);
 });
 
 const getRole = asyncErrorHandler(async (req, res) => {
@@ -40,7 +40,7 @@ const getRole = asyncErrorHandler(async (req, res) => {
     const roleData = await RoleService.getRole(roleId);
 
     // Send the role data
-    return sendControllerSuccessResponse(res, roleData);
+    return sendControllerResponse(res, roleData);
 });
 
 const updateRole = asyncErrorHandler(async (req, res) => {
@@ -53,7 +53,7 @@ const updateRole = asyncErrorHandler(async (req, res) => {
     );
 
     // Send the role data
-    return sendControllerSuccessResponse(res, createRoleData);
+    return sendControllerResponse(res, createRoleData);
 });
 
 const deleteRole = asyncErrorHandler(async (req, res) => {
@@ -61,7 +61,7 @@ const deleteRole = asyncErrorHandler(async (req, res) => {
     const createRoleData = await RoleService.deleteRole(roleId);
 
     // Send the role data
-    return sendControllerSuccessResponse(res, createRoleData);
+    return sendControllerResponse(res, createRoleData);
 });
 
 const RoleController = {

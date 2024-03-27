@@ -24,7 +24,7 @@ const loginUserWithEmailAndPassword = async (email, password) => {
     // Early return if user doesn't exist or if the email is incorrect
     if (!userDetails || userDetails?.email !== email) {
         throw {
-            statusCode: httpStatus.UNAUTHORIZED,
+            status: httpStatus.UNAUTHORIZED,
             message: 'Wrong email or password',
         };
     }
@@ -67,7 +67,7 @@ const loginUserWithEmailAndPassword = async (email, password) => {
     // Check if the populatedPermission query returned a document
     if (!populatedPermission || populatedPermission?.length === 0) {
         throw {
-            statusCode: httpStatus.OK,
+            status: httpStatus.OK,
             message: 'User login successful but role population failed.',
         };
     }
@@ -110,7 +110,7 @@ const logout = async refreshToken => {
     // Verify if refreshToken is provided
     if (!refreshToken) {
         throw {
-            statusCode: httpStatus.BAD_REQUEST,
+            status: httpStatus.BAD_REQUEST,
             message: 'Refresh token is required.',
         };
     }
@@ -125,7 +125,7 @@ const logout = async refreshToken => {
     // If no document is found, throw an error to indicate the token was not found
     if (!refreshTokenDoc) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'Token not found or already logged out.',
         };
     }
@@ -147,7 +147,7 @@ const refreshAuth = async refreshToken => {
     // Check if the user exists with the refresh token
     if (!userDetails) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'User not found with the refresh token.',
         };
     }
@@ -184,7 +184,7 @@ const resetPassword = async (resetPasswordToken, newPassword) => {
     // Check if the user exists with the reset password token
     if (!userDetails) {
         throw {
-            statusCode: httpStatus.NOT_FOUND,
+            status: httpStatus.NOT_FOUND,
             message: 'User not found with the reset password token.',
         };
     }
@@ -228,7 +228,7 @@ const verifyEmail = async verifyEmailToken => {
     // Check if the user exists with the verified email token
     if (!userDetails) {
         throw {
-            statusCode: httpStatus.FORBIDDEN,
+            status: httpStatus.FORBIDDEN,
             message: 'User not found with the verify email token.',
         };
     }
