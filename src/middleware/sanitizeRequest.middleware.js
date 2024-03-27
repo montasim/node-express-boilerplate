@@ -25,7 +25,7 @@ const dompurify = DOMPurify(window);
  * @param {Object} req - The request object from Express.js containing the body, query,
  * and params properties that may need sanitization.
  * @param {Object} res - The response object from Express.js. This function does not directly
- * modify the response object but it's required by Express middleware convention.
+ * modify the response object, but it's required by Express middleware convention.
  * @param {Function} next - The callback function to pass control to the next middleware
  * in the stack.
  */
