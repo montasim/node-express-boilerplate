@@ -162,7 +162,7 @@ const getRole = async roleId => {
             false,
             httpStatus.NOT_FOUND,
             'Role not found.',
-            roles[0]
+            null
         );
     }
 
