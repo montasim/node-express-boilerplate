@@ -14,7 +14,7 @@
  * - Email notifications for account verification and alerts
  *
  * By abstracting these operations into a dedicated service layer, the module promotes separation of concerns,
- * code reusability, and maintainability. It also simplifies the integration of user management functionalities
+ * code usability, and maintainability. It also simplifies the integration of user management functionalities
  * across different parts of the application, enabling a consistent and secure user experience.
  *
  * Key operations include:
@@ -41,8 +41,6 @@ import RoleAggregationPipeline from '../auth/role/role.pipeline.js';
 import EmailService from '../email/email.service.js';
 import constants from '../../constants/constants.js';
 
-import ServerError from '../../utils/serverError.js';
-
 /**
  * Asynchronously creates a new user in the database with the given registration data and an optional file
  * for the user's picture, which is uploaded to Google Drive if present. It checks for email uniqueness,
@@ -52,9 +50,9 @@ import ServerError from '../../utils/serverError.js';
  * 1. Verifies that the provided email address is not already in use.
  * 2. Uploads the user's picture to Google Drive if a file is provided, handling any upload errors.
  * 3. Assigns a default role to the user, creating it if it doesn't already exist.
- * 4. Creates the user document in the database with the provided data, default role, and picture information.
+ * 4. Create the user document in the database with the provided data, default role, and picture information.
  * 5. Generates authentication tokens for the new user.
- * 6. Sends an email to the new user with a link to verify their email address.
+ * 6. Email the new user with a link to verify their email address.
  * 7. Fetches and populates the user's role with permissions using an aggregation pipeline.
  * 8. Sanitizes the user data to remove sensitive fields before sending it in the response.
  *
@@ -87,10 +85,12 @@ const createUser = async (sessionUser, createUserData, file) => {
 
     // If the email already exists, throw an error
     if (checkIfEmailExists) {
-        throw {
-            status: httpStatus.BAD_REQUEST,
-            message: 'Email already taken. Please use a different email.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.BAD_REQUEST,
+            'Email already taken. Please use a different email.',
+            null
+        );
     }
 
     let pictureData = {};
@@ -99,10 +99,12 @@ const createUser = async (sessionUser, createUserData, file) => {
     if (file) {
         pictureData = await GoogleDriveFileOperations.uploadFile(file);
         if (pictureData instanceof Error) {
-            throw {
-                status: httpStatus.INTERNAL_SERVER_ERROR,
-                message: 'Failed to upload picture to Google Drive.',
-            };
+            return sendServiceResponse(
+                false,
+                httpStatus.INTERNAL_SERVER_ERROR,
+                'Failed to upload picture to Google Drive.',
+                null
+            );
         }
     }
 
@@ -120,10 +122,12 @@ const createUser = async (sessionUser, createUserData, file) => {
 
     // Ensure the default role was either found or created successfully
     if (!defaultRole) {
-        throw {
-            status: httpStatus.INTERNAL_SERVER_ERROR,
-            message: 'Failed to assign a default role.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.INTERNAL_SERVER_ERROR,
+            'Failed to assign a default role.',
+            null
+        );
     }
 
     // Create the user with the default role
@@ -144,10 +148,12 @@ const createUser = async (sessionUser, createUserData, file) => {
         //     { id: newUserDetails.id } // Use the custom id field for matching
         // );
 
-        throw {
-            status: httpStatus.NOT_FOUND,
-            message: 'Could not create user.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.NOT_FOUND,
+            'Could not create user.',
+            null
+        );
     }
 
     // Convert the user details to an object for further manipulation
@@ -176,10 +182,12 @@ const createUser = async (sessionUser, createUserData, file) => {
 
     // Check if the populatedPermission query returned a document
     if (!populatedRole || populatedRole?.length === 0) {
-        throw {
-            status: httpStatus.OK,
-            message: 'User creation successful but role population failed.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.OK,
+            'User creation successful but role population failed.',
+            null
+        );
     }
 
     // Remove the password field from the object
@@ -348,10 +356,12 @@ const queryUsers = async (filter, options) => {
 
     // Check if the permissions array is empty
     if (permissions?.length === 0) {
-        throw {
-            status: httpStatus.NOT_FOUND,
-            message: 'No users found.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.NOT_FOUND,
+            'No users found.',
+            null
+        );
     }
 
     const permissionsData = {
@@ -397,10 +407,12 @@ const getUserById = async userId => {
     const existingUser = await UserModel.findOne({ id: userId });
 
     if (!existingUser) {
-        throw {
-            status: httpStatus.NOT_FOUND,
-            message: 'User not found.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.NOT_FOUND,
+            'User not found.',
+            null
+        );
     }
 
     // Convert a Mongoose document to a JavaScript object for easier manipulation
@@ -413,14 +425,6 @@ const getUserById = async userId => {
 
     // Fetch the updated permission using the aggregation pipeline
     const populatedRole = await RoleModel.aggregate(aggregationPipeline);
-
-    // Check if the populatedRole query returned a document
-    if (!populatedRole || populatedRole?.length === 0) {
-        throw {
-            status: httpStatus.OK,
-            message: 'User found successfully but role population failed.',
-        };
-    }
 
     // Remove the password field from the object
     const fieldsToRemove = [
@@ -440,6 +444,16 @@ const getUserById = async userId => {
         userObject,
         fieldsToRemove
     );
+
+    // Check if the populatedRole query returned a document
+    if (!populatedRole || populatedRole?.length === 0) {
+        return sendServiceResponse(
+            true,
+            httpStatus.OK,
+            'User found successfully but role population failed.',
+            userObject
+        );
+    }
 
     // Create the response object
     const response = {
@@ -521,10 +535,12 @@ const updateUserById = async (sessionUser, userId, updateUserData, file) => {
 
     // Check if the user was found
     if (!oldUserData) {
-        throw {
-            status: httpStatus.NOT_FOUND,
-            message: 'User not found.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.NOT_FOUND,
+            'User not found.',
+            null
+        );
     }
 
     // Assuming that initially, the data is the same
@@ -540,10 +556,12 @@ const updateUserById = async (sessionUser, userId, updateUserData, file) => {
 
     // Check if the data is the same
     if (isDataSame && !file) {
-        throw {
-            status: httpStatus.BAD_REQUEST,
-            message: 'No changes detected. Update not performed.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.BAD_REQUEST,
+            'No changes detected. Update not performed.',
+            null
+        );
     }
 
     if (updateUserData?.email && updateUserData?.email !== oldUserData?.email) {
@@ -554,10 +572,12 @@ const updateUserById = async (sessionUser, userId, updateUserData, file) => {
 
         // If the new email already exists and does not belong to the current user, throw an error
         if (emailTaken) {
-            throw {
-                status: httpStatus.BAD_REQUEST,
-                message: 'Email already taken. Please use a different email.',
-            };
+            return sendServiceResponse(
+                false,
+                httpStatus.BAD_REQUEST,
+                'Email already taken. Please use a different email.',
+                null
+            );
         }
     }
 
@@ -570,10 +590,12 @@ const updateUserById = async (sessionUser, userId, updateUserData, file) => {
 
         // Check if the picture upload failed
         if (pictureData instanceof Error) {
-            throw {
-                status: httpStatus.INTERNAL_SERVER_ERROR,
-                message: 'Failed to upload picture to Google Drive.',
-            };
+            return sendServiceResponse(
+                false,
+                httpStatus.INTERNAL_SERVER_ERROR,
+                'Failed to upload picture to Google Drive.',
+                null
+            );
         }
 
         // Check if the old picture exists
@@ -606,10 +628,12 @@ const updateUserById = async (sessionUser, userId, updateUserData, file) => {
 
     // Check if the permission was updated
     if (!updatedUserDetails) {
-        throw {
-            status: httpStatus.NOT_FOUND,
-            message: 'Failed to update user. Please try again.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.NOT_FOUND,
+            'Failed to update user. Please try again.',
+            null
+        );
     }
 
     // Remove the password field from the object
@@ -646,10 +670,12 @@ const updateUserById = async (sessionUser, userId, updateUserData, file) => {
 
     // Check if the populatedPermission query returned a document
     if (!populatedRole || populatedRole?.length === 0) {
-        throw {
-            status: httpStatus.OK,
-            message: 'User creation successful but role population failed.',
-        };
+        return sendServiceResponse(
+            true,
+            httpStatus.OK,
+            'User creation successful but role population failed.',
+            updatedUserDetails
+        );
     }
 
     // Create the response object
@@ -689,7 +715,12 @@ const deleteUserById = async userId => {
     const user = await getUserById(userId);
 
     if (!user) {
-        throw new ServerError(httpStatus.NOT_FOUND, 'User not found');
+        return sendServiceResponse(
+            false,
+            httpStatus.NOT_FOUND,
+            'User not found',
+            null
+        );
     }
 
     await user.remove();
@@ -706,7 +737,7 @@ const deleteUserById = async userId => {
  * simplifying maintenance.
  *
  * Functions included in the UserService:
- * - `createUser`: Registers a new user with the provided data and an optional picture file.
+ * - `createUser`: Register a new user with the provided data and an optional picture file.
  * - `queryUsers`: Fetches a list of users based on filtering, sorting, and pagination criteria.
  * - `getUserById`: Retrieves detailed information for a specific user by their unique ID.
  * - `getUserByEmail`: Fetches a user's data based on their email address.
@@ -716,7 +747,7 @@ const deleteUserById = async userId => {
  *                     cleanup operations to maintain database integrity.
  *
  * These functions collectively support a wide range of user management tasks, from basic CRUD operations
- * to more complex queries and updates, making the UserService a crucial component of the application's
+ * to more complex queries and updates, making the UserService a crucial part of the application's
  * backend architecture.
  *
  * @example

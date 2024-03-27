@@ -5,11 +5,13 @@ import validateRequestMiddleware from '../../middleware/validateRequest.middlewa
 import AuthValidation from './auth.validation.js';
 import fileUploadMiddleware from '../../middleware/fileUpload.middleware.js';
 import AuthController from './auth.controller.js';
+import CacheMiddleware from '../../middleware/cache.middleware.js';
 
 const router = express.Router();
 
 router.post(
     '/register',
+    CacheMiddleware.invalidate('user'),
     fileUploadMiddleware.single('picture'),
     validateRequestMiddleware(AuthValidation.register),
     AuthController.register
