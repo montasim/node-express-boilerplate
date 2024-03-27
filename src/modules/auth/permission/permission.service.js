@@ -56,14 +56,16 @@ const createPermission = async (sessionUser, permissionData) => {
 
     // Handle a case where the population fails
     if (populatedPermission?.length === 0) {
-        throw {
-            status: httpStatus.OK, // Consider if this should actually be an error state
-            message: 'Permission created but population failed.',
-            data: newPermission,
-        };
+        return sendServiceResponse(
+            true,
+            httpStatus.OK,
+            'Permission created but population failed.',
+            newPermission
+        );
     }
 
     return sendServiceResponse(
+        true,
         httpStatus.CREATED,
         'Permission created successfully.',
         populatedPermission
@@ -227,10 +229,12 @@ const getPermissions = async (sessionUser, filter, options) => {
 
     // Check if the permissions array is empty
     if (permissions?.length === 0) {
-        throw {
-            status: httpStatus.NOT_FOUND,
-            message: 'No permissions found.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.NOT_FOUND,
+            'No permissions found.',
+            permissionsData
+        );
     }
 
     const permissionsData = {
@@ -242,6 +246,7 @@ const getPermissions = async (sessionUser, filter, options) => {
 
     // Send the permissions data
     return sendServiceResponse(
+        true,
         httpStatus.OK,
         'Permissions found successfully.',
         permissionsData
@@ -259,14 +264,17 @@ const getPermission = async permissionId => {
 
     // Check if the populatedPermission query returned a document
     if (permissions?.length === 0) {
-        throw {
-            status: httpStatus.NOT_FOUND,
-            message: 'Permission not found.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.NOT_FOUND,
+            'Permission not found.',
+            null
+        );
     }
 
     // Send the permission data
     return sendServiceResponse(
+        true,
         httpStatus.OK,
         'Permission found successfully.',
         permissions[0]
@@ -281,10 +289,12 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
 
     // Check if the permission was found
     if (!oldPermission) {
-        throw {
-            status: httpStatus.NOT_FOUND,
-            message: 'Permission not found. Please try again.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.NOT_FOUND,
+            'Permission not found. Please try again.',
+            null
+        );
     }
 
     // Assuming that initially, the data is the same
@@ -300,10 +310,12 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
 
     // Check if the data is the same
     if (isDataSame) {
-        throw {
-            status: httpStatus.BAD_REQUEST,
-            message: 'No changes detected. Update not performed.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.BAD_REQUEST,
+            'No changes detected. Update not performed.',
+            null
+        );
     }
 
     // Prepare the updated data
@@ -323,10 +335,12 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
 
     // Check if the permission was updated
     if (!updatedPermission) {
-        throw {
-            status: httpStatus.NOT_FOUND,
-            message: 'Failed to update permission. Please try again.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.NOT_FOUND,
+            'Failed to update permission. Please try again.',
+            null
+        );
     }
 
     // Aggregation pipeline to fetch and populate the updated document
@@ -341,14 +355,17 @@ const updatePermission = async (sessionUser, permissionId, permissionData) => {
 
     // Check if the populatedPermission query returned a document
     if (!populatedPermission || populatedPermission?.length === 0) {
-        throw {
-            status: httpStatus.OK,
-            message: 'Permission updated but population failed.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.OK,
+            'Permission updated but population failed.',
+            null
+        );
     }
 
     // Send the permission data
     return sendServiceResponse(
+        true,
         httpStatus.OK,
         'Permission updated successfully.',
         populatedPermission[0]
@@ -363,10 +380,12 @@ const deletePermission = async permissionId => {
 
     // Check if the permission was found
     if (!oldPermission) {
-        throw {
-            status: httpStatus.NOT_FOUND,
-            message: 'Permission not found. Please try again.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.NOT_FOUND,
+            'Permission not found. Please try again.',
+            null
+        );
     }
 
     // Update the permission using the custom permissionId
@@ -376,10 +395,12 @@ const deletePermission = async permissionId => {
 
     // Check if the permission was updated
     if (!deletePermission) {
-        throw {
-            status: httpStatus.NOT_FOUND,
-            message: 'Failed to delete permission. Please try again.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.NOT_FOUND,
+            'Failed to delete permission. Please try again.',
+            null
+        );
     }
 
     // Remove the permission from all roles
@@ -391,6 +412,7 @@ const deletePermission = async permissionId => {
 
     // Send the permission data
     return sendServiceResponse(
+        true,
         httpStatus.OK,
         'Permission deleted successfully.',
         null

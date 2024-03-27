@@ -33,6 +33,7 @@
  *                         the outcome of the requested operation.
  * @param {Object} [data={}] The payload of the response, containing any data that needs to be sent back
  *                           to the client. Defaults to an empty object if no data is provided.
+ * @param success
  * @returns {Object} A standardized response object containing the success status, HTTP status code,
  *                   message, and data payload.
  * @example
@@ -46,9 +47,9 @@
  * * //  data: { id: 1, name: 'John Doe' }
  * // }
  */
-const sendServiceResponse = (status, message, data) => {
+const sendServiceResponse = (success, status, message, data) => {
     return {
-        success: true,
+        success: success,
         status: status,
         message: message,
         data: data,

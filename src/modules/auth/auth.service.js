@@ -23,10 +23,12 @@ const loginUserWithEmailAndPassword = async (email, password) => {
 
     // Early return if user doesn't exist or if the email is incorrect
     if (!userDetails || userDetails?.email !== email) {
-        throw {
-            status: httpStatus.UNAUTHORIZED,
-            message: 'Wrong email or password',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.UNAUTHORIZED,
+            'Wrong email or password',
+            null
+        );
     }
 
     // Check if the account is locked
@@ -66,10 +68,12 @@ const loginUserWithEmailAndPassword = async (email, password) => {
 
     // Check if the populatedPermission query returned a document
     if (!populatedPermission || populatedPermission?.length === 0) {
-        throw {
-            status: httpStatus.OK,
-            message: 'User login successful but role population failed.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.OK,
+            'User login successful but role population failed.',
+            null
+        );
     }
 
     // Remove the password field from the object
@@ -100,6 +104,7 @@ const loginUserWithEmailAndPassword = async (email, password) => {
 
     // Return the user data with the role and token
     return sendServiceResponse(
+        true,
         token ? httpStatus.OK : httpStatus.UNAUTHORIZED,
         token ? 'Login successful.' : 'Invalid email or password',
         response
@@ -109,10 +114,12 @@ const loginUserWithEmailAndPassword = async (email, password) => {
 const logout = async refreshToken => {
     // Verify if refreshToken is provided
     if (!refreshToken) {
-        throw {
-            status: httpStatus.BAD_REQUEST,
-            message: 'Refresh token is required.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.BAD_REQUEST,
+            'Refresh token is required.',
+            null
+        );
     }
 
     // Find the refresh token document and delete it
@@ -124,14 +131,16 @@ const logout = async refreshToken => {
 
     // If no document is found, throw an error to indicate the token was not found
     if (!refreshTokenDoc) {
-        throw {
-            status: httpStatus.NOT_FOUND,
-            message: 'Token not found or already logged out.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.NOT_FOUND,
+            'Token not found or already logged out.',
+            null
+        );
     }
 
     // Return a successful response
-    return sendServiceResponse(httpStatus.OK, 'Logout successful.', {});
+    return sendServiceResponse(true, httpStatus.OK, 'Logout successful.', null);
 };
 
 const refreshAuth = async refreshToken => {
@@ -146,10 +155,12 @@ const refreshAuth = async refreshToken => {
 
     // Check if the user exists with the refresh token
     if (!userDetails) {
-        throw {
-            status: httpStatus.NOT_FOUND,
-            message: 'User not found with the refresh token.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.NOT_FOUND,
+            'User not found with the refresh token.',
+            null
+        );
     }
 
     // Check if the account is locked
@@ -163,6 +174,7 @@ const refreshAuth = async refreshToken => {
 
     // Return the new auth token
     return sendServiceResponse(
+        true,
         httpStatus.OK,
         'Refresh successful.',
         newAuthToken
@@ -183,10 +195,12 @@ const resetPassword = async (resetPasswordToken, newPassword) => {
 
     // Check if the user exists with the reset password token
     if (!userDetails) {
-        throw {
-            status: httpStatus.NOT_FOUND,
-            message: 'User not found with the reset password token.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.NOT_FOUND,
+            'User not found with the reset password token.',
+            null
+        );
     }
 
     // Check if the account is locked
@@ -210,7 +224,12 @@ const resetPassword = async (resetPasswordToken, newPassword) => {
     });
 
     // Return a successful response
-    return sendServiceResponse(httpStatus.OK, 'Password reset successful.', {});
+    return sendServiceResponse(
+        true,
+        httpStatus.OK,
+        'Password reset successful.',
+        null
+    );
 };
 
 const verifyEmail = async verifyEmailToken => {
@@ -227,10 +246,12 @@ const verifyEmail = async verifyEmailToken => {
 
     // Check if the user exists with the verified email token
     if (!userDetails) {
-        throw {
-            status: httpStatus.FORBIDDEN,
-            message: 'User not found with the verify email token.',
-        };
+        return sendServiceResponse(
+            false,
+            httpStatus.FORBIDDEN,
+            'User not found with the verify email token.',
+            null
+        );
     }
 
     // Check if the account is locked
@@ -255,9 +276,10 @@ const verifyEmail = async verifyEmailToken => {
 
     // Return a successful response
     return sendServiceResponse(
+        true,
         httpStatus.OK,
         'Email verification successful.',
-        {}
+        null
     );
 };
 

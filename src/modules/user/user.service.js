@@ -210,6 +210,7 @@ const createUser = async (sessionUser, createUserData, file) => {
 
     // Return the newly created user information along with auth tokens
     return sendServiceResponse(
+        true,
         httpStatus.CREATED,
         'User created successfully.',
         response
@@ -362,6 +363,7 @@ const queryUsers = async (filter, options) => {
 
     // Send the permissions data
     return sendServiceResponse(
+        true,
         httpStatus.OK,
         'Users found successfully.',
         permissionsData
@@ -447,6 +449,7 @@ const getUserById = async userId => {
 
     // Return the newly created user information along with auth tokens
     return sendServiceResponse(
+        true,
         httpStatus.CREATED,
         'User found successfully.',
         response
@@ -657,6 +660,7 @@ const updateUserById = async (sessionUser, userId, updateUserData, file) => {
 
     // Return the updated user information
     return sendServiceResponse(
+        true,
         httpStatus.OK,
         'User updated successfully.',
         response
