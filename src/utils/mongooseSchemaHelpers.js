@@ -26,7 +26,7 @@ import UserModel from '../modules/user/user.model.js';
  * Generates a unique identifier string that consists of a user-defined prefix, a formatted timestamp,
  * and a pseudo-random number. The timestamp is based on the current date and time, formatted as
  * `YYYYMMDDHHMMSS`, ensuring that the ID includes the year, month, day, hour, minute, and second.
- * The pseudo-random number adds an additional layer of uniqueness.
+ * The pseudo-random number adds a layer of uniqueness.
  *
  * This function is useful for scenarios where unique strings are necessary, such as file naming,
  * generating unique transaction IDs, or any other case where a distinct identifier is beneficial.

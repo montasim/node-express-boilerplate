@@ -34,6 +34,8 @@ if (config.env !== 'test') {
  * @param {string} to
  * @param {string} subject
  * @param {string} html
+ * @param retryCount
+ * @param retryDelay
  * @returns {Promise}
  */
 const sendEmail = async (
