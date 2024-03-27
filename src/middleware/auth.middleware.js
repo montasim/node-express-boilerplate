@@ -31,6 +31,8 @@ import httpStatus from 'http-status';
 import RoleAggregationPipeline from '../modules/auth/role/role.pipeline.js';
 import RoleModel from '../modules/auth/role/role.model.js';
 
+import ServerError from '../utils/serverError.js';
+
 /**
  * Verifies the outcome of an authentication attempt and checks for additional authorization requirements.
  * This function is intended to be used as a callback for authentication middleware, handling errors,
@@ -39,12 +41,9 @@ import RoleModel from '../modules/auth/role/role.model.js';
  * with appropriate HTTP status codes and messages.
  *
  * @param {Object} req The Express request object, used to attach the authenticated user and for accessing request parameters.
- * @param res
  * @param {Array<Array<string>>} requiredRights An array of rights required to access the resource. Each element in the array
  *                                              represents a specific right, allowing for fine-grained access control based on
  *                                              user roles and permissions.
- * @param user
- * @param info
  * @returns {Function} Returns an asynchronous function that serves as a callback for the authentication middleware. This callback
  *                     function takes `error`, `user`, and `info` parameters, where `error` is any authentication error, `user` is
  *                     the authenticated user object, and `info` provides additional information from the authentication process.
@@ -60,18 +59,23 @@ import RoleModel from '../modules/auth/role/role.model.js';
  *     }
  * );
  */
-const verifyCallback = async (req, res, requiredRights, user, info) => {
-    if (!user || info) {
-        throw new Error({
-            success: false,
-            status: httpStatus.UNAUTHORIZED,
-            message: 'Please authenticate.',
-            data: {},
-        });
+const verifyCallback = (req, requiredRights) => async (error, user, info) => {
+    if (error) {
+        // Handle authentication errors
+        throw new ServerError(httpStatus.UNAUTHORIZED, 'Please authenticate.');
     }
 
+    if (!user || info) {
+        // Handle cases where authentication failed or additional information is provided by passport
+        const errorMessage = info?.message || 'Please authenticate.';
+
+        throw new ServerError(httpStatus.UNAUTHORIZED, errorMessage);
+    }
+
+    // Attach user to request object
     req.sessionUser = user;
 
+    // Check if user has the required rights
     if (requiredRights?.length) {
         const aggregationPipeline = RoleAggregationPipeline.getRole(user?.role);
         const populatedRole = await RoleModel.aggregate(aggregationPipeline);
@@ -82,14 +86,12 @@ const verifyCallback = async (req, res, requiredRights, user, info) => {
             )
         );
 
+        // Throw an error if a user does not have the required rights
         if (!hasRequiredRights && req?.params?.userId !== user?.id) {
-            throw new Error({
-                success: false,
-                status: httpStatus.FORBIDDEN,
-                message:
-                    'Forbidden. You do not have the required rights to access this resource.',
-                data: {},
-            });
+            throw new ServerError(
+                httpStatus.FORBIDDEN,
+                'Forbidden. You do not have the required rights to access this resource.'
+            );
         }
     }
 };
@@ -120,39 +122,50 @@ const verifyCallback = async (req, res, requiredRights, user, info) => {
 const authMiddleware =
     (...requiredRights) =>
     async (req, res, next) => {
-        passport.authenticate(
-            'jwt',
-            { session: false },
-            async (error, user, info) => {
-                if (error) {
-                    throw new Error({
-                        success: false,
-                        status: httpStatus.UNAUTHORIZED,
-                        message: 'Authentication error.',
-                        data: {},
-                    });
-                }
+        try {
+            const authenticate = () =>
+                new Promise((resolve, reject) => {
+                    passport.authenticate(
+                        'jwt',
+                        { session: false },
+                        (error, user, info) => {
+                            // Reject if an error occurred
+                            if (error) {
+                                return reject(
+                                    new ServerError(
+                                        httpStatus.UNAUTHORIZED,
+                                        'Authentication error'
+                                    )
+                                );
+                            }
 
-                try {
-                    await verifyCallback(req, res, requiredRights, user, info);
+                            // Reject if user is not found
+                            if (!user) {
+                                return reject(
+                                    new ServerError(
+                                        httpStatus.UNAUTHORIZED,
+                                        'Please authenticate'
+                                    )
+                                );
+                            }
 
-                    next();
-                } catch (error) {
-                    // This catch block will handle exceptions thrown by verifyCallback
-                    const errorResponse = {
-                        success: false,
-                        status: error.status || httpStatus.UNAUTHORIZED,
-                        message: error.message || 'Please authenticate.',
-                        data: {},
-                    };
+                            // Resolve with user and info if there's no error and user is found
+                            resolve({ user, info });
+                        }
+                    )(req, res, next);
+                });
 
-                    // Check if response is not yet sent to avoid ERR_HTTP_HEADERS_SENT
-                    if (!res.headersSent) {
-                        res.status(errorResponse.status).json(errorResponse);
-                    }
-                }
-            }
-        )(req, res, next);
+            // Authenticate the request
+            const { user, info } = await authenticate();
+
+            // Verify user and rights
+            await verifyCallback(req, requiredRights)(null, user, info);
+
+            next();
+        } catch (err) {
+            // Pass any caught errors to the next middleware (error handler)
+            next(err);
+        }
     };
 
 export default authMiddleware;
