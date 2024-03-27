@@ -62,14 +62,12 @@ import RoleModel from '../modules/auth/role/role.model.js';
  */
 const verifyCallback = async (req, res, requiredRights, user, info) => {
     if (!user || info) {
-        const errorResponse = {
+        throw new Error({
             success: false,
             status: httpStatus.UNAUTHORIZED,
-            message: info?.message || 'Please authenticate.',
+            message: 'Please authenticate.',
             data: {},
-        };
-
-        return res.status(errorResponse.status).json(errorResponse); // Ensure execution stops after sending response
+        });
     }
 
     req.sessionUser = user;
@@ -85,15 +83,13 @@ const verifyCallback = async (req, res, requiredRights, user, info) => {
         );
 
         if (!hasRequiredRights && req?.params?.userId !== user?.id) {
-            const errorResponse = {
+            throw new Error({
                 success: false,
                 status: httpStatus.FORBIDDEN,
                 message:
                     'Forbidden. You do not have the required rights to access this resource.',
                 data: {},
-            };
-
-            return res.status(errorResponse.status).json(errorResponse); // Ensure execution stops after sending response
+            });
         }
     }
 };
@@ -129,30 +125,29 @@ const authMiddleware =
             { session: false },
             async (error, user, info) => {
                 if (error) {
-                    const errorResponse = {
+                    throw new Error({
                         success: false,
                         status: httpStatus.UNAUTHORIZED,
-                        message: 'Authentication error',
+                        message: 'Authentication error.',
                         data: {},
-                    };
-
-                    return res.status(errorResponse.status).json(errorResponse);
+                    });
                 }
 
                 try {
                     await verifyCallback(req, res, requiredRights, user, info);
+
                     next();
-                } catch (err) {
+                } catch (error) {
                     // This catch block will handle exceptions thrown by verifyCallback
                     const errorResponse = {
                         success: false,
-                        status: err.status || httpStatus.UNAUTHORIZED,
-                        message: err.message || 'Authentication error',
+                        status: error.status || httpStatus.UNAUTHORIZED,
+                        message: error.message || 'Please authenticate.',
                         data: {},
                     };
 
+                    // Check if response is not yet sent to avoid ERR_HTTP_HEADERS_SENT
                     if (!res.headersSent) {
-                        // Check if response is not yet sent to avoid ERR_HTTP_HEADERS_SENT
                         res.status(errorResponse.status).json(errorResponse);
                     }
                 }
