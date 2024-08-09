@@ -39,12 +39,23 @@
     "postinstall": "yarn autoclean --force && yarn build"
   },
   "keywords": [
+    "node express mongodb boilerplate",
+    "node express boilerplate",
+    "node boilerplate",
+    "express boilerplate",
+    "rest api boilerplate",
+    "rest api starter",
+    "api boilerplate",
+    "api starter",
+    "rest api",
+    "api",
     "node.js",
     "express.js",
     "mongodb",
     "swagger api",
     "node backend",
-    "secure api"
+    "secure api",
+    "es6"
   ],
   "dependencies": {
     "@googleapis/drive": "^8.11.0",
