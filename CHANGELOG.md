@@ -2,85 +2,152 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [1.7.0](https://github.com/hagopj13/node-express-boilerplate/compare/v1.6.0...v1.7.0) (2021-03-30)
+## 4.0.0 (2024-06-28)
+
+### ⚠ BREAKING CHANGES
+
+-   **server:** add pm2
+-   update start script and refactor terser with error handling
+-   **server:** minify and create build using terser
+-   add post, get, put and delete route. detect unsupported route
+-   add api routes
+-   add async error handler
+-   add environment types and error codes
+-   update error handling middleware to handle all error
 
 ### Features
 
-- add email verification feature ([#78](https://github.com/hagopj13/node-express-boilerplate/pull/78)) ([9dae3f2](https://github.com/hagopj13/node-express-boilerplate/commit/9dae3f27df371103b6a9f96924980d2d8d7ba14e))
-
-## [1.6.0](https://github.com/hagopj13/node-express-boilerplate/compare/v1.5.0...v1.6.0) (2020-12-27)
-
-### Features
-
-- add script to create app using npm init ([acf6fdf](https://github.com/hagopj13/node-express-boilerplate/commit/acf6fdfd105bba476efb171f8cd92d752ecad691))
-- disable docs in production ([#59](https://github.com/hagopj13/node-express-boilerplate/pull/59)) ([68d1e33](https://github.com/hagopj13/node-express-boilerplate/commit/68d1e33194c46df93fc99d6e65ecf5feeecd354b))
-- add populate feature to the paginate plugin ([#45](https://github.com/hagopj13/node-express-boilerplate/pull/45)) ([9cf9535](https://github.com/hagopj13/node-express-boilerplate/commit/9cf953553556bc5060821dc630a2d2d5e12da37f))
-- add nested private fields feature to the toJSON plugin ([#47](https://github.com/hagopj13/node-express-boilerplate/pull/47)) ([5ba8628](https://github.com/hagopj13/node-express-boilerplate/commit/5ba8628ea18ffc90d39f0b8bb1241bebdb6cf675))
-
-## [1.5.0](https://github.com/hagopj13/node-express-boilerplate/compare/v1.4.1...v1.5.0) (2020-09-28)
-
-### Features
-
-- add sorting by multiple criteria option ([677ee12](https://github.com/hagopj13/node-express-boilerplate/commit/677ee12808ba1cf02e422498ae464159345dc76f)), closes [#29](https://github.com/hagopj13/node-express-boilerplate/issues/29)
-
-## [1.4.1](https://github.com/hagopj13/node-express-boilerplate/compare/v1.4.0...v1.4.1) (2020-09-14)
+-   add .gitignore ([b46a2a1](https://github.com/montasim/library-management-system-server/commit/b46a2a163af86dcca9e2640b4c124b2996a2f946))
+-   add api routes ([16141a4](https://github.com/montasim/library-management-system-server/commit/16141a4b45e9c1664d265ed865acd0aadfaa4a63))
+-   add async error handler ([bff88da](https://github.com/montasim/library-management-system-server/commit/bff88daa48f6b0368efa588ca62377a90cd3cb89))
+-   add cors and handle undefined routes inside routes ([9a600a9](https://github.com/montasim/library-management-system-server/commit/9a600a962cc969990b42633ae29308054f1c5ef9))
+-   add environment types and error codes ([acf3b86](https://github.com/montasim/library-management-system-server/commit/acf3b861c3c82d9360e32927e57fc4efe3ee95b2))
+-   add error handling middleware test ([e23cb47](https://github.com/montasim/library-management-system-server/commit/e23cb47d0aff73fc1ddb21f2ec2fa1fc6c0291b0))
+-   add post, get, put and delete route. detect unsupported route ([2079ae7](https://github.com/montasim/library-management-system-server/commit/2079ae73742089caad8eabb6d9881c38ca14d16b))
+-   add sample book details ([6537e7d](https://github.com/montasim/library-management-system-server/commit/6537e7dd757e56d363e45dadc0570243166ea7c7))
+-   add vercel config ([2a6f9ac](https://github.com/montasim/library-management-system-server/commit/2a6f9acc75212a38190cc77a765893893dd9af17))
+-   initialize project ([585123b](https://github.com/montasim/library-management-system-server/commit/585123bb239de663f932a06bfa4bc97236312e53))
+-   **server:** add pm2 ([c3bb893](https://github.com/montasim/library-management-system-server/commit/c3bb89394c434ba8aceae8519708604340a16cbb))
+-   **server:** minify and create build using terser ([154d0d3](https://github.com/montasim/library-management-system-server/commit/154d0d3af8daee6ac93d73bb18164e3ae82fda94))
+-   setup basic response for books, status, undefined ([e65f265](https://github.com/montasim/library-management-system-server/commit/e65f2651b2453eb7c89b78b62adfccef7c5b8594))
+-   setup basic routes ([657354a](https://github.com/montasim/library-management-system-server/commit/657354a8bef730739198d88c0b788e726b0ff3b4))
+-   setup sample server ([d5e5887](https://github.com/montasim/library-management-system-server/commit/d5e58871fc52d50e57630d7c26ec413f5c176cff))
+-   update error handling middleware to handle all error ([80e20bb](https://github.com/montasim/library-management-system-server/commit/80e20bbdf55aff42240deedca9917439c94c3f77))
+-   update start script and refactor terser with error handling ([7f13681](https://github.com/montasim/library-management-system-server/commit/7f1368116711d18296ad52ab0349e86d2d65f1b9))
 
 ### Bug Fixes
 
-- upgrade mongoose to solve vulnerability issue ([1650bdf](https://github.com/hagopj13/node-express-boilerplate/commit/1650bdf1bf36ce13597c0ed3503c7b4abef01ee5))
-- add type to token payloads ([eb5de2c](https://github.com/hagopj13/node-express-boilerplate/commit/eb5de2c7523ac166ca933bff83ef1e87274f3478)), closes [#28](https://github.com/hagopj13/node-express-boilerplate/issues/28)
+-   indentation ([fd8e593](https://github.com/montasim/library-management-system-server/commit/fd8e5930da448653070da1c413470b9ac97255ec))
+-   indentation for json ([29d25ca](https://github.com/montasim/library-management-system-server/commit/29d25ca6ccc9c2de10a2399f694e8a83286eab3e))
 
-## [1.4.0](https://github.com/hagopj13/node-express-boilerplate/compare/v1.3.0...v1.4.0) (2020-08-22)
+### Build System
+
+-   update package.json ([587c738](https://github.com/montasim/library-management-system-server/commit/587c738204644dc77f3c62f1778d03b804d6b909))
+
+### Code Refactoring
+
+-   combine the prettier and build script ([563639d](https://github.com/montasim/library-management-system-server/commit/563639ddd67044e4ce0087283c69ea0370b7b8f2))
+-   indentation ([0646fe4](https://github.com/montasim/library-management-system-server/commit/0646fe412038760abc9845317dffe40f1f0511ff))
+-   prettier:fix ([36ddd14](https://github.com/montasim/library-management-system-server/commit/36ddd14734897b63827867201980e96d516e4e11))
+-   **server:** modularize server error handling code ([0da5264](https://github.com/montasim/library-management-system-server/commit/0da5264fa8551d514e260ba1d3b2812d4d7676fc))
+-   variable name ([93ee50c](https://github.com/montasim/library-management-system-server/commit/93ee50c428f82a92dffe58b06d776ae42677e5cd))
+
+## 3.0.0 (2024-06-28)
+
+### ⚠ BREAKING CHANGES
+
+-   **server:** add pm2
+-   update start script and refactor terser with error handling
+-   **server:** minify and create build using terser
+-   add post, get, put and delete route. detect unsupported route
+-   add api routes
+-   add async error handler
+-   add environment types and error codes
+-   update error handling middleware to handle all error
 
 ### Features
 
-- use native functions instead of Lodash ([66c9e33](https://github.com/hagopj13/node-express-boilerplate/commit/66c9e33d65c88989634fc485e89b396645670730)), closes [#18](https://github.com/hagopj13/node-express-boilerplate/issues/18)
-- add logout endpoint ([750feb5](https://github.com/hagopj13/node-express-boilerplate/commit/750feb5b1ddadb4da6742b445cdb1112a615ace4)), closes [#19](https://github.com/hagopj13/node-express-boilerplate/issues/19)
-
-## [1.3.0](https://github.com/hagopj13/node-express-boilerplate/compare/v1.2.0...v1.3.0) (2020-05-17)
-
-### Features
-
-- add toJSON custom mongoose schema plugin ([f8ba3f6](https://github.com/hagopj13/node-express-boilerplate/commit/f8ba3f619ac42f2030c358fb44095b72fb37013b))
-- add paginate custom mongoose schema plugin ([97fef4c](https://github.com/hagopj13/node-express-boilerplate/commit/97fef4cac91c86e4d33e9010705775fa9f160e96)), closes [#13](https://github.com/hagopj13/node-express-boilerplate/issues/13)
-
-## [1.2.0](https://github.com/hagopj13/node-express-boilerplate/compare/v1.1.3...v1.2.0) (2020-05-13)
-
-### Features
-
-- add api documentation ([#12](https://github.com/hagopj13/node-express-boilerplate/pull/12)) ([0777889](https://github.com/hagopj13/node-express-boilerplate/commit/07778894b706ef94e35f87046db112b39b58316c)), closes [#3](https://github.com/hagopj13/node-express-boilerplate/issues/3)
+-   add .gitignore ([b46a2a1](https://github.com/montasim/library-management-system-server/commit/b46a2a163af86dcca9e2640b4c124b2996a2f946))
+-   add api routes ([16141a4](https://github.com/montasim/library-management-system-server/commit/16141a4b45e9c1664d265ed865acd0aadfaa4a63))
+-   add async error handler ([bff88da](https://github.com/montasim/library-management-system-server/commit/bff88daa48f6b0368efa588ca62377a90cd3cb89))
+-   add cors and handle undefined routes inside routes ([9a600a9](https://github.com/montasim/library-management-system-server/commit/9a600a962cc969990b42633ae29308054f1c5ef9))
+-   add environment types and error codes ([acf3b86](https://github.com/montasim/library-management-system-server/commit/acf3b861c3c82d9360e32927e57fc4efe3ee95b2))
+-   add error handling middleware test ([e23cb47](https://github.com/montasim/library-management-system-server/commit/e23cb47d0aff73fc1ddb21f2ec2fa1fc6c0291b0))
+-   add post, get, put and delete route. detect unsupported route ([2079ae7](https://github.com/montasim/library-management-system-server/commit/2079ae73742089caad8eabb6d9881c38ca14d16b))
+-   add sample book details ([6537e7d](https://github.com/montasim/library-management-system-server/commit/6537e7dd757e56d363e45dadc0570243166ea7c7))
+-   add vercel config ([2a6f9ac](https://github.com/montasim/library-management-system-server/commit/2a6f9acc75212a38190cc77a765893893dd9af17))
+-   initialize project ([585123b](https://github.com/montasim/library-management-system-server/commit/585123bb239de663f932a06bfa4bc97236312e53))
+-   **server:** add pm2 ([c3bb893](https://github.com/montasim/library-management-system-server/commit/c3bb89394c434ba8aceae8519708604340a16cbb))
+-   **server:** minify and create build using terser ([154d0d3](https://github.com/montasim/library-management-system-server/commit/154d0d3af8daee6ac93d73bb18164e3ae82fda94))
+-   setup basic response for books, status, undefined ([e65f265](https://github.com/montasim/library-management-system-server/commit/e65f2651b2453eb7c89b78b62adfccef7c5b8594))
+-   setup basic routes ([657354a](https://github.com/montasim/library-management-system-server/commit/657354a8bef730739198d88c0b788e726b0ff3b4))
+-   setup sample server ([d5e5887](https://github.com/montasim/library-management-system-server/commit/d5e58871fc52d50e57630d7c26ec413f5c176cff))
+-   update error handling middleware to handle all error ([80e20bb](https://github.com/montasim/library-management-system-server/commit/80e20bbdf55aff42240deedca9917439c94c3f77))
+-   update start script and refactor terser with error handling ([7f13681](https://github.com/montasim/library-management-system-server/commit/7f1368116711d18296ad52ab0349e86d2d65f1b9))
 
 ### Bug Fixes
 
-- run app with a non-root user inside docker ([#10](https://github.com/hagopj13/node-express-boilerplate/pull/10)) ([1e3195d](https://github.com/hagopj13/node-express-boilerplate/commit/1e3195d547510d51804028d4ab447cbc53372e48))
+-   indentation ([fd8e593](https://github.com/montasim/library-management-system-server/commit/fd8e5930da448653070da1c413470b9ac97255ec))
+-   indentation for json ([29d25ca](https://github.com/montasim/library-management-system-server/commit/29d25ca6ccc9c2de10a2399f694e8a83286eab3e))
 
-## [1.1.3](https://github.com/hagopj13/node-express-boilerplate/compare/v1.1.2...v1.1.3) (2020-03-14)
+### Build System
 
-### Bug Fixes
+-   update package.json ([587c738](https://github.com/montasim/library-management-system-server/commit/587c738204644dc77f3c62f1778d03b804d6b909))
 
-- fix vulnerability issues by upgrading dependencies ([9c15650](https://github.com/hagopj13/node-express-boilerplate/commit/9c15650acfb0d991b621abc60ba534c904fd3fd1))
+### Code Refactoring
 
-## [1.1.2](https://github.com/hagopj13/node-express-boilerplate/compare/v1.1.1...v1.1.2) (2020-02-16)
+-   combine the prettier and build script ([563639d](https://github.com/montasim/library-management-system-server/commit/563639ddd67044e4ce0087283c69ea0370b7b8f2))
+-   indentation ([0646fe4](https://github.com/montasim/library-management-system-server/commit/0646fe412038760abc9845317dffe40f1f0511ff))
+-   prettier:fix ([36ddd14](https://github.com/montasim/library-management-system-server/commit/36ddd14734897b63827867201980e96d516e4e11))
+-   **server:** modularize server error handling code ([0da5264](https://github.com/montasim/library-management-system-server/commit/0da5264fa8551d514e260ba1d3b2812d4d7676fc))
+-   variable name ([93ee50c](https://github.com/montasim/library-management-system-server/commit/93ee50c428f82a92dffe58b06d776ae42677e5cd))
 
-### Bug Fixes
+## 2.0.0 (2024-06-28)
 
-- fix issue with incorrect stack for errors that are not of type AppError ([48d1a5a](https://github.com/hagopj13/node-express-boilerplate/commit/48d1a5ada5e5fe0975a17b521d3d7a6e1f4cab3b))
+### ⚠ BREAKING CHANGES
 
-## [1.1.1](https://github.com/hagopj13/node-express-boilerplate/compare/v1.1.0...v1.1.1) (2019-12-04)
-
-### Bug Fixes
-
-- use JWT iat as seconds from epoch instead of milliseconds ([#4](https://github.com/hagopj13/node-express-boilerplate/pull/4)) ([c4e1a84](https://github.com/hagopj13/node-express-boilerplate/commit/c4e1a8487c6d41cc20944a081a13a2a1990de0cd))
-
-## [1.1.0](https://github.com/hagopj13/node-express-boilerplate/compare/v1.0.0...v1.1.0) (2019-11-23)
+-   **server:** add pm2
+-   update start script and refactor terser with error handling
+-   **server:** minify and create build using terser
+-   add post, get, put and delete route. detect unsupported route
+-   add api routes
+-   add async error handler
+-   add environment types and error codes
+-   update error handling middleware to handle all error
 
 ### Features
 
-- add docker support ([3401449](https://github.com/hagopj13/node-express-boilerplate/commit/340144979cf5e84abb047a891a0b908b01af3645)), closes [#2](https://github.com/hagopj13/node-express-boilerplate/issues/2)
-- verify connection to email server at startup ([f38d86a](https://github.com/hagopj13/node-express-boilerplate/commit/f38d86a181f1816d720e009aa94619e25ef4bf93))
+-   add .gitignore ([b46a2a1](https://github.com/montasim/library-management-system-server/commit/b46a2a163af86dcca9e2640b4c124b2996a2f946))
+-   add api routes ([16141a4](https://github.com/montasim/library-management-system-server/commit/16141a4b45e9c1664d265ed865acd0aadfaa4a63))
+-   add async error handler ([bff88da](https://github.com/montasim/library-management-system-server/commit/bff88daa48f6b0368efa588ca62377a90cd3cb89))
+-   add cors and handle undefined routes inside routes ([9a600a9](https://github.com/montasim/library-management-system-server/commit/9a600a962cc969990b42633ae29308054f1c5ef9))
+-   add environment types and error codes ([acf3b86](https://github.com/montasim/library-management-system-server/commit/acf3b861c3c82d9360e32927e57fc4efe3ee95b2))
+-   add error handling middleware test ([e23cb47](https://github.com/montasim/library-management-system-server/commit/e23cb47d0aff73fc1ddb21f2ec2fa1fc6c0291b0))
+-   add post, get, put and delete route. detect unsupported route ([2079ae7](https://github.com/montasim/library-management-system-server/commit/2079ae73742089caad8eabb6d9881c38ca14d16b))
+-   add sample book details ([6537e7d](https://github.com/montasim/library-management-system-server/commit/6537e7dd757e56d363e45dadc0570243166ea7c7))
+-   add vercel config ([2a6f9ac](https://github.com/montasim/library-management-system-server/commit/2a6f9acc75212a38190cc77a765893893dd9af17))
+-   initialize project ([585123b](https://github.com/montasim/library-management-system-server/commit/585123bb239de663f932a06bfa4bc97236312e53))
+-   **server:** add pm2 ([c3bb893](https://github.com/montasim/library-management-system-server/commit/c3bb89394c434ba8aceae8519708604340a16cbb))
+-   **server:** minify and create build using terser ([154d0d3](https://github.com/montasim/library-management-system-server/commit/154d0d3af8daee6ac93d73bb18164e3ae82fda94))
+-   setup basic response for books, status, undefined ([e65f265](https://github.com/montasim/library-management-system-server/commit/e65f2651b2453eb7c89b78b62adfccef7c5b8594))
+-   setup basic routes ([657354a](https://github.com/montasim/library-management-system-server/commit/657354a8bef730739198d88c0b788e726b0ff3b4))
+-   setup sample server ([d5e5887](https://github.com/montasim/library-management-system-server/commit/d5e58871fc52d50e57630d7c26ec413f5c176cff))
+-   update error handling middleware to handle all error ([80e20bb](https://github.com/montasim/library-management-system-server/commit/80e20bbdf55aff42240deedca9917439c94c3f77))
+-   update start script and refactor terser with error handling ([7f13681](https://github.com/montasim/library-management-system-server/commit/7f1368116711d18296ad52ab0349e86d2d65f1b9))
 
-## 1.0.0 (2019-11-22)
+### Bug Fixes
 
-### Features
+-   indentation ([fd8e593](https://github.com/montasim/library-management-system-server/commit/fd8e5930da448653070da1c413470b9ac97255ec))
+-   indentation for json ([29d25ca](https://github.com/montasim/library-management-system-server/commit/29d25ca6ccc9c2de10a2399f694e8a83286eab3e))
 
-- initial release
+### Build System
+
+-   update package.json ([587c738](https://github.com/montasim/library-management-system-server/commit/587c738204644dc77f3c62f1778d03b804d6b909))
+
+### Code Refactoring
+
+-   combine the prettier and build script ([563639d](https://github.com/montasim/library-management-system-server/commit/563639ddd67044e4ce0087283c69ea0370b7b8f2))
+-   indentation ([0646fe4](https://github.com/montasim/library-management-system-server/commit/0646fe412038760abc9845317dffe40f1f0511ff))
+-   prettier:fix ([36ddd14](https://github.com/montasim/library-management-system-server/commit/36ddd14734897b63827867201980e96d516e4e11))
+-   **server:** modularize server error handling code ([0da5264](https://github.com/montasim/library-management-system-server/commit/0da5264fa8551d514e260ba1d3b2812d4d7676fc))
+-   variable name ([93ee50c](https://github.com/montasim/library-management-system-server/commit/93ee50c428f82a92dffe58b06d776ae42677e5cd))

@@ -1,444 +1,484 @@
-# RESTful API Node Server Boilerplate
+[//]: # 'NODE EXPRESS BOILERPLATE'
 
-[![Build Status](https://travis-ci.org/hagopj13/node-express-boilerplate.svg?branch=master)](https://travis-ci.org/hagopj13/node-express-boilerplate)
-[![Coverage Status](https://coveralls.io/repos/github/hagopj13/node-express-boilerplate/badge.svg?branch=master)](https://coveralls.io/github/hagopj13/node-express-boilerplate?branch=master)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+# <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=24&duration=1&pause=1&color=EB008B&center=true&vCenter=true&repeat=false&width=335&height=40&lines=NODE+EXPRESS+BOILERPLATE" alt="LIBRARY MANAGEMENT SYSTEM SERVER" />
+
+<!-- repository summary badges start -->
+<div>
+    <img alt="Wakatime coding time badge" src="https://wakatime.com/badge/user/bb224c90-7cb7-4c45-953e-a9e26c1cb06c/project/018e21fa-6cc2-477a-be0c-b5e44ca67f1c.svg?labelColor=EB008B&color=00B8B5">
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/montasim/node-express-boilerplate?labelColor=EB008B&color=00B8B5">
+    <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/montasim/node-express-boilerplate?labelColor=EB008B&color=00B8B5">
+    <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/montasim/node-express-boilerplate?labelColor=EB008B&color=00B8B5">
+    <img alt="GitHub repo file count" src="https://img.shields.io/github/directory-file-count/montasim/node-express-boilerplate?labelColor=EB008B&color=00B8B5">
+    <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/montasim/node-express-boilerplate?labelColor=EB008B&color=00B8B5">
+    <img alt="GitHub license" src="https://img.shields.io/github/license/montasim/node-express-boilerplate?labelColor=EB008B&color=00B8B5">
+</div>
+<!-- repository summary badges end -->
+
+<br/>
 
 A boilerplate/starter project for quickly building RESTful APIs using Node.js, Express, and Mongoose.
 
-By running a single command, you will get a production-ready Node.js app installed and fully configured on your machine. The app comes with many built-in features, such as authentication using JWT, request validation, unit and integration tests, continuous integration, docker support, API documentation, pagination, etc. For more details, check the features list below.
-
-## Quick Start
+[//]: # 'CONTENTS'
+
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=120&height=40&lines=CONTENTS:" alt="CONTENTS:" />
+
+-   [FEATURES](#features)
+-   [PREREQUISITES](#prerequisites)
+-   [SETUP](#setup)
+-   [RUNNING THE SCRIPT](#running-the-script)
+-   [ERROR HANDLING](#error-handling)
+-   [HOSTING](#hosting)
+-   [USED PACKAGES](#used-packages)
+-   [TOOLS](#tools)
+-   [ARTICLES](#articles)
+-   [DO NOT FORGET TO DO](#do-not-forget-to-do)
+-   [TUTORIALS](#tutorials)
+-   [INSPIRATIONS](#inspirations)
+-   [CONTRIBUTE](#contribute)
+-   [CONTRIBUTORS](#contributors)
+-   [SPECIAL THANKS](#special-thanks)
+-   [LICENSE](#license)
+-   [CONTACT](#contact)
+
+<br/>
+
+[//]: # 'FEATURES'
+
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=100&height=40&lines=FEATURES" alt="FEATURES" id="features" />
 
-To create a project, simply run:
+1. Authentication:
 
-```bash
-npx create-nodejs-express-app <project-name>
-```
+    - Handles user login, logout, password resets, and email verification processes.
+    - Ensures secure access through bearer token authentication.
 
-Or
+2. User Profile Management:
 
-```bash
-npm init nodejs-express-app <project-name>
-```
+    - Facilitates fetching and updating user profile information based on username. Respects privacy settings and only returns allowed information.
 
-## Manual Installation
+3. Permission and Role Management:
 
-If you would still prefer to do the installation manually, follow these steps:
+    - Manages permissions and roles within the system, allowing for the creation of new roles, modification of existing ones, and deletion of roles based on IDs.
 
-Clone the repo:
+4. Error and Request Handling:
 
-```bash
-git clone --depth 1 https://github.com/hagopj13/node-express-boilerplate.git
-cd node-express-boilerplate
-npx rimraf ./.git
-```
+    - Includes comprehensive handling of unsupported methods and detailed error responses to ensure robustness and reliability of the API.
 
-Install the dependencies:
+### APIs
 
-```bash
-yarn install
-```
+1. User
+    - Auth
+        - Signup: `POST /api/{{VERSION}}/auth/signup`
+        - Verify signup using email: `GET /api/{{VERSION}}/auth/verify/verification-token`
+        - Login: `POST /api/{{VERSION}}/auth/login`
+        - Request password reset email: `PUT /api/{{VERSION}}/auth/request-new-password`
+        - Resend password reset email: `PUT /api/{{VERSION}}/auth/resend-verification/verification-token`
+        - Reset password: `PUT /api/{{VERSION}}/auth/reset-password/verification-token`
+        - Logout: `GET /api/{{VERSION}}/auth/logout`
+    - Profile
+        - Update personal information:
+        - Reset password:
+        - Delete account:
+2. Admin
+    - Admin
+        - Create admin: `POST /api/{{VERSION}}/admin`
+        - Verify admin request using email: `GET /api/{{VERSION}}/admin/verify/verification-token`
+        - Admin Login: `/api/{{VERSION}}/admin/login`
+        - Request password reset email: `PUT /api/{{VERSION}}/admin/request-new-password`
+        - Resend password reset email: `GET /api/{{VERSION}}/admin/resend-verification/token-id`
+        - Reset password: `PUT /api/{{VERSION}}/admin/reset-password/verification-token`
+        - Logout: `GET /api/{{VERSION}}/admin/logout`
+    - Permission
+        - Create permission: `POST /api/{{VERSION}}/permissions`
+        - Create default permission: `POST /api/{{VERSION}}/permissions/default`
+        - Get all permissions: `GET /api/{{VERSION}}/permissions`
+        - Get permission by ID: `GET /api/{{VERSION}}/permissions/permission-id`
+        - Update permission by ID: `PUT /api/{{VERSION}}/permissions/permission-id`
+        - Delete permission by ID: `DELETE /api/{{VERSION}}/permissions/permission-id`
+        - Delete permission by list: `DELETE /api/{{VERSION}}/permissions?ids=permission-id1,permission-id2`
+    - Role
+        - Create role: `POST /api/{{VERSION}}/roles`
+        - Create default role: `POST /api/{{VERSION}}/roles/default`
+        - Get all roles: `GET /api/{{VERSION}}/roles`
+        - Get role by ID: `GET /api/{{VERSION}}/roles/role-id`
+        - Update role by ID: `PUT /api/{{VERSION}}/roles/role-id`
+        - Delete role by ID: `DELETE /api/{{VERSION}}/roles/role-id`
+        - Delete role by list: `DELETE /api/{{VERSION}}/roles?ids=role-id1,role-id2`
+3. Public
+    - Detect
+        - User device detection
 
-Set the environment variables:
+<br/>
 
-```bash
-cp .env.example .env
+[//]: # 'PREREQUISITES'
 
-# open .env and modify the environment variables (if needed)
-```
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=148&height=40&lines=PREREQUISITES" alt="PREREQUISITES" id="prerequisites" />
 
-## Table of Contents
+1. Node.js (v20.x or higher)
+2. Yarn (v1.22.x or higher)
 
--   [Features](#features)
--   [Commands](#commands)
--   [Environment Variables](#environment-variables)
--   [Project Structure](#project-structure)
--   [API Documentation](#api-documentation)
--   [Error Handling](#error-handling)
--   [Validation](#validation)
--   [Authentication](#authentication)
--   [Authorization](#authorization)
--   [Logging](#logging)
--   [Custom Mongoose Plugins](#custom-mongoose-plugins)
--   [Linting](#linting)
--   [Contributing](#contributing)
+Ensure you have `Node.js` and `Yarn` installed by running `node -v` and `yarn -v` in your terminal. These commands will display the current version of each installed on your system. If these are not installed, follow the installation instructions on the [Node.js website](https://nodejs.org/) and the [Yarn website](https://classic.yarnpkg.com/en/).
 
-## Features
+<br/>
 
--   **NoSQL database**: [MongoDB](https://www.mongodb.com) object data modeling using [Mongoose](https://mongoosejs.com)
--   **Authentication and authorization**: using [passport](http://www.passportjs.org)
--   **Validation**: request data validation using [Joi](https://github.com/hapijs/joi)
--   **Logging**: using [winston](https://github.com/winstonjs/winston) and [morgan](https://github.com/expressjs/morgan)
--   **Testing**: unit and integration tests using [Jest](https://jestjs.io)
--   **Error handling**: centralized error handling mechanism
--   **API documentation**: with [swagger-jsdoc](https://github.com/Surnet/swagger-jsdoc) and [swagger-ui-express](https://github.com/scottie1984/swagger-ui-express)
--   **Process management**: advanced production process management using [PM2](https://pm2.keymetrics.io)
--   **Dependency management**: with [Yarn](https://yarnpkg.com)
--   **Environment variables**: using [dotenv](https://github.com/motdotla/dotenv) and [cross-env](https://github.com/kentcdodds/cross-env#readme)
--   **Security**: set security HTTP headers using [helmet](https://helmetjs.github.io)
--   **Santizing**: sanitize request data against xss and query injection
--   **CORS**: Cross-Origin Resource-Sharing enabled using [cors](https://github.com/expressjs/cors)
--   **Compression**: gzip compression with [compression](https://github.com/expressjs/compression)
--   **CI**: continuous integration with [Travis CI](https://travis-ci.org)
--   **Docker support**
--   **Code coverage**: using [coveralls](https://coveralls.io)
--   **Code quality**: with [Codacy](https://www.codacy.com)
--   **Git hooks**: with [husky](https://github.com/typicode/husky) and [lint-staged](https://github.com/okonet/lint-staged)
--   **Linting**: with [ESLint](https://eslint.org) and [Prettier](https://prettier.io)
--   **Editor config**: consistent editor configuration using [EditorConfig](https://editorconfig.org)
-
-## Commands
-
-Running locally:
-
-```bash
-yarn dev
-```
+[//]: # 'SETUP'
 
-Running in production:
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=60&height=40&lines=SETUP" alt="SETUP" id="setup" />
 
-```bash
-yarn start
-```
+1. **Clone the repository and navigate to the directory:**
 
-Testing:
-
-```bash
-# run all tests
-yarn test
-
-# run all tests in watch mode
-yarn test:watch
-
-# run test coverage
-yarn coverage
-```
-
-Docker:
-
-```bash
-# run docker container in development mode
-yarn docker:dev
+    ```bash
+    git clone https://github.com/montasim/node-express-boilerplate.git
+    cd node-express-boilerplate
+    ```
 
-# run docker container in production mode
-yarn docker:prod
+2. **Install the dependencies:**
 
-# run all tests in a docker container
-yarn docker:test
-```
-
-Linting:
+    ```bash
+    yarn install
+    ```
 
-```bash
-# run ESLint
-yarn lint
+3. **Configuring the Environment:**
 
-# fix ESLint errors
-yarn lint:fix
-
-# run prettier
-yarn prettier
+    Create a `.env.development` or `.env.staging` or `.env.production` file in the root directory of the project and populate it with the necessary environment variables. See the [.env.example](.env.example) file for an example.
 
-# fix prettier errors
-yarn prettier:fix
-```
+<br/>
 
-## Environment Variables
+### Docker setup
 
-The environment variables can be found and modified in the `.env` file. They come with these default values:
+1. **Build the Docker Compose Services:**
 
-```bash
-# Port number
-PORT=3000
+    ```bash
+    docker-compose -f docker-compose-development.yml build
+    ```
 
-# URL of the Mongo DB
-MONGODB_URL=mongodb://127.0.0.1:27017/node-boilerplate
+2. **Run the Docker Compose Services:**
 
-# JWT
-# JWT secret key
-JWT_SECRET=thisisasamplesecret
-# Number of minutes after which an access token expires
-JWT_ACCESS_EXPIRATION_MINUTES=30
-# Number of days after which a refresh token expires
-JWT_REFRESH_EXPIRATION_DAYS=30
+    ```bash
+    docker-compose -f docker-compose-development.yml up
+    ```
 
-# SMTP configuration options for the email service
-# For testing, you can use a fake SMTP service like Ethereal: https://ethereal.email/create
-SMTP_HOST=email-server
-SMTP_PORT=587
-SMTP_USERNAME=email-server-username
-SMTP_PASSWORD=email-server-password
-EMAIL_FROM=support@yourapp.com
-```
+3. **Stop the Containers:**
 
-## Project Structure
+    ```bash
+    docker-compose -f docker-compose-development.yml down
+    ```
 
-```
-src\
- |--config\         # Environment variables and configuration related things
- |--controllers\    # Route controllers (controller layer)
- |--docs\           # Swagger files
- |--middlewares\    # Custom express middlewares
- |--models\         # Mongoose models (data layer)
- |--routes\         # Routes
- |--services\       # Business logic (service layer)
- |--utils\          # Utility classes and functions
- |--validations\    # Request data validation schemas
- |--app.js          # Express app
- |--server.js        # App entry point
-```
+4. **Rebuild the Containers:**
 
-## API Documentation
+    ```bash
+    docker-compose -f docker-compose-development.yml up --build
+    ```
 
-To view the list of available APIs and their specifications, run the server and go to `http://localhost:3000/v1/docs` in your browser. This documentation page is automatically generated using the [swagger](https://swagger.io/) definitions written as comments in the route files.
+<br/>
 
-### API Endpoints
+[//]: # 'RUNNING THE SCRIPT'
 
-List of available routes:
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=208&height=40&lines=RUNNING+THE+SCRIPT" alt="RUNNING THE SCRIPT" id="running-the-script" />
 
-**Auth routes**:\
-`POST /v1/auth/register` - register\
-`POST /v1/auth/login` - login\
-`POST /v1/auth/refresh-tokens` - refresh auth tokens\
-`POST /v1/auth/forgot-password` - send reset password email\
-`POST /v1/auth/reset-password` - reset password\
-`POST /v1/auth/send-verification-email` - send verification email\
-`POST /v1/auth/verify-email` - verify email
+1. **Running the Application:**
 
-**User routes**:\
-`POST /v1/users` - create a user\
-`GET /v1/users` - get all users\
-`GET /v1/users/:userId` - get user\
-`PATCH /v1/users/:userId` - update user\
-`DELETE /v1/users/:userId` - delete user
+    To start the application in development mode, use:
 
-## Error Handling
+    ```bash
+    yarn dev
+    ```
 
-The app has a centralized error handling mechanism.
+    This will run the server with nodemon, automatically restarting when any changes are made.
 
-Controllers should try to catch the errors and forward them to the error handling middleware (by calling `next(error)`). For convenience, you can also wrap the controller inside the catchAsync utility wrapper, which forwards the error.
+2. **To build and run the application in production mode, use:**
 
-```javascript
-const catchAsync = require('../utils/catchAsync');
+    ```bash
+    yarn start
+    ```
 
-const controller = catchAsync(async (req, res) => {
-    // this error will be forwarded to the error handling middleware
-    throw new Error('Something wrong happened');
-});
-```
+    This will build the application and start the server using the built files.
 
-The error handling middleware sends an error response, which has the following format:
+    This script first builds the project by linting the code, fixing lint issues, running prettier, and then starts the application with pm2.
 
-```json
-{
-    "code": 404,
-    "message": "Not found"
-}
-```
+3. **Testing:**
 
-When running in development mode, the error response also contains the error stack.
+    To run the tests configured with Jest, use:
 
-The app has a utility ApiError class to which you can attach a response code and a message, and then throw it from anywhere (catchAsync will catch it).
+    ```bash
+    yarn test
+    ```
 
-For example, if you are trying to get a user from the DB who is not found, and you want to send a 404 error, the code should look something like:
+    This will build the project and then run all the Jest tests.
 
-```javascript
-const httpStatus = require('http-status');
-const ApiError = require('../utils/ApiError');
-const User = require('../models/User');
+4. **Linting and Code Formatting:**
 
-const getUser = async userId => {
-    const user = await User.findById(userId);
-    if (!user) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-    }
-};
-```
+    - To check for linting errors:
 
-## Validation
+        ```bash
+        yarn lint:check
+        ```
 
-Request data is validated using [Joi](https://joi.dev/). Check the [documentation](https://joi.dev/api/) for more details on how to write Joi validation schemas.
+    - To fix linting errors:
 
-The validation schemas are defined in the `src/validations` directory and are used in the routes by providing them as parameters to the `validate` middleware.
+        ```bash
+        yarn lint:fix
+        ```
 
-```javascript
-const express = require('express');
-const validate = require('../../middlewares/validate');
-const userValidation = require('../../validations/user.validation');
-const userController = require('../../controllers/user.controller');
+    - To check if files are formatted correctly:
 
-const router = express.Router();
+        ```bash
+        yarn prettier:check
+        ```
 
-router.post(
-    '/users',
-    validate(userValidation.createUser),
-    userController.createUser
-);
-```
+    - To format files:
 
-## Authentication
+        ```bash
+        yarn prettier:fix
+        ```
 
-To require authentication for certain routes, you can use the `auth` middleware.
+5. **Generating Documentation:**
 
-```javascript
-const express = require('express');
-const auth = require('../../middlewares/auth');
-const userController = require('../../controllers/user.controller');
+    To generate code documentation with JSDoc, run:
 
-const router = express.Router();
+    ```bash
+    yarn generate-docs
+    ```
 
-router.post('/users', auth(), userController.createUser);
-```
+    This will create documentation based on your JSDoc comments.
 
-These routes require a valid JWT access token in the Authorization request header using the Bearer schema. If the request does not contain a valid access token, an Unauthorized (401) error is thrown.
+6. **Release Management:**
 
-**Generating Access Tokens**:
+    To create a new release, you can use:
 
-An access token can be generated by making a successful call to the register (`POST /v1/auth/register`) or login (`POST /v1/auth/login`) endpoints. The response of these endpoints also contains refresh tokens (explained below).
+    ```bash
+    yarn release
+    ```
 
-An access token is valid for 30 minutes. You can modify this expiration time by changing the `JWT_ACCESS_EXPIRATION_MINUTES` environment variable in the .env file.
+    This will automatically bump the version, update the CHANGELOG, and create a commit and a tag.
 
-**Refreshing Access Tokens**:
+    For minor or major releases:
 
-After the access token expires, a new access token can be generated, by making a call to the refresh token endpoint (`POST /v1/auth/refresh-tokens`) and sending along a valid refresh token in the request body. This call returns a new access token and a new refresh token.
+    ```bash
+    yarn release:minor
+    yarn release:major
+    ```
 
-A refresh token is valid for 30 days. You can modify this expiration time by changing the `JWT_REFRESH_EXPIRATION_DAYS` environment variable in the .env file.
+7. **Cleanup:**
 
-## Authorization
+    To clean up dependencies and rebuild the project:
 
-The `auth` middleware can also be used to require certain rights/permissions to access a route.
+    ```bash
+    yarn clean
+    ```
 
-```javascript
-const express = require('express');
-const auth = require('../../middlewares/auth');
-const userController = require('../../controllers/user.controller');
+    This command initializes the auto cleanup process and then forces a rebuild.
+    <br/>
 
-const router = express.Router();
+[//]: # 'ERROR HANDLING'
 
-router.post('/users', auth('manageUsers'), userController.createUser);
-```
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=170&height=40&lines=ERROR+HANDLING" alt="ERROR HANDLING" id="error-handling" />
 
-In the example above, an authenticated user can access this route only if that user has the `manageUsers` permission.
+<br/>
 
-The permissions are role-based. You can view the permissions/rights of each role in the `src/config/roles.js` file.
+[//]: # 'HOSTING'
 
-If the user making the request does not have the required permissions to access this route, a Forbidden (403) error is thrown.
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=90&height=40&lines=HOSTING" alt="HOSTING" id="hosting" />
 
-## Logging
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/montasim/node-express-boilerplate)
 
-Import the logger from `src/config/logger.js`. It is using the [Winston](https://github.com/winstonjs/winston) logging library.
+<details>
+    <summary>
+        Step-by-step guide on setting up your own Vercel instance:
+    </summary>
 
-Logging should be done according to the following severity levels (ascending order from most important to least important):
+Vercel is the recommended option for hosting the files since it is free and easy to set up.
 
-```javascript
-const logger = require('<path to src>/config/logger');
+1.  Go to [vercel.com](https://vercel.com/).
+2.  Click on `Log in`.
+    ![Login page](https://files.catbox.moe/qwqrjn.png)
+3.  Sign in with GitHub by pressing `Continue with GitHub`.
+    ![Sign in with GitHub](https://files.catbox.moe/18vwjq.png)
+4.  Sign in to GitHub and allow access to all repositories if prompted.
+5.  [Fork this repo.](https://github.com/montasim/node-express-boilerplate/fork)
+6.  Go back to your [Vercel dashboard](https://vercel.com/dashboard).
+7.  To import a project, click the `Add New...` button and select the `Project` option.
+    ![Add new project](https://files.catbox.moe/h1a87z.png)
+8.  Click the `Continue with GitHub` button, search for the required Git Repository and import it by clicking the `Import` button. Alternatively, you can import a Third-Party Git Repository using the `Import Third-Party Git Repository ->` link at the bottom of the page.
+    ![Select GitHub project](https://files.catbox.moe/9ubkss.png)
+9.  Create a personal access token (PAT) [here](https://github.com/settings/tokens/new) and enable the `repo` and `user` permissions (this allows access to see private repo and user stats).
+10. Copy all the .env.development file as environment variables in the Vercel dashboard.
+11. Click deploy, and you're good to go. See your domains to use the API!
+</details>
 
-logger.error('message'); // level 0
-logger.warn('message'); // level 1
-logger.info('message'); // level 2
-logger.http('message'); // level 3
-logger.verbose('message'); // level 4
-logger.debug('message'); // level 5
-```
+<br/>
 
-In development mode, log messages of all severity levels will be printed to the console.
+[//]: # 'USED PACKAGES'
 
-In production mode, only `info`, `warn`, and `error` logs will be printed to the console.\
-It is up to the server (or process manager) to actually read them from the console and store them in log files.\
-This app uses pm2 in production mode, which is already configured to store the logs in log files.
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=165&height=40&lines=USED+PACKAGES" alt="USED PACKAGES" id="used-packages" />
 
-Note: API request information (request url, response code, timestamp, etc.) are also automatically logged (using [morgan](https://github.com/expressjs/morgan)).
+<details>
+    <summary>
+        List of used packages:
+    </summary>
 
-## Custom Mongoose Plugins
+1. `Node.js (v20.x or higher)`: The runtime environment for executing JavaScript on the server side.
+2. `Express.js (v4.19.x or higher)`: The web application framework for creating server-side logic.
+3. `MongoDB (v6.8.x or higher)`: The NoSQL database for storing and retrieving data.
+4. `@googleapis/drive (v8.11.0)`: A library for interacting with Google Drive API.
+5. `bcrypt (v5.1.1)`: A library to help you hash passwords.
+6. `compression (v1.7.4)`: Middleware to compress response bodies for all requests.
+7. `cors (v2.8.5)`: Middleware to enable Cross-Origin Resource Sharing.
+8. `dompurify (v3.1.5)`: A library to sanitize HTML to prevent XSS attacks.
+9. `dotenv (v16.4.5)`: A module to load environment variables from a .env file.
+10. `express-useragent (v1.0.15)`: A user agent middleware for Express.
+11. `glob (v10.4.2)`: A library to match files using the patterns the shell uses.
+12. `helmet (v7.1.0)`: Middleware to secure Express apps by setting various HTTP headers.
+13. `hpp (v0.2.3)`: Middleware to protect against HTTP Parameter Pollution attacks.
+14. `jest (v29.7.0)`: A testing framework for JavaScript.
+15. `joi (v17.13.3)`: A library for data validation.
+16. `jsdom (v24.1.0)`: A library to simulate a web browser environment in Node.js.
+17. `jsonwebtoken (v9.0.2)`: A library to sign, verify, and decode JSON Web Tokens.
+18. `moment (v2.30.1)`: A library for parsing, validating, manipulating, and formatting dates.
+19. `mongodb (v6.8.0)`: MongoDB driver for Node.js.
+20. `mongoose (v8.4.4)`: An ODM (Object Data Modeling) library for MongoDB and Node.js.
+21. `morgan (v1.10.0)`: HTTP request logger middleware for Node.js.
+22. `multer (v1.4.5-lts.1)`: Middleware for handling multipart/form-data, used for file uploads.
+23. `node-cache (v5.1.2)`: A caching library for Node.js.
+24. `nodemailer (v6.9.14)`: A module for sending emails.
+25. `pm2 (v5.4.1)`: A production process manager for Node.js applications.
+26. `request-ip (v3.3.0)`: A library to retrieve a request's IP address.
+27. `supertest (v7.0.0)`: A library for testing HTTP assertions.
+28. `terser (v5.31.1)`: A JavaScript parser, mangler, and compressor toolkit for ES6+.
+29. `uuid (v10.0.0)`: A library to generate RFC4122 UUIDs.
+30. `winston (v3.13.0)`: A logging library for Node.js.
+31. `winston-daily-rotate-file (v5.0.0)`: Transport for winston to log to daily rotated files.
+32. `winston-mongodb (v5.1.1)`: Transport for winston to log to a MongoDB collection.
 
-The app also contains 2 custom mongoose plugins that you can attach to any mongoose model schema. You can find the plugins in `src/models/plugins`.
+### Development Dependencies
 
-```javascript
-const mongoose = require('mongoose');
-const { toJSON, paginate } = require('./plugins');
+1. `@babel/core (v7.24.7)`: The core of Babel, a JavaScript compiler.
+2. `@babel/preset-env (v7.24.7)`: A Babel preset to compile ES6+ down to ES5.
+3. `eslint (v9.5.0)`: A tool for identifying and reporting on patterns in JavaScript.
+4. `jsdoc (v4.0.3)`: A tool for generating documentation from JavaScript source code.
+5. `nodemon (v3.1.4)`: A utility that will monitor for any changes in your source and automatically restart your server.
+6. `prettier (v3.3.2)`: An opinionated code formatter.
+7. `standard-version (v9.5.0)`: A utility for versioning and changelog management.
+8. </details>
 
-const userSchema = mongoose.Schema(
-    {
-        /* schema definition here */
-    },
-    { timestamps: true }
-);
+<br/>
 
-userSchema.plugin(toJSON);
-userSchema.plugin(paginate);
+[//]: # 'TOOLS'
 
-const User = mongoose.model('User', userSchema);
-```
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=65&height=40&lines=TOOLS" alt="TOOLS" id="tools" />
 
-### toJSON
+1. [WebStorm](https://www.jetbrains.com/webstorm/)
+2. [Postman](https://www.postman.com/)
+3. [Swagify.io](https://swagify.io/convert/)
 
-The toJSON plugin applies the following changes in the toJSON transform call:
+<br/>
 
--   removes \_\_v, createdAt, updatedAt, and any schema path that has private: true
--   replaces \_id with id
+[//]: # 'ARTICLES'
 
-### paginate
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=95&height=40&lines=ARTICLES" alt="ARTICLES" id="articles" />
 
-The paginate plugin adds the `paginate` static method to the mongoose schema.
+1. [StackOverflow answer on file upload to Google Drive](https://stackoverflow.com/questions/65181932/how-i-can-upload-file-to-google-drive-with-google-drive-api).
 
-Adding this plugin to the `User` model schema will allow you to do the following:
+<br/>
 
-```javascript
-const queryUsers = async (filter, options) => {
-    const users = await UserModel.paginate(filter, options);
-    return users;
-};
-```
+[//]: # 'DO NOT FORGET TO DO'
 
-The `filter` param is a regular mongo filter.
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=230&height=40&lines=DO+NOT+FORGET+TO+DO" alt="DO NOT FORGET TO DO" id="do-not-forget-to-do" />
 
-The `options` param can have the following (optional) fields:
+<br/>
 
-```javascript
-const options = {
-    sortBy: 'name:desc', // sort order
-    limit: 5, // maximum results per page
-    page: 2, // page number
-};
-```
+[//]: # 'TUTORIALS'
 
-The plugin also supports sorting by multiple criteria (separated by a comma): `sortBy: name:desc,role:asc`
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=110&height=40&lines=TUTORIALS" alt="TUTORIALS" id="tutorials" />
 
-The `paginate` method returns a Promise, which fulfills with an object having the following properties:
+1. [Google Drive file upload tutorial](https://www.youtube.com/watch?v=bkaQTLCBBeo&t=600s).
 
-```json
-{
-    "results": [],
-    "page": 2,
-    "limit": 5,
-    "totalPages": 10,
-    "totalResults": 48
-}
-```
+<br/>
 
-## Linting
+[//]: # 'INSPIRATIONS'
 
-Linting is done using [ESLint](https://eslint.org/) and [Prettier](https://prettier.io).
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=140&height=40&lines=INSPIRATIONS" alt="INSPIRATIONS" id="inspirations" />
 
-In this app, ESLint is configured to follow the [Airbnb JavaScript style guide](https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb-base) with some modifications. It also extends [eslint-config-prettier](https://github.com/prettier/eslint-config-prettier) to turn off all rules that are unnecessary or might conflict with Prettier.
+<br/>
 
-To modify the ESLint configuration, update the `.eslintrc.json` file. To modify the Prettier configuration, update the `.prettierrc.json` file.
+[//]: # 'CONTRIBUTE'
 
-To prevent a certain file or directory from being linted, add it to `.eslintignore` and `.prettierignore`.
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=125&height=40&lines=CONTRIBUTE" alt="CONTRIBUTE" id="contribute" />
 
-To maintain a consistent coding style across different IDEs, the project contains `.editorconfig`
+Contributions are always welcome!
+Please read the [contribution guidelines](CONTRIBUTION.md) first.
 
-## Contributing
+<br/>
 
-Contributions are more than welcome! Please check out the [contributing guide](CONTRIBUTING.md).
+[//]: # 'CONTRIBUTORS'
 
-## Inspirations
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=160&height=40&lines=CONTRIBUTORS" alt="CONTRIBUTORS" id="contributors" />
 
--   [danielfsousa/express-rest-es2017-boilerplate](https://github.com/danielfsousa/express-rest-es2017-boilerplate)
--   [madhums/node-express-mongoose](https://github.com/madhums/node-express-mongoose)
--   [kunalkapadia/express-mongoose-es6-rest-api](https://github.com/kunalkapadia/express-mongoose-es6-rest-api)
+<img loading="lazy" src="https://badges.pufler.dev/contributors/montasim/node-express-boilerplate?size=50&padding=5&perRow=10&bots=true" alt="contributors" />
 
-## License
+<br/>
 
-[MIT](LICENSE)
+[//]: # 'SPECIAL THANKS'
+
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=168&height=40&lines=SPECIAL+THANKS" alt="SPECIAL THANKS" id="special-thanks" />
+
+<br/>
+
+[//]: # 'LICENSE'
+
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=78&height=40&lines=LICENSE" alt="LICENSE" id="license" />
+
+[![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=for-the-badge)](./LICENSE)
+
+<br/>
+
+[//]: # 'CONTACT'
+
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=100&height=40&lines=CONTACT" alt="CONTACT" id="contact" />
+
+<!-- social media links start -->
+<table align="center">
+    <thead align="center">
+        <tr>
+            <th>
+                <a href="https://www.linkedin.com/in/montasim" target="_blank" rel="noopener noreferrer" title="linkedin.com/in/montasim">
+                    <img loading="lazy" alt="linkedin icon" src="https://cdn.simpleicons.org/linkedin/EB008B" width="35px">
+                </a>
+            </th>
+            <th>
+                <a href="https://www.github.com/montasim" target="_blank" rel="noopener noreferrer" title="github.com/montasim">
+                    <img loading="lazy" alt="github icon" src="https://cdn.simpleicons.org/github/EB008B" width="35px">
+                </a>
+            </th>
+            <th>
+                <a href="https://stackoverflow.com/users/20348607/montasim" target="_blank" rel="noopener noreferrer" title="stackoverflow.com/users/20348607/montasim">
+                    <img loading="lazy" alt="github icon" src="https://cdn.simpleicons.org/stackoverflow/EB008B" width="35px">
+                </a>
+            </th>
+            <th>
+                <a href="https://montasim-dev.web.app/" target="_blank" rel="noopener noreferrer" title="montasim-dev.web.app">
+                    <img loading="lazy" alt="web icon" src="https://cdn.simpleicons.org/googlechrome/EB008B" width="35px">
+                </a>
+            </th>
+            <th>
+                <a href="mailto:montasimmamun@gmail.com" target="_blank" rel="noopener noreferrer" title="montasimmamun@gmail.com">
+                    <img loading="lazy" alt="gmail icon" src="https://cdn.simpleicons.org/gmail/EB008B" width="35px">
+                </a>
+            </th>
+            <th>
+                <a href="https://www.facebook.com/montasimmamun/" target="_blank" rel="noopener noreferrer" title="facebook.com/montasimmamun">
+                    <img loading="lazy" alt="facebook icon" src="https://cdn.simpleicons.org/facebook/EB008B" width="35px">
+                </a>
+            </th>
+            <th>
+                <a href="https://x.com/montasimmamun" target="_blank" rel="noopener noreferrer" title="https://x.com/montasimmamun">
+                    <img loading="lazy" alt="x icon" src="https://cdn.simpleicons.org/x/EB008B" width="35px">
+                </a>
+            </th>
+        </tr>
+    </thead>
+</table>
+<!-- social media links end -->
+
+<br/>
+<br/>
+<br/>

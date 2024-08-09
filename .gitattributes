@@ -1,53 +1,61 @@
-# General Configuration
-# Set default text handling to auto, enabling Git to automatically handle line endings according to the user's environment and core.autocrlf setting.
-* text=auto
+####################################################
+# .gitattributes Configuration File
+####################################################
+# This configuration file is used by Git to handle the line endings and encoding settings for files based on their type.
+# It ensures consistent handling of files across different operating systems and environments.
 
-# Line Endings Configuration
-# Ensure consistent CRLF line endings for specific file types when checked out. Useful for projects that are expected to run in Windows environments or where CRLF line endings are the standard.
+####################################################
+# DEFAULT BEHAVIOR
+# Purpose: Defines the default text handling behavior for files when committing and checking out.
+# Use: Ensures automatic normalization of line endings.
+####################################################
+* text=auto
+# Ensures automatic text handling, which normalizes line endings on commit and converts them on checkout.
+
+####################################################
+# FILE TYPE SPECIFIC LINE ENDING SETTINGS
+# Purpose: Specifies line ending settings for specific file types to ensure consistency across platforms.
+# Use: Configure the end-of-line normalization for different file types.
+####################################################
 *.js text eol=crlf
+*.jsx text eol=crlf
+*.ts text eol=crlf
+*.tsx text eol=crlf
 *.json text eol=crlf
 *.md text eol=crlf
-*.css text eol=crlf
-*.html text eol=crlf
-*.yml text eol=crlf
-*.yaml text eol=crlf
 
-# Binary Files
-# Treat certain file extensions as binary to prevent Git from attempting to automatically convert line endings or otherwise modify these files.
+####################################################
+# FILE TYPE SPECIFIC ENCODING SETTINGS
+# Purpose: Sets UTF-8 encoding for certain file types to prevent encoding issues across different environments.
+# Use: Configure file encoding to ensure consistent handling of character sets.
+####################################################
+*.js charset=utf-8
+*.jsx charset=utf-8
+*.ts charset=utf-8
+*.tsx charset=utf-8
+*.json charset=utf-8
+
+####################################################
+# SPECIAL HANDLING FOR MARKDOWN FILES
+# Purpose: Provides special handling for markdown files to avoid issues with formatting and trailing whitespace.
+# Use: Ensure consistent formatting and handling of markdown files.
+####################################################
+*.md text=auto eol=crlf
+*.md -trim_trailing_whitespace
+
+####################################################
+# BINARY FILES
+# Purpose: Defines binary files to prevent Git from attempting to auto-correct line endings or apply text transformations.
+# Use: Ensure binary files are treated as binary data without modification.
+####################################################
 *.png binary
 *.jpg binary
-*.jpeg binary
 *.gif binary
-*.ico binary
-*.svg binary
-*.woff binary
-*.woff2 binary
-*.ttf binary
-*.eot binary
 
-# Document Formats
-# Ensure that document formats commonly used in office applications have consistent CRLF line endings, maintaining compatibility across environments.
-*.doc text eol=crlf
-*.docx text eol=crlf
-*.xls text eol=crlf
-*.xlsx text eol=crlf
-*.ppt text eol=crlf
-*.pptx text eol=crlf
-
-# Special Cases
-# Exclude minified JavaScript files from text processing. These files are usually generated and committed as is, without a need for line ending normalization.
-*.min.js -text
-
-# Diff Configuration
-# Improve diff handling for script and batch files by treating them as text, making their changes more readable in diffs.
-*.bat diff=astextplain
-*.cmd diff=astextplain
-*.sh diff=astextplain
-
-# Editor Configuration
-# Treat Visual Studio Code workspace files as text and normalize their line endings to CRLF, ensuring consistency across development environments.
-*.code-workspace text eol=crlf
-
-# Exclusions
-# Exclude package-lock.json from diff to avoid unnecessary noise in version control, as it is auto-generated and may differ across installations.
-/package-lock.json -diff
+####################################################
+# EXPLANATION OF BINARY SETTING
+# Purpose: Ensures binary files are not modified by Git's end-of-line conversion or text transformations.
+# Use: Maintain the integrity of binary files such as images.
+####################################################
+# 'binary' attribute is used to tell Git to treat the file as binary data, preventing any automatic end-of-line conversion,
+# and ensuring that the file is not modified.

@@ -1,34 +1,26 @@
-# Use a specific Node.js image
-FROM node:18-slim
+# Use the official Node.js 20 Alpine image from Docker Hub.
+FROM node:20-alpine
 
-# Create app directory and set permissions for non-root user 'node'
-RUN mkdir -p /usr/src/app && chown -R node:node /usr/src/app
-
-# Set the working directory
+# Set the working directory inside the container.
+# @workdir /usr/src/app
 WORKDIR /usr/src/app
 
-# Copy package.json and yarn.lock to the working directory
-COPY package.json yarn.lock ./
+# Copy the rest of your application's code from the root directory.
+# @copy . .
+COPY . .
 
-# Switch to 'node' user for better security
-USER node
+# Install all dependencies.
+# @run yarn install
+RUN yarn install
 
-# Install dependencies using Yarn
-# Note: '--pure-lockfile' option is similar to '--frozen-lockfile' to ensure reproducibility
-RUN yarn install --pure-lockfile
+# Build your application.
+# @run yarn build
+RUN yarn build
 
-# Copy the rest of the application's source code with appropriate ownership
-COPY --chown=node:node . .
+# Expose the port the app runs on.
+# @expose 5000
+EXPOSE 5000
 
-# Build the app if necessary (uncomment if your app requires a build step)
-# RUN yarn run build
-
-# Expose the port the app runs on
-EXPOSE 3000
-
-# Set environment variables
-ENV NODE_ENV=production
-ENV PORT=3000
-
-# Define the command to run the app
-CMD [ "node", "src/server.js" ]
+# Command to run your app using Node.
+# @cmd node build/server.js
+CMD ["node", "build/server.js"]
