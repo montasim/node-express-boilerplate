@@ -15,20 +15,36 @@ jobs:
         steps:
             - name: Check out code
               uses: actions/checkout@v3
+              # Optional: Add a step to show which commit is checked out
+              run: echo "Checked out $(git rev-parse --short HEAD)"
 
             - name: Set up Node.js
               uses: actions/setup-node@v3
               with:
                   node-version: '20'
+              # Optional: Log Node.js version
+              run: echo "Using Node.js $(node -v)"
 
             - name: Install dependencies
-              run: yarn install
+              run: |
+                  echo "Installing dependencies..."
+                  yarn install
+                  echo "Dependencies installed."
 
             - name: Run lint checks
-              run: yarn lint:check
+              run: |
+                  echo "Running lint checks..."
+                  yarn lint:check
+                  echo "Lint checks completed."
 
             - name: Run Prettier checks
-              run: yarn prettier:check
+              run: |
+                  echo "Running Prettier checks..."
+                  yarn prettier:check
+                  echo "Prettier checks completed."
 
             - name: Build the project
-              run: yarn build
+              run: |
+                  echo "Building the project..."
+                  yarn build
+                  echo "Build completed."
