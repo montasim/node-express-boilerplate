@@ -1,0 +1,43 @@
+name: Build on Merge
+
+on:
+    pull_request:
+        types: [closed]
+        branches:
+            - '**'
+
+jobs:
+    check-merge:
+        if: github.event.pull_request.merged == true
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Check out code
+              uses: actions/checkout@v3
+              run: echo "Code checked out successfully."
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: '20'
+              run: echo "Node.js set up with version $(node -v)."
+
+            - name: Install dependencies
+              run: |
+                  echo "Installing dependencies..."
+                  yarn install
+                  echo "Dependencies installed successfully."
+
+            - name: Build the project
+              run: |
+                  echo "Building the project..."
+                  yarn build
+                  if [ $? -eq 0 ]; then
+                    echo "Build successful."
+                  else
+                    echo "Build failed."
+                    exit 1
+                  fi
+
+            - name: Check build success
+              run: echo "Build completed successfully, PR can be merged."

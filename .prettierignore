@@ -41,3 +41,4 @@ yarn.lock
 .babelrc
 .env
 .env.development
+.yarn
