@@ -31,7 +31,7 @@ export default {
 
     // Rules define how ESLint applies linting to the code
     rules: {
-        'no-console': 'warn', // Warns about console usage
+        'no-console': ['warn', { allow: ['error', 'table'] }], // Warns about console usage except for console.error and console.table
         'func-names': 'off', // Turns off the requirement to name functions
         'no-underscore-dangle': 'off', // Allows dangling underscores in identifiers
         'consistent-return': 'off', // Does not require function return values to be consistent
