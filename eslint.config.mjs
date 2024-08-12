@@ -54,6 +54,7 @@ export default {
     // Paths to ignore during linting
     ignores: [
         '.idea/**', // Ignores all files in the .idea folder
+        '.yarn/**', // Ignores all files in the .yarn folder
         'node_modules/**', // Ignores all files in node_modules
         'build/**', // Ignores all files in the build output directory
         'logs/**', // Ignores log files

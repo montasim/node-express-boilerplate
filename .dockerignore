@@ -12,6 +12,7 @@
 # Use: Prevent committing dependencies which can be installed via package managers.
 ####################################################
 node_modules/
+.yarn/
 
 ####################################################
 # BUILD OUTPUTS
