@@ -15,14 +15,16 @@ jobs:
         steps:
             - name: Check out code
               uses: actions/checkout@v3
-              # Optional: Add a step to show which commit is checked out
+
+            - name: Log checkout commit
               run: echo "Checked out $(git rev-parse --short HEAD)"
 
             - name: Set up Node.js
               uses: actions/setup-node@v3
               with:
                   node-version: '20'
-              # Optional: Log Node.js version
+
+            - name: Log Node.js version
               run: echo "Using Node.js $(node -v)"
 
             - name: Install dependencies
