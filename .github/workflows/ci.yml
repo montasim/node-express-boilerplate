@@ -1,0 +1,31 @@
+name: Continuous Integration
+
+on:
+    push:
+        branches:
+            - '**'
+    pull_request:
+        branches:
+            - '**'
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Check out code
+              uses: actions/checkout@v3
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: '20' # Specify the Node.js version you are using
+
+            - name: Install dependencies
+              run: yarn install
+
+            - name: Run lint checks
+              run: yarn lint:check
+
+            - name: Run Prettier checks
+              run: yarn prettier:check
