@@ -2,26 +2,22 @@
 
 # <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=24&duration=1&pause=1&color=EB008B&center=true&vCenter=true&repeat=false&width=210&height=40&lines=SECURITY+POLICY" alt="SECURITY POLICY" />
 
+We are committed to ensuring the security of our users and prioritize the confidentiality, integrity, and availability of our systems and services. This document provides guidelines on how to report security vulnerabilities and outlines our response process.
+
+<br/>
 
 ## Table of Contents
 
-- [Security Overview](#1-security-overview)
-- [Reporting a Vulnerability](#2-reporting-a-vulnerability)
-- [What to Expect After Reporting](#3-what-to-expect-after-reporting)
-- [Security Response Process](#4-security-response-process)
-- [Contact Information](#5-contact-information)
+1. [Reporting a Vulnerability](#1-reporting-a-vulnerability)
+2. [What to Expect After Reporting](#2-what-to-expect-after-reporting)
+3. [Security Response Process](#3-security-response-process)
+4. [Contact Information](#4-contact-information)
 
+<br/>
 
-## 1. Security Overview
+[//]: # (## 1. Reporting a Vulnerability)
 
-[//]: # (## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=22&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=210&height=40&lines=Security+Overview" alt="Security Overview" />)
-
-We are committed to ensuring the security of our users and prioritize the confidentiality, integrity, and availability of our systems and services. This document provides guidelines on how to report security vulnerabilities and outlines our response process.
-
-
-## 2. Reporting a Vulnerability
-
-[//]: # (## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=22&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=285&height=40&lines=Reporting+a+Vulnerability" alt="Reporting a Vulnerability" />)
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=22&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=305&height=40&lines=1.+Reporting+a+Vulnerability" alt="1. Reporting a Vulnerability" id="1-reporting-a-vulnerability" />
 
 If you discover a security vulnerability in our service, please follow the steps below to report it responsibly:
 
@@ -32,19 +28,21 @@ If you discover a security vulnerability in our service, please follow the steps
   - Potential impact of the vulnerability.
   - Any other relevant information (e.g., operating system, library versions).
 
+<br/>
 
-## 3. What to Expect After Reporting
+[//]: # (## 2. What to Expect After Reporting)
 
-[//]: # (## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=18&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=300&height=40&lines=What+to+Expect+After+Reporting" alt="What to Expect After Reporting" />)
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=22&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=370&height=40&lines=2.+What+to+Expect+After+Reporting" alt="2. What to Expect After Reporting" id="2-what-to-expect-after-reporting" />
 
 - **Acknowledgment**: We aim to acknowledge receipt of your report within 24 hours.
 - **Communication**: We will maintain open and transparent communication with you to discuss the findings.
 - **Timeline**: While the response time can vary based on the complexity of the report and existing priorities, we strive to assess and respond to all reports within one week.
 
+<br/>
 
-## 4. Security Response Process
+[//]: # (## 3. Security Response Process)
 
-[//]: # (## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=22&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=300&height=40&lines=Security+Response+Process" alt="Security Response Process" />)
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=22&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=325&height=40&lines=3.+Security+Response+Process" alt="3. Security Response Process" id="3-security-response-process" />
 
 Upon receiving a security report, we follow a standard procedure to evaluate and mitigate the issue:
 
@@ -54,10 +52,11 @@ Upon receiving a security report, we follow a standard procedure to evaluate and
 4. **Release**: Deploy the fixes and notify all stakeholders.
 5. **Disclosure**: After mitigating the risk, we will work with the reporter to publicly disclose the vulnerability in a responsible manner.
 
+<br/>
 
-## 5. Contact Information
+[//]: # (## 4. Contact Information)
 
-[//]: # (## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=22&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=230&height=40&lines=Contact+Information" alt="Contact Information" />)
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=22&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=255&height=40&lines=4.+Contact+Information" alt="4. Contact Information" id="4-contact-information" />
 
 For further inquiries or suggestions regarding our security policy, please contact us at [montasimmamun@gmail.com](mailto:montasimmamun@gmail.com).
 
