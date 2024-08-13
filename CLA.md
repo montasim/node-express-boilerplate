@@ -70,8 +70,8 @@ The Maintainers are under no obligation to accept or use your Contributions. Con
 By contributing to this Project, you agree to follow the [CONTRIBUTION](CONTRIBUTION.md) guidelines, including:
 
 -   Adhering to the [Conventional Commit Messages](https://gist.github.com/montasim/694610e53305bab2cf9070004bef81e6) standard.
--   Following our [coding style guide](CONTRIBUTION.md#guidelines) as defined in the Project’s `.prettierrc` and `eslint.config.mjs`.
--   Participating in the [code review process](CONTRIBUTION.md#code-review-process).
+-   Following our [coding style guide](CONTRIBUTION.md#2-guidelines) as defined in the Project’s `.prettierrc` and `eslint.config.mjs`.
+-   Participating in the [code review process](CONTRIBUTION.md#3-code-review-process).
 
 <br/>
 
