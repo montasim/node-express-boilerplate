@@ -1,6 +1,6 @@
 /**
  * ESLint Configuration File
- * @fileoverview This configuration file sets up linting rules and environments for a JavaScript project.
+ * @fileoverview This configuration file sets up linting rules and environments for a JavaScript project focusing on ES6 standards.
  * It includes settings for ECMAScript 2020 features, enforces coding styles, and configures plugins for additional linting capabilities.
  */
 
@@ -49,6 +49,13 @@ export default {
         'no-var': 'error', // Requires let or const, not var
         'object-shorthand': ['error', 'always'], // Requires object literal shorthand syntax
         'prefer-template': 'error', // Prefers template literals over string concatenation
+        eqeqeq: ['error', 'always'], // Enforces the use of strict equality (===)
+        'template-curly-spacing': 'error', // Enforces spacing around embedded expressions of template strings
+        'prefer-rest-params': 'error', // Suggests using rest parameters instead of arguments
+        'no-new-symbol': 'error', // Disallows new operators with the Symbol object
+        'symbol-description': 'error', // Requires a description when creating symbols
+        'prefer-spread': 'error', // Prefer the use of the spread operator (...) to call variadic functions
+        'no-duplicate-imports': 'error', // Disallows duplicate imports
     },
 
     // Paths to ignore during linting
