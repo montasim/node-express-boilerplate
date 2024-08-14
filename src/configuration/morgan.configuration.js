@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module configures the morgan logger middleware for use in an Express application.
  * Morgan is a middleware that logs HTTP requests and responses, providing insights into the traffic

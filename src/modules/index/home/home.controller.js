@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines the controller for handling operations related to the home service.
  * It leverages the shared controller utilities to retrieve a list of items from the home service.

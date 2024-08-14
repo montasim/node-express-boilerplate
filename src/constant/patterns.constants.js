@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Regular expression for validating email addresses.
  *

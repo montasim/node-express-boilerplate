@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the service functions for handling operations related to user profiles.
  * The services include methods to retrieve and update user profile details. These functions interact with the `UsersModel`

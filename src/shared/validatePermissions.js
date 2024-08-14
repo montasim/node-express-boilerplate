@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module provides a service for validating permissions against stored permission records in the database.
  * It includes a function to verify if a set of given permission IDs are all valid by checking their existence in the permissions collection.

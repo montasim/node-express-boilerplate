@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports a function `getHostData` which extracts the hostname
  * and port from an Express request object. This function is useful for retrieving

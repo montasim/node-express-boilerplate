@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports an asynchronous function `createAuthenticationToken`
  * which generates a JSON Web Token (JWT) for authentication purposes. It uses the

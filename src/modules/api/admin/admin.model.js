@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the Mongoose schema for the Admin model. The schema includes
  * fields for personal details, contact information, department, designation, authentication

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the controller functions for managing roles. These functions
  * handle the creation, retrieval, updating, and deletion of roles by interacting with the

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines and exports the `adminService` object, which contains various
  * asynchronous functions to manage admin-related operations. These functions include creating a new admin,

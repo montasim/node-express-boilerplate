@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines various Joi schemas for validating user-related data.
  * The schemas include base validation for user fields, as well as specific schemas for updating user profiles,

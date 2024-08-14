@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines various Joi schemas for validating pronouns-related data. The
  * schemas include base validation for pronouns fields, as well as specific schemas for creating,

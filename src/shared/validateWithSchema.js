@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module provides a middleware function to validate request data against predefined Joi schemas.
  * It wraps the validation process in an asynchronous error handling service to manage exceptions seamlessly.

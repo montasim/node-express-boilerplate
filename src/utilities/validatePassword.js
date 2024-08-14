@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports an asynchronous function `validatePassword` which validates
  * a password based on multiple criteria. It checks the password's length, presence of

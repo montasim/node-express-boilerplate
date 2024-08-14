@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines a controller for testing uncaught exceptions.
  * It is used to simulate an uncaught exception for testing purposes.

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines and exports constants for different environment types used within the application.
  * These environment constants are essential for configuring the application differently based on the current runtime

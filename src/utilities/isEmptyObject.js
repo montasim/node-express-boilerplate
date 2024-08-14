@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports a function `isEmptyObject` which checks whether a given value
  * is an empty object. It first verifies if the value is an object and then uses a helper

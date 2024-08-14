@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the service functions for handling operations related to user accounts.
  * The services include methods to delete a user account, interacting with the `UsersModel` and handling

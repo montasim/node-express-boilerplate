@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports an asynchronous function `validateAdminRequest`
  * which validates if a request is made by an existing admin. It checks the existence

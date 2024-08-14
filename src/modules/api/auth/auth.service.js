@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines and exports the `authService` object, which contains various
  * asynchronous functions to manage authentication-related operations. These functions include

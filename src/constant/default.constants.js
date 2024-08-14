@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines and exports default constants used throughout the application, specifically
  * for default image URLs. It provides organized and easy-to-reference image links for various user profiles based

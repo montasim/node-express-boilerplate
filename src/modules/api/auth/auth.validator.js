@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines and exports the `authValidator` object, which contains middleware functions
  * for validating authentication-related requests using Joi schemas. Each function validates a specific request

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the service functions for managing pronouns. These services include
  * functions for creating, retrieving, updating, and deleting pronouns. The services interact with the

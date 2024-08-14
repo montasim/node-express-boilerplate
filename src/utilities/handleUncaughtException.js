@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file includes the handleUncaughtException function, which is tasked with
  * managing uncaught exceptions in the application. It logs the error details and attempts a

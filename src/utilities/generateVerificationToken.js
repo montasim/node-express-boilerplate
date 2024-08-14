@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports an asynchronous function `generateVerificationToken`
  * which generates a verification token for email verification purposes. The function

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports an asynchronous function `getAuthenticationToken`
  * which extracts the authentication token from an HTTP header. The function checks

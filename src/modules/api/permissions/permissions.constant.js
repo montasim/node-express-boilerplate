@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines constants for permissions-related operations.
  * These constants include validation criteria for permission names, such as length

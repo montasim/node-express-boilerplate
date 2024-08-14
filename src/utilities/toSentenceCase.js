@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports a function `toSentenceCase` which converts a single word
  * to sentence case. The function ensures that the first letter of the word is capitalized

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module sets up and configures the authentication mechanism for Google Drive API
  * using JSON Web Tokens (JWT). It uses the @googleapis/drive package to interact with Google Drive,

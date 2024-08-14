@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the rules for privacy settings based on the user's profile visibility
  * level. The rules determine which fields are visible to different types of users, such as the public,

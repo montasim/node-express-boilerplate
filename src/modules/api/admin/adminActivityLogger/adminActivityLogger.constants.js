@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines and exports constants used for logging admin activities.
  * It includes various action types that represent different activities performed by admin users.

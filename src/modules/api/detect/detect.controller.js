@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines and exports the controller for handling detection-related requests.
  * The controller uses an async error handler to process the incoming requests, invoke the detection service,

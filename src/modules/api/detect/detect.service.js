@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the detectService, which processes incoming requests to detect
  * user-agent data, including browser, OS, device type, IP address, and other relevant information.

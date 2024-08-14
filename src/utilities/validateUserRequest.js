@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports an asynchronous function `validateUserRequest` which
  * checks if a user exists in the database based on the provided user ID. The function

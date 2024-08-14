@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines the `prepareEmail` function, which is a utility to generate complete HTML email templates dynamically.
  * It constructs an HTML email with a customizable page title, preheader text, hero section, main content section, and footer content.

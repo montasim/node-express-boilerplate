@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview Defines common MIME types for use in API responses.
  * These MIME types represent various types of content that can be served by the API.

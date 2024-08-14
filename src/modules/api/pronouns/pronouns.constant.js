@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines constants for validating pronouns-related data. It includes
  * constraints on the length of names and a regular expression pattern for validating names

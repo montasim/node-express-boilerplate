@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines constants for validating roles-related data. It includes
  * constraints on the length of role names and patterns to ensure they adhere to the required

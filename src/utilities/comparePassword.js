@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports an asynchronous function `comparePassword`
  * which utilizes the `bcrypt` library to compare a plaintext password

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines and exports the `adminValidator` object, which contains middleware functions
  * for validating admin-related requests using Joi schemas. Each function validates a specific request property

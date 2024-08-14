@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview Defines common file extension types for use in API responses.
  * These file extension types represent various types of files that can be served by the API.

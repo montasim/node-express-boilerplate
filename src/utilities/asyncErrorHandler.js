@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports a higher-order function `asyncErrorHandlerService`
  * which is designed to handle errors in asynchronous middleware functions in Express.

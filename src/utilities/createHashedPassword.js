@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports an asynchronous function `createHashedPassword`
  * which uses the `bcrypt` library to hash a plaintext password. This function

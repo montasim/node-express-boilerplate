@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports a function `validateFile` which validates a file based on its
  * type, size, and optional extensions. It ensures that the file meets the specified criteria

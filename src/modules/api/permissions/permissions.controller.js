@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines and exports the controller for handling permissions-related operations.
  * It utilizes a shared controller to define common CRUD operations such as creating, retrieving, updating, and deleting permissions.

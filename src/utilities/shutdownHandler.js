@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the shutdownHandler function, which is designed to handle
  * graceful shutdown of the server when it receives termination signals like SIGINT or SIGTERM.

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the service functions for managing permissions. These services include
  * functions for creating, retrieving, updating, and deleting permissions. The services interact with the

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the service functions for handling operations related to user logs.
  * The services include methods to retrieve various types of user logs including activity logs, security logs,

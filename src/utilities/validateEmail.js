@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports an asynchronous function `validateEmail` which validates
  * an email address against various criteria. It checks if the email format is valid,

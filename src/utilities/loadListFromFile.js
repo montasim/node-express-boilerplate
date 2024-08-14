@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports an asynchronous function `loadListFromFile` which loads
  * a list from a specified text file and returns it as a Set. The function handles the

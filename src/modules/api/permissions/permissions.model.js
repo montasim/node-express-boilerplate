@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the Mongoose schema for the Permissions model. The schema includes
  * fields for permission details, such as name and status, and includes shared schema components for

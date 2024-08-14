@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports an asynchronous function `decodeAuthenticationToken`
  * which is designed to verify and decode a JSON Web Token (JWT) for authentication purposes.

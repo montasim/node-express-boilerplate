@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines the controller for handling operations related to user accounts.
  * It leverages the shared controller utilities to perform actions on user accounts.

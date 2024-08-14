@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines various constants used for validating and managing user-related data.
  * The constants include length constraints for different fields, regex patterns for validation, image size limits, and activity types.

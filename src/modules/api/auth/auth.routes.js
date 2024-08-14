@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file sets up the Express router for authentication-related routes.
  * It includes routes for login, logout, requesting a new password, resending verification emails,

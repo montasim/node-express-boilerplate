@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports an object `adminConstants` which contains various constants
  * used for validating admin-related data. These constants include minimum and maximum lengths

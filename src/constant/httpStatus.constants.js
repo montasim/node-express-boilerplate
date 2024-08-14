@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview Defines common HTTP status codes for use in API responses.
  * These status codes represent various states of HTTP responses and are

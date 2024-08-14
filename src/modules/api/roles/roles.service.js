@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the service functions for managing roles. These services include
  * functions for creating, retrieving, updating, and deleting roles. The services interact with the

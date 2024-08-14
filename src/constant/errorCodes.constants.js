@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview Defines common Node.js system error codes for handling system-level errors.
  * These error codes are used by the Node.js API in response to operations like file access,

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module consolidates and exports shared schema definitions for various attributes commonly used across multiple models in the application.
  * Each schema component is defined using Mongoose's Schema types and includes detailed validations, constraints, and descriptions to ensure data integrity and provide clarity on their intended use.

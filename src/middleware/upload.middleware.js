@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module configures and exports a middleware for handling file uploads in an Express application
  * using the multer library. The configured middleware uses memory storage, which means that files are stored in

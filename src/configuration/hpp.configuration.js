@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module configures and extends the HTTP Parameter Pollution (HPP) protection
  * middleware for an Express application. HPP attacks involve sending multiple HTTP parameters of the

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports a function `getRequesterPermissions` which retrieves the
  * permissions of the current user from the Express request object. The function assumes

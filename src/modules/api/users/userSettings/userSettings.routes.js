@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the routes for user account, profile, appearance, and log operations.
  * The routes handle HTTP requests to manage user profiles, accounts, appearance settings, and logs.

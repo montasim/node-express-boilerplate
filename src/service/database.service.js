@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module provides database connection services using Mongoose for MongoDB integration
  * within an Express application. It offers functions to connect to and disconnect from the MongoDB database,

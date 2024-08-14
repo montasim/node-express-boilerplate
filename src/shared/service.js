@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module provides a set of services for managing resources within the application.
  * It includes functions for retrieving single resources or lists of resources, as well as deleting resources by ID or in bulk.

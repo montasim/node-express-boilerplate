@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines and exports Joi validation schemas for admin-related operations.
  * These schemas are used to validate the input data for various admin endpoints, including

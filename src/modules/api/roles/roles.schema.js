@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines various Joi schemas for validating roles-related data. The
  * schemas include base validation for role fields, as well as specific schemas for creating,

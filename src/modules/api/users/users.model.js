@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the Mongoose schema for storing user data.
  * The schema includes fields for system information, core user information, contact information,

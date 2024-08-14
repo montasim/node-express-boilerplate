@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the CORS (Cross-Origin Resource Sharing) configuration for the
  * application's server. CORS is a security feature that allows or restricts requested resources on a web

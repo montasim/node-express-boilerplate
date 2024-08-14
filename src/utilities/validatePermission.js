@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports an asynchronous function `validatePermission` which validates
  * if a specific role has a required permission. It queries the roles and permissions models

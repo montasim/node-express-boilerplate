@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the validator functions for user profile operations.
  * The validators ensure that the data provided in the requests conform to the defined Joi schemas.

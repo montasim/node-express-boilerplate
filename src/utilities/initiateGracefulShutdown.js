@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports an asynchronous function `initiateGracefulShutdown`
  * which is responsible for gracefully shutting down the server. The function logs the reason

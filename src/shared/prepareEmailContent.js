@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module provides the `prepareEmailContent` function, designed to generate the various sections of an HTML email template based on a given subject.
  * It supports multiple email types, each with customized content including titles, preheaders, hero images, main body text, and footer information.

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines the service function for retrieving the status of the application.
  * It handles the logic for constructing a response indicating the current status and handles any potential errors that may occur.

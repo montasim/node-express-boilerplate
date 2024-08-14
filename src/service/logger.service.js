@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module sets up a comprehensive logging service using the Winston library.
  * It includes console logging, file logging with daily rotation, and MongoDB logging, making it suitable for various environments,

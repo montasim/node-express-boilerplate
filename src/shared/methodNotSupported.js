@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines the `methodNotSupported` middleware function which is utilized to handle HTTP requests using methods that are not supported by a given route.
  * It dynamically checks the allowed methods for the route and responds with a '405 Method Not Allowed' status if the request method is not supported.

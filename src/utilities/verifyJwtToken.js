@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports a function `verifyJwtToken` which verifies the authenticity
  * of a JSON Web Token (JWT). It uses the `jsonwebtoken` library to decode and verify the

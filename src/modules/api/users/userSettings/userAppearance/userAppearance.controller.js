@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines the controller for handling operations related to user appearance settings.
  * It leverages the shared controller utilities to retrieve and update user appearance settings.

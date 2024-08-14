@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file configures and exports the compression middleware setup for the
  * application server. The compression middleware is used to compress response bodies for

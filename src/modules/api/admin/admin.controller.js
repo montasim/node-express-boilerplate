@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports an object `adminController` which contains methods for managing admin-related operations.
  * These methods are created by utilizing a shared controller utility and an admin service. The methods include creating a new admin,

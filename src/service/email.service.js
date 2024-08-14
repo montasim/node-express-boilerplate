@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module configures and provides an email service for an Express application using the nodemailer
  * library. It includes functionalities to connect to an SMTP server and send emails. The service is designed to handle

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file sets up the main Express router with different route handlers.
  * It includes routes for the index, API routes with versioning, and a handler for undefined routes.

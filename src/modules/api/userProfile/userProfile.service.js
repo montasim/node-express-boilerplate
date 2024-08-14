@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview
  * This module provides the user profile service, which includes functionality to fetch user profiles based on their privacy settings.

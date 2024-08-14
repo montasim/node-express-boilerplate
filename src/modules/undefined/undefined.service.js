@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines the service function for handling requests to undefined routes.
  * It constructs a response indicating that the route is invalid and handles any potential errors that may occur.

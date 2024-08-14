@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports a function `errorResponse` which is used to create a standardized
  * error response object. The function takes an error message and an optional status code as inputs

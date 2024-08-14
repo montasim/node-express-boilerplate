@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the controller functions for managing user profiles. These functions
  * handle the retrieval of user profiles by interacting with the userProfile service. Each function utilizes

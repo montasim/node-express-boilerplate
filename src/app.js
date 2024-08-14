@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file sets up the main Express application with various middleware for security,
  * logging, body parsing, data sanitization, routing, and error handling. It imports configurations

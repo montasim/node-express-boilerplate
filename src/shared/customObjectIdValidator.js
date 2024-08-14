@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module provides a custom validator for MongoDB ObjectIds using the Mongoose library.
  * The validator ensures that a given value is a valid MongoDB ObjectId and provides a meaningful error message

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the routes for user log operations, including account logs and security logs.
  * The routes handle HTTP GET requests to fetch various types of user logs for the authenticated user.

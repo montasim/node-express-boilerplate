@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file sets up the Express router for admin-related routes. It includes routes for
  * creating a new admin, verifying an admin, resending verification emails, requesting a new password,

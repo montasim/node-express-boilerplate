@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines constants for different access types within the application.
  * It provides a standardized way to reference user roles and permissions across the codebase,

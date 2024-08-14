@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports a function `sendResponse` which creates a standardized
  * response object for successful HTTP requests. The function includes a timestamp,

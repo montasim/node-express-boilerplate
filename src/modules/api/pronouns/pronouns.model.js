@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the Mongoose schema for the Pronouns model. The schema includes
  * fields for pronouns details, such as name and status, and includes shared schema components for

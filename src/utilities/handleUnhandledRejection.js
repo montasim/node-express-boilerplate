@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file contains the handleUnhandledRejection function, which addresses
  * unhandled promise rejections within the application. It logs the rejection details and

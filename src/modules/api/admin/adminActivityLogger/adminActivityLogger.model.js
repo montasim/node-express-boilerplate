@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the Mongoose schema for logging administrative activities.
  * The schema captures information about user actions, including the user ID, action type,

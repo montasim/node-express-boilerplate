@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module provides a centralized error handling service for an Express application. It is designed to
  * intercept and process all errors that occur during the execution of request handlers. This service categorizes errors,

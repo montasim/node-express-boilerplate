@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the controller functions for managing pronouns. These functions
  * handle the creation, retrieval, updating, and deletion of pronouns by interacting with the

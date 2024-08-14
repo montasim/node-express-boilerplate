@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the routes for managing pronouns using Express. It includes routes
  * for creating, retrieving, updating, and deleting pronouns, and applies various middlewares for

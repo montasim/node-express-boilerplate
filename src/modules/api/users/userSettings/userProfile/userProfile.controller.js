@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines the controller for handling operations related to user profiles.
  * It leverages the shared controller utilities to retrieve and update user profile details.

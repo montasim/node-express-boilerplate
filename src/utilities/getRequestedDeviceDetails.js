@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports an asynchronous function `getRequestedDeviceDetails`
  * which extracts detailed information about the device making the request. It uses the

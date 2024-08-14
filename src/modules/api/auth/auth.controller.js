@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines and exports the `authController` object, which contains methods for managing
  * authentication-related operations. These methods are created by utilizing a shared controller utility and an

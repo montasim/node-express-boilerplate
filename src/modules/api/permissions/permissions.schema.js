@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines various Joi schemas for validating permissions-related data. The
  * schemas include base validation for permission fields, as well as specific schemas for creating,

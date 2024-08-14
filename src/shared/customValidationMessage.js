@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module provides a set of custom validation messages for use with the Joi validation library.
  * These messages are designed to offer clear and user-friendly feedback for various validation errors, such as empty strings,

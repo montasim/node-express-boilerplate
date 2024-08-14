@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module provides a comprehensive validation service using the Joi library.
  * It defines a set of reusable validation schemas and utility functions for various common data types and fields

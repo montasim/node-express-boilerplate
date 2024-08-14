@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file sets up the Express router for handling detection-related HTTP requests.
  * The router defines the routes and their corresponding handlers, utilizing the detect controller

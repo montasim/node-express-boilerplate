@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports an asynchronous function `generateHashedToken`
  * which uses the `crypto` library to generate a SHA-256 hashed representation of a given token.

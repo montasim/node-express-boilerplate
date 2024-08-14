@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines a utility function that extracts permission strings from a provided routes object.
  * Each route object may contain permissions relevant to different actions like 'read', 'write', 'delete', etc.

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports a function `getRequesterId` which extracts the requester ID
  * from the Express request object. The function checks for the presence of the `sessionUser`

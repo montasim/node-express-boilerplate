@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module provides a service for interfacing with Google Drive via the Google Drive API. It facilitates
  * uploading and deleting files in a specified Google Drive folder, leveraging the capabilities of the `@googleapis/drive`

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the privacy settings for user profiles, including constants for
  * profile visibility levels. The available visibility levels determine who can view a user's profile.

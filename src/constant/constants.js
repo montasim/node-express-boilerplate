@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines a collection of constants used throughout the application.
  * It centralizes various settings and predefined values, such as maximum and minimum lengths for user inputs

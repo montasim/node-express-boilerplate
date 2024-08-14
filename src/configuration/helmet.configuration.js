@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module configures the Helmet middleware settings for the application's Express server.
  * Helmet helps secure Express apps by setting various HTTP headers to prevent common web vulnerabilities.

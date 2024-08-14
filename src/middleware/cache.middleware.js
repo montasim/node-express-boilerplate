@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module provides caching middleware functionalities for an Express application using NodeCache.
  * It includes functions to create cache entries based on request URLs and methods, and to invalidate cache entries

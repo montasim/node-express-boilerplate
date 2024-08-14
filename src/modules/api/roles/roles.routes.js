@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the routes for managing roles using Express. It includes routes
  * for creating, retrieving, updating, and deleting roles, and applies various middlewares for

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines the controller for handling operations related to user logs.
  * It leverages the shared controller utilities to retrieve various types of user logs including activity, security, and account logs.

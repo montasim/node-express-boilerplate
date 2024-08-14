@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module implements a middleware function for role-based authentication and authorization
  * within an Express application. It verifies the presence and validity of an authentication token, decodes it,

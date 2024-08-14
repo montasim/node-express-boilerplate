@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines the main router for the application, which handles various routes for different functionalities.
  * It includes routes for authentication, book management, detection services, publications, subjects, trending items, user management, writer management, permissions, roles, admin operations, pronouns, and user profiles.

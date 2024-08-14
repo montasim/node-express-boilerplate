@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module configures and validates environment variables for the application
  * using dotenv and Joi. It imports configurations, applies environment-specific settings,

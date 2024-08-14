@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines validation middleware for pronouns-related API requests. The
  * middleware functions use Joi schemas to validate request data for creating, retrieving, updating,

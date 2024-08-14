@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines and exports a structured collection of constants for routing and permissions
  * management in the application. It encapsulates route names and permission keys for various features within the system,

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file exports a function `generateTempPassword` which generates a temporary password
  * of a specified length range, ensuring it meets certain complexity requirements. The password includes

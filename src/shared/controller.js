@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines a set of asynchronous controllers used to handle various user-related operations in a web application.
  * Each controller is a higher-order function that utilizes an async error handling service to gracefully manage exceptions and errors that occur during API calls.

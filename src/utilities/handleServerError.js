@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file contains the handleServerError function, which is responsible for
  * handling server startup errors. It logs the error and attempts a graceful shutdown of the

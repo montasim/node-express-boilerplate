@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the Mongoose schema for the Roles model. The schema includes
  * fields for role details, such as name and permissions, and includes shared schema components

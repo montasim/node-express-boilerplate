@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file defines the service functions for handling operations related to user appearance settings.
  * The services include methods to retrieve and update the appearance settings for a user.

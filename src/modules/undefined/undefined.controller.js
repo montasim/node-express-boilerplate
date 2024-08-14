@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines the controller for handling operations related to undefined routes.
  * It leverages an asynchronous error handling service to process the request and send the appropriate response.

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module configures and implements a sanitization middleware using DOMPurify with a JSDOM window object.
  * It is designed to cleanse incoming request data (body, query parameters, and URL parameters) in an Express application

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This file sets up the routes for permissions-related operations in an Express application.
  * It defines the endpoints for creating, retrieving, updating, and deleting permissions,

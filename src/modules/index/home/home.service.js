@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module defines the service function for retrieving home-related data.
  * It constructs a detailed response containing API information, versioning, support details, and author information.

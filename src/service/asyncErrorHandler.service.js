@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @fileoverview This module provides a higher-order function (HOF) that wraps asynchronous route handlers in an Express
  * application, aiming to streamline error handling. By encapsulating the try/catch block within this function, it allows
