@@ -32,7 +32,7 @@ const isEmpty = (obj) => {
  * @returns {boolean} - Returns `true` if the value is an empty object, otherwise `false`.
  */
 const isEmptyObject = (value) => {
-    if (value == null) {
+    if (value === null) {
         // null or undefined
         return false;
     }

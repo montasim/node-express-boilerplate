@@ -11,7 +11,6 @@ import usersConstants from '../users/users.constants.js';
 import validationService from '../../../service/validation.service.js';
 import customValidationMessage from '../../../shared/customValidationMessage.js';
 import constants from '../../../constant/constants.js';
-import userConstants from '../users/users.constants.js';
 
 /**
  * Base Joi schema for validating user-related fields.
@@ -44,7 +43,7 @@ const userSchemaBase = Joi.object({
             constants.lengths.USERNAME_MIN,
             constants.lengths.USERNAME_MAX
         )
-        .pattern(new RegExp(userConstants.pattern.USERNAME))
+        .pattern(new RegExp(usersConstants.pattern.USERNAME))
         .messages({
             'string.pattern.base': 'Username, must be unique.',
         }),
