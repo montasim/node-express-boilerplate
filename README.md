@@ -22,29 +22,29 @@ A boilerplate/starter project for quickly building RESTful APIs using Node.js, E
 
 ## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=120&height=40&lines=CONTENTS:" alt="CONTENTS:" />
 
--   [FEATURES](#features)
--   [PREREQUISITES](#prerequisites)
--   [SETUP](#setup)
--   [RUNNING THE SCRIPT](#running-the-script)
--   [ERROR HANDLING](#error-handling)
--   [HOSTING](#hosting)
--   [USED PACKAGES](#used-packages)
--   [TOOLS](#tools)
--   [ARTICLES](#articles)
--   [DO NOT FORGET TO DO](#do-not-forget-to-do)
--   [TUTORIALS](#tutorials)
--   [INSPIRATIONS](#inspirations)
--   [CONTRIBUTE](#contribute)
--   [CONTRIBUTORS](#contributors)
--   [SPECIAL THANKS](#special-thanks)
--   [LICENSE](#license)
--   [CONTACT](#contact)
+1. [FEATURES](#1-features)
+2. [PREREQUISITES](#2-prerequisites)
+3. [SETUP](#3-setup)
+4. [RUNNING THE SCRIPT](#4-running-the-script)
+5. [ERROR HANDLING](#5-error-handling)
+6. [HOSTING](#6-hosting)
+7. [USED PACKAGES](#7-used-packages)
+8. [TOOLS](#8-tools)
+9. [ARTICLES](#9-articles)
+10. [DO NOT FORGET TO DO](#10-do-not-forget-to-do)
+11. [TUTORIALS](#11-tutorials)
+12. [INSPIRATIONS](#12-inspirations)
+13. [CONTRIBUTE](#13-contribute)
+14. [CONTRIBUTORS](#14-contributors)
+15. [SPECIAL THANKS](#15-special-thanks)
+16. [LICENSE](#16-license)
+17. [CONTACT](#17-contact)
 
 <br/>
 
-[//]: # 'FEATURES'
+[//]: # '1. FEATURES'
 
-## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=100&height=40&lines=FEATURES" alt="FEATURES" id="features" />
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=120&height=40&lines=1.+FEATURES" alt="1. FEATURES" id="1-features" />
 
 1. Authentication:
 
@@ -110,8 +110,9 @@ A boilerplate/starter project for quickly building RESTful APIs using Node.js, E
 <br/>
 
 [//]: # 'PREREQUISITES'
+[//]: # '2. PREREQUISITES'
 
-## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=148&height=40&lines=PREREQUISITES" alt="PREREQUISITES" id="prerequisites" />
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=168&height=40&lines=2.+PREREQUISITES" alt="2. PREREQUISITES" id="2-prerequisites" />
 
 1. Node.js (v20.x or higher)
 2. Yarn (v1.22.x or higher)
@@ -120,9 +121,9 @@ Ensure you have `Node.js` and `Yarn` installed by running `node -v` and `yarn -v
 
 <br/>
 
-[//]: # 'SETUP'
+[//]: # '3. SETUP'
 
-## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=60&height=40&lines=SETUP" alt="SETUP" id="setup" />
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=80&height=40&lines=3.+SETUP" alt="3. SETUP" id="3-setup" />
 
 1. **Clone the repository and navigate to the directory:**
 
@@ -143,37 +144,9 @@ Ensure you have `Node.js` and `Yarn` installed by running `node -v` and `yarn -v
 
 <br/>
 
-### Docker setup
+[//]: # '4. RUNNING THE SCRIPT'
 
-1. **Build the Docker Compose Services:**
-
-    ```bash
-    docker-compose -f docker-compose-development.yml build
-    ```
-
-2. **Run the Docker Compose Services:**
-
-    ```bash
-    docker-compose -f docker-compose-development.yml up
-    ```
-
-3. **Stop the Containers:**
-
-    ```bash
-    docker-compose -f docker-compose-development.yml down
-    ```
-
-4. **Rebuild the Containers:**
-
-    ```bash
-    docker-compose -f docker-compose-development.yml up --build
-    ```
-
-<br/>
-
-[//]: # 'RUNNING THE SCRIPT'
-
-## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=208&height=40&lines=RUNNING+THE+SCRIPT" alt="RUNNING THE SCRIPT" id="running-the-script" />
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=230&height=40&lines=4.+RUNNING+THE+SCRIPT" alt="4. RUNNING THE SCRIPT" id="4-running-the-script" />
 
 1. **Running the Application:**
 
@@ -269,15 +242,41 @@ Ensure you have `Node.js` and `Yarn` installed by running `node -v` and `yarn -v
     This command initializes the auto cleanup process and then forces a rebuild.
     <br/>
 
-[//]: # 'ERROR HANDLING'
+### Docker
 
-## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=170&height=40&lines=ERROR+HANDLING" alt="ERROR HANDLING" id="error-handling" />
+1. **Build the Docker Compose Services:**
+
+    ```bash
+    yarn docker:build-dev
+    ```
+
+2. **Run the Docker Compose Services:**
+
+    ```bash
+    yarn docker:run-dev
+    ```
+
+3. **Stop the Containers:**
+
+    ```bash
+    yarn docker:stop-dev
+    ```
+
+4. **Rebuild the Containers:**
+
+    ```bash
+    yarn docker:rebuild-dev
+    ```
+
+[//]: # '5. ERROR HANDLING'
+
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=195&height=40&lines=5.+ERROR+HANDLING" alt="5. ERROR HANDLING" id="5-error-handling" />
 
 <br/>
 
-[//]: # 'HOSTING'
+[//]: # '6. HOSTING'
 
-## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=90&height=40&lines=HOSTING" alt="HOSTING" id="hosting" />
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=112&height=40&lines=6.+HOSTING" alt="6. HOSTING" id="6-hosting" />
 
 [![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/montasim/node-express-boilerplate)
 
@@ -307,9 +306,9 @@ Vercel is the recommended option for hosting the files since it is free and easy
 
 <br/>
 
-[//]: # 'USED PACKAGES'
+[//]: # '7. USED PACKAGES'
 
-## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=165&height=40&lines=USED+PACKAGES" alt="USED PACKAGES" id="used-packages" />
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=185&height=40&lines=7.+USED+PACKAGES" alt="7. USED PACKAGES" id="7-used-packages" />
 
 <details>
     <summary>
@@ -362,9 +361,9 @@ Vercel is the recommended option for hosting the files since it is free and easy
 
 <br/>
 
-[//]: # 'TOOLS'
+[//]: # '8. TOOLS'
 
-## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=65&height=40&lines=TOOLS" alt="TOOLS" id="tools" />
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=85&height=40&lines=8.+TOOLS" alt="8. TOOLS" id="8-tools" />
 
 1. [WebStorm](https://www.jetbrains.com/webstorm/)
 2. [Postman](https://www.postman.com/)
@@ -372,68 +371,68 @@ Vercel is the recommended option for hosting the files since it is free and easy
 
 <br/>
 
-[//]: # 'ARTICLES'
+[//]: # '9. ARTICLES'
 
-## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=95&height=40&lines=ARTICLES" alt="ARTICLES" id="articles" />
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=115&height=40&lines=9.+ARTICLES" alt="9. ARTICLES" id="9-articles" />
 
 1. [StackOverflow answer on file upload to Google Drive](https://stackoverflow.com/questions/65181932/how-i-can-upload-file-to-google-drive-with-google-drive-api).
 
 <br/>
 
-[//]: # 'DO NOT FORGET TO DO'
+[//]: # '10. DO NOT FORGET TO DO'
 
-## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=230&height=40&lines=DO+NOT+FORGET+TO+DO" alt="DO NOT FORGET TO DO" id="do-not-forget-to-do" />
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=255&height=40&lines=10.+DO+NOT+FORGET+TO+DO" alt="10. DO NOT FORGET TO DO" id="10-do-not-forget-to-do" />
 
 <br/>
 
-[//]: # 'TUTORIALS'
+[//]: # '11. TUTORIALS'
 
-## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=110&height=40&lines=TUTORIALS" alt="TUTORIALS" id="tutorials" />
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=135&height=40&lines=11.+TUTORIALS" alt="11. TUTORIALS" id="11-tutorials" />
 
 1. [Google Drive file upload tutorial](https://www.youtube.com/watch?v=bkaQTLCBBeo&t=600s).
 
 <br/>
 
-[//]: # 'INSPIRATIONS'
+[//]: # '12. INSPIRATIONS'
 
-## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=140&height=40&lines=INSPIRATIONS" alt="INSPIRATIONS" id="inspirations" />
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=170&height=40&lines=12.+INSPIRATIONS" alt="12. INSPIRATIONS" id="12-inspirations" />
 
 <br/>
 
-[//]: # 'CONTRIBUTE'
+[//]: # '13. CONTRIBUTE'
 
-## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=125&height=40&lines=CONTRIBUTE" alt="CONTRIBUTE" id="contribute" />
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=155&height=40&lines=13.+CONTRIBUTE" alt="13. CONTRIBUTE" id="13-contribute" />
 
 Contributions are always welcome!
-Please read the [contribution guidelines](CONTRIBUTION.md) first.
+Please read the [contribution guidelines](CONTRIBUTION.md) and [contributor license agreement](CLA.md).
 
 <br/>
 
-[//]: # 'CONTRIBUTORS'
+[//]: # '14. CONTRIBUTORS'
 
-## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=160&height=40&lines=CONTRIBUTORS" alt="CONTRIBUTORS" id="contributors" />
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=185&height=40&lines=14.+CONTRIBUTORS" alt="14. CONTRIBUTORS" id="14-contributors" />
 
 <img loading="lazy" src="https://badges.pufler.dev/contributors/montasim/node-express-boilerplate?size=50&padding=5&perRow=10&bots=true" alt="contributors" />
 
 <br/>
 
-[//]: # 'SPECIAL THANKS'
+[//]: # '15. SPECIAL THANKS'
 
-## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=168&height=40&lines=SPECIAL+THANKS" alt="SPECIAL THANKS" id="special-thanks" />
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=195&height=40&lines=15.+SPECIAL+THANKS" alt="15. SPECIAL THANKS" id="15-special-thanks" />
 
 <br/>
 
-[//]: # 'LICENSE'
+[//]: # '16. LICENSE'
 
-## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=78&height=40&lines=LICENSE" alt="LICENSE" id="license" />
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=108&height=40&lines=16.+LICENSE" alt="16. LICENSE" id="16-license" />
 
 [![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=for-the-badge)](./LICENSE)
 
 <br/>
 
-[//]: # 'CONTACT'
+[//]: # '17. CONTACT'
 
-## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=100&height=40&lines=CONTACT" alt="CONTACT" id="contact" />
+## <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=20&duration=1&pause=1&color=00B8B5&center=true&vCenter=true&repeat=false&width=130&height=40&lines=17.+CONTACT" alt="17. CONTACT" id="17-contact" />
 
 <!-- social media links start -->
 <table align="center">
