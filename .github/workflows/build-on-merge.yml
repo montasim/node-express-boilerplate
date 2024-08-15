@@ -16,13 +16,11 @@ jobs:
         steps:
             - name: Check out code
               uses: actions/checkout@v3
-              run: echo "Code checked out successfully."
 
             - name: Set up Node.js
               uses: actions/setup-node@v3
               with:
                   node-version: '20'
-              run: echo "Node.js set up with version $(node -v)."
 
             - name: Install dependencies
               run: |
