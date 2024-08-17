@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/montasim/node-express-boilerplate/compare/v1.1.5...v1.2.0) (2024-08-17)
+
+### Features
+
+-   add postinstall and postuninstall badge ([8654e4f](https://github.com/montasim/node-express-boilerplate/commit/8654e4fd253cafc6f222acc846a82e9b9a6a704d))
+
+### Code Refactoring
+
+-   sync with remote ([945eb2a](https://github.com/montasim/node-express-boilerplate/commit/945eb2a8eca48f646b3b9d88448b54c330ee9d5a))
+
 ### [1.1.5](https://github.com/montasim/node-express-boilerplate/compare/v1.1.4...v1.1.5) (2024-08-17)
 
 ### Bug Fixes
