@@ -2,9 +2,24 @@
 
 # <img loading="lazy" src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=24&duration=1&pause=1&color=EB008B&center=true&vCenter=true&repeat=false&width=335&height=40&lines=NODE+EXPRESS+BOILERPLATE" alt="LIBRARY MANAGEMENT SYSTEM SERVER" />
 
+[![]()]()
+
+<!-- GitHub actions badges start -->
+<div>
+    <a href="https://github.com/montasim/node-express-boilerplate/actions/workflows/ci.yml" target="_blank" rel="noopener noreferrer" title="https://github.com/montasim/node-express-boilerplate/actions/workflows/build-on-merge.yml">
+          <img alt="Continuous Integration" src="https://github.com/montasim/node-express-boilerplate/actions/workflows/ci.yml/badge.svg?labelColor=EB008B&color=00B8B5">
+    </a>
+    <a href="https://github.com/montasim/node-express-boilerplate/actions/workflows/build-on-merge.yml" target="_blank" rel="noopener noreferrer" title="https://github.com/montasim/node-express-boilerplate/actions/workflows/build-on-merge.yml">
+      <img loading="lazy" alt="Build on Merge" src="https://github.com/montasim/node-express-boilerplate/actions/workflows/build-on-merge.yml/badge.svg?labelColor=EB008B&color=00B8B5">
+    </a>
+    <a href="https://github.com/montasim/node-express-boilerplate/actions/workflows/create-release.yml" target="_blank" rel="noopener noreferrer" title="https://github.com/montasim/node-express-boilerplate/actions/workflows/build-on-merge.yml">
+          <img alt="Automated Release Workflow for PR Merges" src="https://github.com/montasim/node-express-boilerplate/actions/workflows/create-release.yml/badge.svg?labelColor=EB008B&color=00B8B5">
+    </a>
+</div>
+<!-- GitHub actions badges end -->
+
 <!-- repository summary badges start -->
 <div>
-    <img alt="Continuous Integration" src="https://github.com/montasim/node-express-boilerplate/actions/workflows/ci.yml/badge.svg?labelColor=EB008B&color=00B8B5">
     <img alt="Wakatime coding time badge" src="https://wakatime.com/badge/user/bb224c90-7cb7-4c45-953e-a9e26c1cb06c/project/018e21fa-6cc2-477a-be0c-b5e44ca67f1c.svg?labelColor=EB008B&color=00B8B5">
     <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/montasim/node-express-boilerplate?labelColor=EB008B&color=00B8B5">
     <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/montasim/node-express-boilerplate?labelColor=EB008B&color=00B8B5">
