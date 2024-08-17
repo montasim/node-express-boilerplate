@@ -35,14 +35,17 @@ jobs:
             - name: Bump version and generate changelog
               run: yarn release
 
+            - name: Extract version from package.json
+              run: echo "VERSION=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
+
             - name: Create Release
               id: create_release
               uses: actions/create-release@v1
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
-                  tag_name: v${{ github.ref }}
-                  release_name: Release ${{ github.ref }}
+                  tag_name: v${{ env.VERSION }}
+                  release_name: Release v${{ env.VERSION }}
                   body_path: CHANGELOG.md
                   draft: false
                   prerelease: false
