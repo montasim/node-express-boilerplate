@@ -63,7 +63,6 @@
     "tag": false
   },
   "scripts": {
-    "precommit": "yarn test",
     "postchangelog": "echo 'Remember to push tags with git push --follow-tags' && yarn build"
   }
 }
