@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/montasim/node-express-boilerplate/compare/v1.0.0...v1.1.0) (2024-08-17)
+
+### Features
+
+-   automated release workflow for PR merges ([40bc758](https://github.com/montasim/node-express-boilerplate/commit/40bc7588701349bd55a7e4f41b395b3ebb2f0a0e))
+
+### Bug Fixes
+
+-   bump version and generate changelog ([d9284c9](https://github.com/montasim/node-express-boilerplate/commit/d9284c94d93573c9ccc39f8a928c91b66eeb6e97))
+-   bump version and generate changelog ([adec31d](https://github.com/montasim/node-express-boilerplate/commit/adec31d3bc36441aac425c3eca19a1c60c9d3779))
+-   bump version and generate changelog ([27d8c30](https://github.com/montasim/node-express-boilerplate/commit/27d8c3010c3d6b5b53757fbe0572bea4efd3eb57))
+-   bump version and generate changelog ([d4215a1](https://github.com/montasim/node-express-boilerplate/commit/d4215a176a11643aba4989a2eb8e479a05a4b049))
+-   bump version and generate changelog ([8e0f3e3](https://github.com/montasim/node-express-boilerplate/commit/8e0f3e308cc66b49ffa54ed71bbc3e7a080a9d1a))
+-   node.js version for automated release workflow for PR merges ([94bc0d9](https://github.com/montasim/node-express-boilerplate/commit/94bc0d999c6487840fd83fdd1c6b9b7198a6f549))
+-   remove test for automated release workflow for PR merges ([b3215ad](https://github.com/montasim/node-express-boilerplate/commit/b3215adda9a50efb8a0b46aace676b27757d6cd4))
+
 ## 4.0.0 (2024-06-28)
 
 ### ⚠ BREAKING CHANGES
