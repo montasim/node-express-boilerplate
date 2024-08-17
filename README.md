@@ -6,15 +6,9 @@
 
 <!-- GitHub actions badges start -->
 <div>
-    <a href="https://github.com/montasim/node-express-boilerplate/actions/workflows/ci.yml" target="_blank" rel="noopener noreferrer" title="https://github.com/montasim/node-express-boilerplate/actions/workflows/build-on-merge.yml">
-          <img alt="Continuous Integration" src="https://github.com/montasim/node-express-boilerplate/actions/workflows/ci.yml/badge.svg?labelColor=EB008B&color=00B8B5">
-    </a>
-    <a href="https://github.com/montasim/node-express-boilerplate/actions/workflows/build-on-merge.yml" target="_blank" rel="noopener noreferrer" title="https://github.com/montasim/node-express-boilerplate/actions/workflows/build-on-merge.yml">
-      <img loading="lazy" alt="Build on Merge" src="https://github.com/montasim/node-express-boilerplate/actions/workflows/build-on-merge.yml/badge.svg?labelColor=EB008B&color=00B8B5">
-    </a>
-    <a href="https://github.com/montasim/node-express-boilerplate/actions/workflows/create-release.yml" target="_blank" rel="noopener noreferrer" title="https://github.com/montasim/node-express-boilerplate/actions/workflows/build-on-merge.yml">
-          <img alt="Automated Release Workflow for PR Merges" src="https://github.com/montasim/node-express-boilerplate/actions/workflows/create-release.yml/badge.svg?labelColor=EB008B&color=00B8B5">
-    </a>
+    <img loading="lazy" alt="Continuous Integration" src="https://github.com/montasim/node-express-boilerplate/actions/workflows/ci.yml/badge.svg?labelColor=EB008B&color=00B8B5">
+    <img loading="lazy" alt="Build on Merge" src="https://github.com/montasim/node-express-boilerplate/actions/workflows/build-on-merge.yml/badge.svg?labelColor=EB008B&color=00B8B5">
+    <img loading="lazy" alt="Automated Release Workflow for PR Merges" src="https://github.com/montasim/node-express-boilerplate/actions/workflows/create-release.yml/badge.svg?labelColor=EB008B&color=00B8B5">
 </div>
 <!-- GitHub actions badges end -->
 
