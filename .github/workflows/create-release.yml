@@ -26,7 +26,7 @@ jobs:
               run: yarn install
 
             - name: Bump version and generate changelog
-              run: npx standard-version
+              run: yarn release
 
             - name: Create Release
               id: create_release
