@@ -40,7 +40,7 @@
     "prettier:check": "prettier . --check",
     "prettier:fix": "prettier . --write",
     "test": "yarn build && jest",
-    "release": "standard-version",
+    "release": "standard-version && git push --follow-tags",
     "release:minor": "standard-version --release-as minor",
     "release:major": "standard-version --release-as major",
     "release:patch": "standard-version --release-as patch",

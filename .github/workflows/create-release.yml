@@ -45,11 +45,6 @@ jobs:
                   draft: false
                   prerelease: false
 
-            - name: Commit changes
-              run: |
-                  git add -A
-                  git commit -m "chore(release): release ${GITHUB_REF##*/} [skip ci]"
-
             - name: Push changes and tags
               run: |
                   git push origin ${GITHUB_REF##*/} --follow-tags
