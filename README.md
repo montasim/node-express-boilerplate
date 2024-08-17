@@ -15,6 +15,7 @@
 <!-- repository summary badges start -->
 <div>
     <img alt="Wakatime coding time badge" src="https://wakatime.com/badge/user/bb224c90-7cb7-4c45-953e-a9e26c1cb06c/project/018e21fa-6cc2-477a-be0c-b5e44ca67f1c.svg?labelColor=EB008B&color=00B8B5">
+    <img alt="GitHub release" src="https://img.shields.io/github/release/montasim/node-express-boilerplate?labelColor=EB008B&color=00B8B5">
     <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/montasim/node-express-boilerplate?labelColor=EB008B&color=00B8B5">
     <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/montasim/node-express-boilerplate?labelColor=EB008B&color=00B8B5">
     <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/montasim/node-express-boilerplate?labelColor=EB008B&color=00B8B5">
