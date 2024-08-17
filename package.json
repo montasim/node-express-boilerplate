@@ -47,6 +47,8 @@
     "generate-docs:code": "jsdoc -c jsdoc.json",
     "generate-docs:api": "node --experimental-modules swagger.js",
     "clean": "yarn autoclean --init",
+    "postinstall": "yarn autoclean --force && yarn build",
+    "postuninstall": "yarn autoclean --force && yarn build",
     "prepare": "husky"
   },
   "keywords": [
