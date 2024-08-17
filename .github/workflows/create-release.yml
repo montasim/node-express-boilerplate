@@ -52,4 +52,7 @@ jobs:
 
             - name: Push changes and tags
               run: |
-                  git push origin ${GITHUB_REF##*/} --follow-tags
+                  git fetch --all
+                  git checkout main  # Ensures you are on the main branch and it exists locally
+                  git pull origin main  # Optionally pull latest changes if necessary
+                  git push origin main --follow-tags
