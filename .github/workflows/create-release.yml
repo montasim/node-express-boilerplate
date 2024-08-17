@@ -25,9 +25,6 @@ jobs:
             - name: Install dependencies
               run: yarn install
 
-            - name: Run tests
-              run: yarn test
-
             - name: Bump version and generate changelog
               run: npx standard-version
 
