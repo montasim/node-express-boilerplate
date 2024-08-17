@@ -9,6 +9,8 @@ on:
 jobs:
     release:
         runs-on: ubuntu-latest
+        permissions:
+            contents: write # This line ensures the token has write permissions
         if: github.event.pull_request.merged == true
         steps:
             - name: Checkout code
