@@ -53,6 +53,6 @@ jobs:
             - name: Push changes and tags
               run: |
                   git fetch --all
-                  git checkout main  # Ensures you are on the main branch and it exists locally
-                  git pull origin main  # Optionally pull latest changes if necessary
+                  git checkout main
+                  git pull origin main
                   git push origin main --follow-tags
