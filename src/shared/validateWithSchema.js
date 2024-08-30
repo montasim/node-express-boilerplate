@@ -10,6 +10,7 @@
 import asyncErrorHandlerService from '../service/asyncErrorHandler.service.js';
 import customValidationMessage from './customValidationMessage.js';
 import httpStatus from '../constant/httpStatus.constants.js';
+import loggerService from '../service/logger.service.js';
 
 /**
  * @function validateWithSchema
@@ -36,14 +37,16 @@ const validateWithSchema = (schemas, options = {}) => {
             );
 
             if (error) {
+                const message = error.details
+                    .map((detail) => detail.message)
+                    .join(', ');
+                loggerService.debug(message);
                 const errorData = {
                     route: req.originalUrl,
                     timeStamp: new Date(),
                     success: false,
                     data: {},
-                    message: error.details
-                        .map((detail) => detail.message)
-                        .join(', '),
+                    message,
                     status: httpStatus.BAD_REQUEST,
                 };
 
