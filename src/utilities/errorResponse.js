@@ -8,6 +8,7 @@
  */
 
 import httpStatus from '../constant/httpStatus.constants.js';
+import loggerService from '../service/logger.service.js';
 
 /**
  * errorResponse - A function that generates a standardized error response object.
@@ -20,12 +21,17 @@ import httpStatus from '../constant/httpStatus.constants.js';
  * @returns {Object} - An object representing the error response, including the timestamp,
  * success flag, data payload, error message, and status code.
  */
-const errorResponse = (message, status = httpStatus.BAD_REQUEST) => ({
-    timeStamp: new Date(),
-    success: false,
-    data: {},
-    message,
-    status,
-});
+const errorResponse = (message, status = httpStatus.BAD_REQUEST) => {
+    toString(status).startsWith('5')
+        ? loggerService.error(message)
+        : loggerService.debug(message);
+    return {
+        timeStamp: new Date(),
+        success: false,
+        data: {},
+        message,
+        status,
+    };
+};
 
 export default errorResponse;

@@ -8,6 +8,7 @@
  */
 
 import httpStatus from '../constant/httpStatus.constants.js';
+import loggerService from '../service/logger.service.js';
 
 /**
  * sendResponse - A function that creates a standardized response object for successful
@@ -21,12 +22,17 @@ import httpStatus from '../constant/httpStatus.constants.js';
  * @returns {Object} - An object representing the response, including the timestamp,
  * success flag, data payload, message, and status code.
  */
-const sendResponse = (data, message, status = httpStatus.OK) => ({
-    timeStamp: new Date(),
-    success: true,
-    data,
-    message,
-    status,
-});
+const sendResponse = (data, message, status = httpStatus.OK) => {
+    toString(status).startsWith('5')
+        ? loggerService.error(message)
+        : loggerService.debug(message);
+    return {
+        timeStamp: new Date(),
+        success: true,
+        data,
+        message,
+        status,
+    };
+};
 
 export default sendResponse;
