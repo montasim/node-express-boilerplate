@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/montasim/node-express-boilerplate/compare/v1.3.1...v1.4.0) (2024-09-08)
+
+### Features
+
+-   add logger ([bbb4f4d](https://github.com/montasim/node-express-boilerplate/commit/bbb4f4d931269ed8ff8ffad6a816414c68bcef72))
+-   add performance benchmark action ([52ed474](https://github.com/montasim/node-express-boilerplate/commit/52ed4744b84adb56fec0c0937a15b00f7db88bb8))
+
+### Code Refactoring
+
+-   remove performance benchmark action ([fbbdfc8](https://github.com/montasim/node-express-boilerplate/commit/fbbdfc8bb36c7c04f863a54fbaf80e648add3b66))
+
 ### [1.3.1](https://github.com/montasim/node-express-boilerplate/compare/v1.3.0...v1.3.1) (2024-08-17)
 
 ### Code Refactoring
