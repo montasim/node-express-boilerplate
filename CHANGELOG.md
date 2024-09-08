@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/montasim/node-express-boilerplate/compare/v1.4.0...v1.5.0) (2024-09-08)
+
+### Features
+
+-   merge with main ([ec0b52a](https://github.com/montasim/node-express-boilerplate/commit/ec0b52a9fd84871878cbd0580a2c74db6aef8f1c))
+
 ## [1.4.0](https://github.com/montasim/node-express-boilerplate/compare/v1.3.1...v1.4.0) (2024-09-08)
 
 ### Features
